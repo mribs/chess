@@ -500,7 +500,76 @@ public class ChessPiece {
         return validMoves;
     };
     private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
-        return null;
+        Collection<ChessPosition> validPositions = new HashSet<>();
+        Collection<ChessMove> validMoves = new HashSet<>();
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        ChessGame.TeamColor color = board.getPiece(myPosition).getTeamColor();
+
+        //White forward/ Black backwards
+        for (int r=row + 1; r <= 8; r++) {
+            ChessPiece inFront = board.getPiece(new ChessPosition(r, col));
+            if (inFront == null) {
+                validPositions.add(new ChessPosition(r, col));
+            }
+            else if (inFront.getTeamColor() == color) {
+                break;
+            }
+            else {
+                validPositions.add(new ChessPosition(r, col));
+                break;
+            }
+        }
+        //White Backward/ Black forwards
+        for (int r=row - 1; r > 0; r--) {
+            ChessPiece inFront = board.getPiece(new ChessPosition(r, col));
+            if (inFront == null) {
+                validPositions.add(new ChessPosition(r, col));
+            }
+            else if (inFront.getTeamColor() == color) {
+                break;
+            }
+            else {
+                validPositions.add(new ChessPosition(r, col));
+                break;
+            }
+        }
+        //right
+        for (int c=col + 1; c <= 8; c++) {
+            ChessPiece inFront = board.getPiece(new ChessPosition(row, c));
+            if (inFront == null) {
+                validPositions.add(new ChessPosition(row, c));
+            }
+            else if (inFront.getTeamColor() == color) {
+                break;
+            }
+            else {
+                validPositions.add(new ChessPosition(row, c));
+                break;
+            }
+        }
+        //left
+        for (int c=col - 1; c > 0; c--) {
+            ChessPiece inFront = board.getPiece(new ChessPosition(row, c));
+            if (inFront == null) {
+                validPositions.add(new ChessPosition(row, c));
+            }
+            else if (inFront.getTeamColor() == color) {
+                break;
+            }
+            else {
+                validPositions.add(new ChessPosition(row, c));
+                break;
+            }
+        }
+
+        if (validPositions.isEmpty()) return validMoves;
+        //make moves
+        for (ChessPosition position: validPositions) {
+            validMoves.add(new ChessMove(myPosition, position, null));
+        }
+
+        return validMoves;
     };
     private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessPosition> validPositions=new HashSet<>();
