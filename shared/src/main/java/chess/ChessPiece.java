@@ -55,8 +55,23 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> validMoves = new HashSet<>();
         switch (pieceType) {
+            case KING:
+                validMoves = kingMoves(board, myPosition);
+                break;
+            case QUEEN:
+                validMoves = queenMoves(board, myPosition);
+                break;
             case BISHOP:
                 validMoves = bishopMoves(board, myPosition);
+                break;
+            case KNIGHT:
+                validMoves = knightMoves(board, myPosition);
+                break;
+            case ROOK:
+                validMoves = rookMoves(board, myPosition);
+                break;
+            case PAWN:
+                validMoves = pawnMoves(board, myPosition);
                 break;
         }
 
