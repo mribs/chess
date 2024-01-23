@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -702,6 +703,15 @@ public class ChessPiece {
         return validMoves;
     };
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChessPiece piece)) return false;
+        return color == piece.color && pieceType == piece.pieceType;
+    }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, pieceType);
+    }
 }
