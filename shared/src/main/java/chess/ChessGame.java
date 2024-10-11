@@ -54,6 +54,11 @@ public class ChessGame {
         //get piece at location
         ChessPiece piece =getBoard().getPiece(startPosition);
 
+        //check for null piece
+        if (piece == null) {
+            return null;
+        }
+
         //get that piece's moves
         Collection<ChessMove> validMoves = piece.pieceMoves(gameBoard, startPosition);
         if (validMoves == null) return null;
