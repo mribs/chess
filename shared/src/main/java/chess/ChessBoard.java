@@ -127,4 +127,18 @@ public class ChessBoard {
         return Arrays.hashCode(board);
     }
 
+    @Override
+    public String toString() {
+        String printBoard = "";
+        for (int i = 0; i < 8; i++) {
+            String row = "";
+            for (int j = 0; j < 8; j++) {
+                row += "|" + this.board[i][j];
+            }
+            printBoard= printBoard +" \n" + row;
+        }
+
+        return "print board: " +
+                printBoard;
+    }
 }
