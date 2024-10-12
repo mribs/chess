@@ -12,11 +12,13 @@ import java.util.HashSet;
 public class ChessGame {
     TeamColor whosTurn;
     ChessBoard gameBoard;
+    Boolean checkmate;
 
     public ChessGame() {
         whosTurn = TeamColor.WHITE;
         gameBoard = new ChessBoard();
         gameBoard.resetBoard();
+        checkmate = false;
     }
 
     /**
@@ -211,8 +213,9 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if (isInCheck(teamColor) && isInStalemate(teamColor)) return true;
-        return false;
+        this.checkmate = false;
+        if (isInCheck(teamColor) && checkForStalemate(teamColor)) {this.checkmate = true;}
+        return checkmate;
     }
 
     /**
@@ -223,6 +226,11 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        boolean stalemate = checkForStalemate(teamColor);
+        if (isInCheck(teamColor)) {return false;}
+        return stalemate;
+    }
+    private boolean checkForStalemate(TeamColor teamColor) {
         // assume is teamColor's turn
         for (int r = 1; r <= 8; r++) {
             for (int c = 1; c <= 8; c++) {
