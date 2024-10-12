@@ -829,10 +829,13 @@ public class ChessPiece {
 
     @Override
     public String toString() {
-        return "ChessPiece{" +
-                "color=" + color +
-                ", pieceType=" + pieceType +
-                '}';
+        char pieceChar = pieceType.toString().charAt(0);
+        if (color == color.WHITE) {
+            return Character.toUpperCase(pieceChar) + "";
+        } else {
+            return Character.toLowerCase(pieceChar) + "";
+        }
     }
+
 }
 
