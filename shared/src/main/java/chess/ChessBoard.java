@@ -132,10 +132,10 @@ public class ChessBoard {
         String printBoard = "";
         for (int i = 0; i < 8; i++) {
             String row = "";
-            for (int j = 0; j < 8; j++) {
-                row += "|" + this.board[i][j];
+            for (int j = 0; j  < 8; j++) {
+                row += "|" + this.board[i][j]+ "|";
             }
-            printBoard= printBoard +" \n" + row;
+            printBoard= row  +"\n" + printBoard;
         }
 
         return "print board: " +
