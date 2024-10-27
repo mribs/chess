@@ -33,6 +33,11 @@ These commands are configured by the `pom.xml` (Project Object Model) files. The
 
 Once you have compiled your project into an uber jar, you can execute it with the following command.
 
+
+### Sequence Diagram
+![Phase2 ](https://github.com/mribs/chess/assets/98202044/27445f5e-83cd-42d4-b2de-b46f05f09d0f)
+
+
 ```sh
 java -jar client/target/client-jar-with-dependencies.jar
 
