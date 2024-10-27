@@ -1,6 +1,6 @@
 package service.services;
 
-import model.DAO.GameDAO;
+import dataAccess.DAO.GameDAO;
 import service.requests.ListGamesRequest;
 import service.results.ListGamesResult;
 

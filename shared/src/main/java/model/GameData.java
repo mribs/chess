@@ -1,4 +1,4 @@
-package model.DAO;
+package model;
 
 import chess.ChessGame;
 

@@ -1,6 +1,6 @@
 package dataAccess;
 
-import model.DAO.AuthDAO;
+import dataAccess.DAO.AuthDAO;
 import dataAccess.models.AuthToken;
 
 public class Authorizer{

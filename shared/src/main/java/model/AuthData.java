@@ -1,4 +1,4 @@
-package model.DAO;
+package model;
 public class AuthData{
   String authToken;
   String username;

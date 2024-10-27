@@ -1,6 +1,6 @@
 package service.services;
 
-import model.DAO.AuthDAO;
+import dataAccess.DAO.AuthDAO;
 import dataAccess.DataAccessException;
 import dataAccess.UnauthorizedException;
 

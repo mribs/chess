@@ -2,7 +2,7 @@ package service.services;
 
 import dataAccess.AlreadyTakenException;
 import dataAccess.BadRequestException;
-import model.DAO.GameDAO;
+import dataAccess.DAO.GameDAO;
 import dataAccess.DataAccessException;
 import dataAccess.models.Game;
 import service.requests.JoinGameRequest;

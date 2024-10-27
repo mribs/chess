@@ -2,8 +2,8 @@ package service.services;
 
 import dataAccess.AlreadyTakenException;
 import dataAccess.BadRequestException;
-import model.DAO.AuthDAO;
-import model.DAO.UserDAO;
+import dataAccess.DAO.AuthDAO;
+import dataAccess.DAO.UserDAO;
 import dataAccess.DataAccessException;
 import dataAccess.models.AuthToken;
 import dataAccess.models.User;

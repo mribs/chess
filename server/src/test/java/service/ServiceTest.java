@@ -25,26 +25,26 @@ class ServiceTest {
   void setUp() {
 
     //add 1 user
-    TempDatabase.userMap.put("testUser", new User("testUser", "testPass", "test"));
-    TempDatabase.authTokenMap.put("testAuth", new AuthToken("testUser", "testAuth"));
+    Database.userMap.put("testUser", new User("testUser", "testPass", "test"));
+    Database.authTokenMap.put("testAuth", new AuthToken("testUser", "testAuth"));
     //add 1 game
-    TempDatabase.gameMap.put(1, new Game("testGame"));
+    Database.gameMap.put(1, new Game("testGame"));
   }
 
   @AfterEach
   void takeDown() {
-    TempDatabase.gameMap.clear();
-    TempDatabase.authTokenMap.clear();
-    TempDatabase.userMap.clear();
+    Database.gameMap.clear();
+    Database.authTokenMap.clear();
+    Database.userMap.clear();
   }
 
   @Test
   void clear() {
     new ClearService().clear();
     //check for empty database
-    assertTrue(TempDatabase.authTokenMap.isEmpty());
-    assertTrue(TempDatabase.userMap.isEmpty());
-    assertTrue(TempDatabase.gameMap.isEmpty());
+    assertTrue(Database.authTokenMap.isEmpty());
+    assertTrue(Database.userMap.isEmpty());
+    assertTrue(Database.gameMap.isEmpty());
   }
 
   @Test
@@ -52,7 +52,7 @@ class ServiceTest {
     CreateGameResult result = new CreateGameService().createGame(new CreateGameRequest("new Game"));
     System.out.println(result.toString());
 
-    assertTrue(TempDatabase.gameMap.containsKey(result.getGameID()));
+    assertTrue(Database.gameMap.containsKey(result.getGameID()));
   }
 
   @Test
@@ -67,13 +67,13 @@ class ServiceTest {
   @Test
   void joinPass() throws BadRequestException, DataAccessException, AlreadyTakenException {
     JoinGameResult result = new JoinGameService().join(new JoinGameRequest(1, "white"), "testUser");
-    Game game = TempDatabase.gameMap.get(1);
+    Game game = Database.gameMap.get(1);
     assertTrue(game.getWhiteUsername() == "testUser");
 
   }
   @Test
   void joinFail() throws BadRequestException, DataAccessException, AlreadyTakenException {
-    TempDatabase.userMap.put("testUser2", new User("meanUser", "password", "email"));
+    Database.userMap.put("testUser2", new User("meanUser", "password", "email"));
     new JoinGameService().join(new JoinGameRequest(1, "White"), "meanUser");
     assertThrows(AlreadyTakenException.class, () -> {
       new JoinGameService().join(new JoinGameRequest(1, "White"), "testUser");
@@ -84,7 +84,7 @@ class ServiceTest {
   @Test
   void listPass() {
     ListGamesResult result= new ListGamesService().listGames(new ListGamesRequest("testAuth"));
-    Collection<Game> expectedGames = TempDatabase.gameMap.values();
+    Collection<Game> expectedGames = Database.gameMap.values();
     ArrayList<Game> gameList = new ArrayList<>(expectedGames);
     ArrayList<Game> testList = result.getGames();
 
@@ -104,7 +104,7 @@ class ServiceTest {
   void loginPass() throws UnauthorizedException, DataAccessException {
     //good password
     LoginResult authKey = new LoginService().login(new LoginRequest("testUser", "testPass"));
-    assertTrue(TempDatabase.authTokenMap.containsKey(authKey.getAuthToken()));
+    assertTrue(Database.authTokenMap.containsKey(authKey.getAuthToken()));
   }
   @Test
   void loginFail() {
@@ -118,7 +118,7 @@ class ServiceTest {
   @Test
   void logoutPass() throws UnauthorizedException, DataAccessException {
     new LogoutService().logOut("testAuth");
-    assertFalse(TempDatabase.authTokenMap.containsKey("testAuth"));
+    assertFalse(Database.authTokenMap.containsKey("testAuth"));
 
   }
   @Test
@@ -131,8 +131,8 @@ class ServiceTest {
   @Test
   void registerPass() throws BadRequestException, DataAccessException, AlreadyTakenException {
     LoginResult result = new RegisterService().register(new RegisterRequest("Test user2", "password", "email2"));
-    assertTrue(TempDatabase.authTokenMap.containsKey(result.getAuthToken()));
-    assertTrue(TempDatabase.userMap.containsKey("Test user2"));
+    assertTrue(Database.authTokenMap.containsKey(result.getAuthToken()));
+    assertTrue(Database.userMap.containsKey("Test user2"));
   }
   @Test
   void registerFail() {
