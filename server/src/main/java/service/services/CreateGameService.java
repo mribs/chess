@@ -1,8 +1,7 @@
 package service.services;
 
-import dataAccess.Authorizer;
 import dataAccess.BadRequestException;
-import dataAccess.DAO.GameDAO;
+import model.DAO.GameDAO;
 import dataAccess.DataAccessException;
 import dataAccess.UnauthorizedException;
 import dataAccess.models.Game;
