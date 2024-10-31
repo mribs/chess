@@ -1,5 +1,6 @@
 package dataaccess.DAO;
 
+import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.Database;
 import model.Game;
@@ -13,7 +14,7 @@ public class GameDAO {
     //create new game if gameName doesn't already exist
 //    if (gameMap.containsKey(gameName)) throw new DataAccessException("bad request");
 
-    Game game = new Game(gameName);
+    Game game = new Game(gameName, new ChessGame());
     Database.gameMap.put(game.getGameID(), game);
 
     return game;
