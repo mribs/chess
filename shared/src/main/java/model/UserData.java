@@ -1,7 +1,3 @@
 package model;
 
-public class UserData {
-  String username;
-  String password;
-  String email;
-}
+record UserData(String username, String password, String email) {}
