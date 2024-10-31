@@ -11,6 +11,18 @@ public record Game(int gameID, String whiteUsername, String blackUsername, Strin
   public Integer getGameID() {
     return gameID;
   }
+
+  public String getWhiteUsername() {
+    return whiteUsername;
+  }
+
+  public String getBlackUsername() {
+    return blackUsername;
+  }
+
+  public void setWhiteUsername(String username) {
+    whiteUsername = username;
+  }
 }
 
 

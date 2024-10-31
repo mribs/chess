@@ -1,22 +1,11 @@
-package serviceTests;
+package java.service;
 
-import dataAccess.*;
-import exceptions.AlreadyTakenException;
-import exceptions.BadRequestException;
-import exceptions.DataAccessException;
-import exceptions.UnauthorizedException;
-import models.AuthToken;
-import models.Game;
-import models.User;
+import chess.ChessGame;
+import dataaccess.*;
+import model.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.requests.*;
-import service.results.CreateGameResult;
-import service.results.JoinGameResult;
-import service.results.ListGamesResult;
-import service.results.LoginResult;
-import service.services.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +21,7 @@ class ServiceTest {
     Database.authTokenMap.put("testAuth", new AuthToken("testUser", "testAuth"));
 
     //add 1 game
-    Database.gameMap.put(1, new Game("testGame"));
+    Database.gameMap.put(1, new Game("testGame", new ChessGame()));
   }
 
   @AfterEach

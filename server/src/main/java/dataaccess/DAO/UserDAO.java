@@ -1,10 +1,7 @@
-package dataaccess.DAO.memory;
+package dataaccess.DAO;
 
-import exceptions.AlreadyTakenException;
-import exceptions.BadRequestException;
-import exceptions.DataAccessException;
-import dataaccess.Database;
-import models.User;
+import dataaccess.*;
+import model.User;
 
 
 public class UserDAO {
