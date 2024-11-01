@@ -1,4 +1,4 @@
-package dataaccess.DAO;
+package dataaccess.dao;
 
 import dataaccess.DataAccessException;
 import dataaccess.Database;
@@ -22,13 +22,13 @@ public class AuthDAO {
     AuthToken authToken1 = Database.authTokenMap.get(authToken);
     return authToken1;
   }
-//update an authToken object
-  public void updateToken(String currAuthToken, AuthToken newAuthToken) throws UnauthorizedException {
-    if (Database.authTokenMap.containsKey(currAuthToken)) {
-      Database.authTokenMap.put(currAuthToken, newAuthToken);
-    }
-    else throw new UnauthorizedException();
-  }
+////update an authToken object
+//  public void updateToken(String currAuthToken, AuthToken newAuthToken) throws UnauthorizedException {
+//    if (Database.authTokenMap.containsKey(currAuthToken)) {
+//      Database.authTokenMap.put(currAuthToken, newAuthToken);
+//    }
+//    else throw new UnauthorizedException();
+//  }
 //delete an authToken object
   public AuthToken deleteToken(String authToken) throws UnauthorizedException {
     AuthToken oldAuthToken = Database.authTokenMap.remove(authToken);

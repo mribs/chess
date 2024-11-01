@@ -1,7 +1,7 @@
 package service.services;
 
 import dataaccess.*;
-import dataaccess.DAO.*;
+import dataaccess.dao.*;
 import model.*;
 import service.requests.RegisterRequest;
 import service.results.LoginResult;
@@ -11,7 +11,7 @@ public class RegisterService {
   public LoginResult register(RegisterRequest registerRequest) throws DataAccessException, BadRequestException, AlreadyTakenException {
     if (registerRequest.getUsername() == null || registerRequest.getEmail() == null || registerRequest.getPassword() == null) throw new BadRequestException();
     //create user object
-    User user = new User(registerRequest.getUsername(), registerRequest.getPassword(), registerRequest.getEmail());
+    UserData user = new UserData(registerRequest.getUsername(), registerRequest.getPassword(), registerRequest.getEmail());
     //pass user into createUser in userDAO
     UserDAO userDAO = new UserDAO();
     userDAO.createUser(user);

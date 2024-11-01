@@ -33,21 +33,18 @@ public class Game {
     this.game=game;
   }
   //getters and setters
+//FIXME: no oberservers?
 
-  public List<String> getObservers() {
-    return observers;
-  }
-
-  public void addObserver(String observer) {
-    this.observers.add(observer);
-  }
+//  public List<String> getObservers() {
+//    return observers;
+//  }
+//
+//  public void addObserver(String observer) {
+//    this.observers.add(observer);
+//  }
 
   public int getGameID() {
     return gameID;
-  }
-
-  public void setGameID(int gameID) {
-    this.gameID=gameID;
   }
 
   public String getWhiteUsername() {
@@ -66,14 +63,6 @@ public class Game {
     this.blackUsername=blackUsername;
   }
 
-  public String getGameName() {
-    return gameName;
-  }
-
-  public void setGameName(String gameName) {
-    this.gameName=gameName;
-  }
-
   public ChessGame getGame() {
     return game;
   }
@@ -88,7 +77,4 @@ public class Game {
     if (!(o instanceof Game game1)) return false;
     return gameID == game1.gameID && Objects.equals(whiteUsername, game1.whiteUsername) && Objects.equals(blackUsername, game1.blackUsername) && Objects.equals(observers, game1.observers) && Objects.equals(gameName, game1.gameName) && Objects.equals(game, game1.game);
   }
-
 }
-
-

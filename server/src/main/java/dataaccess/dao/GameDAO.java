@@ -1,6 +1,5 @@
-package dataaccess.DAO;
+package dataaccess.dao;
 
-import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.Database;
 import model.Game;
@@ -32,7 +31,7 @@ public class GameDAO {
   }
 
   //updates game moves in database
-  public  void updateGame(String gameID) {}
+//  public  void updateGame(String gameID) {}
 
   //removes game from database
   public void remove(Integer gameID) throws DataAccessException {

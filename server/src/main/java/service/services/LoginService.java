@@ -2,9 +2,9 @@ package service.services;
 
 
 import dataaccess.*;
-import dataaccess.DAO.*;
+import dataaccess.dao.*;
 import model.AuthToken;
-import model.User;
+import model.UserData;
 import service.requests.LoginRequest;
 import service.results.LoginResult;
 
@@ -13,7 +13,7 @@ public class LoginService {
   public LoginResult login(LoginRequest loginRequest) throws DataAccessException, UnauthorizedException, BadRequestException {
     //pass userName into userDao, get back a user object if exists
     UserDAO userDAO = new UserDAO();
-    User user = userDAO.readUser(loginRequest.getUsername());
+    UserData user = userDAO.readUser(loginRequest.getUsername());
 
     if (user == null || loginRequest.getPassword() == null) throw new UnauthorizedException();
     //match passwords if not match throw unauthorized

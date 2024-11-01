@@ -1,6 +1,6 @@
 package service.services;
 
-import dataaccess.DAO.*;
+import dataaccess.dao.*;
 
 public class ClearService {
   public void clear() {
