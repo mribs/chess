@@ -1,17 +1,8 @@
 package service.services;
 
-import exceptions.AlreadyTakenException;
-import exceptions.BadRequestException;
-
-//import dataAccess.DAO.memory.AuthDAO;
-import dataAccess.DAO.SQL.AuthDAO;
-
-import dataAccess.DAO.SQL.UserDAO;
-//import dataAccess.DAO.memory.UserDAO;
-
-import exceptions.DataAccessException;
-import models.AuthToken;
-import models.User;
+import dataaccess.*;
+import dataaccess.DAO.*;
+import model.*;
 import service.requests.RegisterRequest;
 import service.results.LoginResult;
 

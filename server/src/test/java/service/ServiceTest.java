@@ -1,8 +1,11 @@
-package java.service;
+package service;
 
-import chess.ChessGame;
 import dataaccess.*;
 import model.*;
+import service.results.*;
+import service.requests.*;
+import service.services.*;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +24,7 @@ class ServiceTest {
     Database.authTokenMap.put("testAuth", new AuthToken("testUser", "testAuth"));
 
     //add 1 game
-    Database.gameMap.put(1, new Game("testGame", new ChessGame()));
+    Database.gameMap.put(1, new Game("testGame"));
   }
 
   @AfterEach
