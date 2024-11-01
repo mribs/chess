@@ -14,6 +14,7 @@ public class JoinGameService {
     GameDAO gameDAO = new GameDAO();
     Integer gameID = joinGameRequest.getGameID();
     //see if game exists
+    if (gameID == null) throw new BadRequestException();
     Game game = gameDAO.find(gameID);
     if (game == null) throw new BadRequestException();
 
@@ -28,8 +29,7 @@ public class JoinGameService {
       game.setBlackUsername(username);
     }
     else {
-      game.addObserver(username);
-      playerColor = "OBSERVER";
+      throw new BadRequestException();
     }
 
     //update game
