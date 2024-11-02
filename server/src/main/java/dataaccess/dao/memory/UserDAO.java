@@ -1,12 +1,12 @@
-package dataaccess.dao;
+package dataaccess.dao.memory;
 
 import dataaccess.*;
-import model.UserData;
+import model.User;
 
 
 public class UserDAO {
   //creates new user
-  public void createUser(UserData u) throws AlreadyTakenException, BadRequestException {
+  public void createUser(User u) throws AlreadyTakenException, BadRequestException {
     if (u == null || u.getUsername() == null) throw new BadRequestException();
     if (Database.userMap.containsKey(u.getUsername()) ) throw new AlreadyTakenException();
 
@@ -14,7 +14,7 @@ public class UserDAO {
   }
 
   //returns user information
-  public UserData readUser(String userName) throws DataAccessException {
+  public User readUser(String userName) throws DataAccessException {
     if (userName == null) throw new DataAccessException("userName must not be null");
 
     return Database.userMap.get(userName);

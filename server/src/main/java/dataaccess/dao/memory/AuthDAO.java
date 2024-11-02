@@ -1,4 +1,4 @@
-package dataaccess.dao;
+package dataaccess.dao.memory;
 
 import dataaccess.DataAccessException;
 import dataaccess.Database;

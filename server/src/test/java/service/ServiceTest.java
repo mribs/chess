@@ -20,7 +20,7 @@ class ServiceTest {
   @BeforeEach
   void setUp(){
     //add 1 user
-    Database.userMap.put("testUser", new UserData("testUser", "testPass", "test"));
+    Database.userMap.put("testUser", new User("testUser", "testPass", "test"));
     Database.authTokenMap.put("testAuth", new AuthToken("testUser", "testAuth"));
 
     //add 1 game
@@ -73,7 +73,7 @@ class ServiceTest {
   }
   @Test
   void joinFail() throws BadRequestException, DataAccessException, AlreadyTakenException {
-    Database.userMap.put("testUser2", new UserData("meanUser", "password", "email"));
+    Database.userMap.put("testUser2", new User("meanUser", "password", "email"));
     new JoinGameService().join(new JoinGameRequest(1, "White"), "meanUser");
     assertThrows(AlreadyTakenException.class, () -> {
       new JoinGameService().join(new JoinGameRequest(1, "White"), "testUser");

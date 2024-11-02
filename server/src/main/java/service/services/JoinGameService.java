@@ -1,7 +1,7 @@
 package service.services;
 
 import dataaccess.*;
-import dataaccess.dao.GameDAO;
+import dataaccess.dao.memory.GameDAO;
 import model.Game;
 import service.requests.JoinGameRequest;
 import service.results.JoinGameResult;

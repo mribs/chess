@@ -21,14 +21,12 @@ public class Game {
 
     this.gameID = this.game.hashCode();
 
-    this.observers = new ArrayList<>();
   }
 
-  public Game(int gameID, String whiteUsername, String blackUsername, List<String> observers, String gameName, ChessGame game) {
+  public Game(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
     this.gameID=gameID;
     this.whiteUsername=whiteUsername;
     this.blackUsername=blackUsername;
-    this.observers=observers;
     this.gameName=gameName;
     this.game=game;
   }
@@ -76,5 +74,9 @@ public class Game {
     if (this == o) return true;
     if (!(o instanceof Game game1)) return false;
     return gameID == game1.gameID && Objects.equals(whiteUsername, game1.whiteUsername) && Objects.equals(blackUsername, game1.blackUsername) && Objects.equals(observers, game1.observers) && Objects.equals(gameName, game1.gameName) && Objects.equals(game, game1.game);
+  }
+
+  public Object getGameName() {
+    return gameName;
   }
 }
