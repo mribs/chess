@@ -1,6 +1,6 @@
 package dataaccess;
 
-import dataaccess.dao.memory.AuthDAO;
+import dataaccess.dao.sql.AuthDAO;
 
 import model.AuthToken;
 

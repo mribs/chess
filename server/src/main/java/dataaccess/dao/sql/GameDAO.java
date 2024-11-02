@@ -20,7 +20,7 @@ public class GameDAO extends DAO {
     var gameJSON = new Gson().toJson(game.getGame());
 
 
-    var statement = "INSERT INTO game (gameID, gameName, game, whiteUsername, blackUsername) VALUES (?, ?, ?, ?, ?, ?)";
+    var statement = "INSERT INTO game (gameID, gameName, game, whiteUsername, blackUsername) VALUES (?, ?, ?, ?, ?)";
     executeUpdate(statement, String.valueOf(gameID), gameName, gameJSON,null,null);
 
     return game;

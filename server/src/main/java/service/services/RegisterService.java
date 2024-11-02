@@ -1,8 +1,8 @@
 package service.services;
 
 import dataaccess.*;
-import dataaccess.dao.memory.AuthDAO;
-import dataaccess.dao.memory.UserDAO;
+import dataaccess.dao.sql.AuthDAO;
+import dataaccess.dao.sql.UserDAO;
 import model.*;
 import service.requests.RegisterRequest;
 import service.results.LoginResult;

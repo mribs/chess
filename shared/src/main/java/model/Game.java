@@ -73,7 +73,7 @@ public class Game {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof Game game1)) return false;
-    return gameID == game1.gameID && Objects.equals(whiteUsername, game1.whiteUsername) && Objects.equals(blackUsername, game1.blackUsername) && Objects.equals(observers, game1.observers) && Objects.equals(gameName, game1.gameName) && Objects.equals(game, game1.game);
+    return gameID == game1.gameID && Objects.equals(whiteUsername, game1.whiteUsername) && Objects.equals(blackUsername, game1.blackUsername) && Objects.equals(gameName, game1.gameName);
   }
 
   public Object getGameName() {
