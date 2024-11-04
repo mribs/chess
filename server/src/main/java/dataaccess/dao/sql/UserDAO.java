@@ -2,6 +2,7 @@ package dataaccess.dao.sql;
 
 import dataaccess.*;
 import model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,9 +17,10 @@ public class UserDAO extends DAO {
     if (testUser != null) {
       throw  new AlreadyTakenException();
     }
+    String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
 
     var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
-    executeUpdate(statement, user.getUsername(), user.getPassword(), user.getEmail());
+    executeUpdate(statement, user.getUsername(), hashedPassword, user.getEmail());
 
   }
 
@@ -46,9 +48,11 @@ public class UserDAO extends DAO {
     return new User(userName, password, email);
   }
 
-  //updates user information
-//  void updateUser(User u) throws DataAccessException{
-//  }
+  public boolean verifyUser(User u, String enteredPassword) {
+    String hashedPassword = u.getPassword();
+    return BCrypt.checkpw(enteredPassword, hashedPassword);
+  }
+
 
   //deletes user
   void deleteUser(User u) throws  DataAccessException {

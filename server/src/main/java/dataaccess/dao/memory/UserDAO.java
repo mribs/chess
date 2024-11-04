@@ -20,9 +20,10 @@ public class UserDAO {
     return Database.userMap.get(userName);
   }
 
-  //updates user information
-//  void updateUser(User u) throws DataAccessException{
-//  }
+  public Boolean verifyUser(User u, String password) {
+    return (u.getPassword().equals(password));
+  }
+
 
   //deletes user
 //  void deleteUser(User u) throws  DataAccessException {

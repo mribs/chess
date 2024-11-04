@@ -35,7 +35,7 @@ class ServiceTest {
 
     Database.userMap.clear();
 
-    
+
   }
 
   @Test

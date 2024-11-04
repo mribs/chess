@@ -12,12 +12,8 @@ public class RegisterService {
   //return request result
   public LoginResult register(RegisterRequest registerRequest) throws DataAccessException, BadRequestException, AlreadyTakenException {
     if (registerRequest.getUsername() == null || registerRequest.getEmail() == null || registerRequest.getPassword() == null) throw new BadRequestException();
-    //hash password
-    String password = registerRequest.getPassword();
-    String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-
     //create user object
-    User user = new User(registerRequest.getUsername(), hashedPassword, registerRequest.getEmail());
+    User user = new User(registerRequest.getUsername(), registerRequest.getPassword(), registerRequest.getEmail());
     //pass user into createUser in userDAO
     UserDAO userDAO = new UserDAO();
     userDAO.createUser(user);
