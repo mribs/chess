@@ -1,8 +1,6 @@
 package service.services;
 
-import dataaccess.dao.sql.AuthDAO;
-import dataaccess.dao.sql.GameDAO;
-import dataaccess.dao.sql.UserDAO;
+import dataaccess.dao.memory.*;
 
 public class ClearService {
   public void clear() {

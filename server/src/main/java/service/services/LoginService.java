@@ -2,8 +2,7 @@ package service.services;
 
 
 import dataaccess.*;
-import dataaccess.dao.sql.AuthDAO;
-import dataaccess.dao.sql.UserDAO;
+import dataaccess.dao.memory.*;
 import model.AuthToken;
 import model.User;
 import service.requests.LoginRequest;
@@ -11,7 +10,7 @@ import service.results.LoginResult;
 
 public class LoginService {
   //return request result
-  public LoginResult login(LoginRequest loginRequest) throws DataAccessException, UnauthorizedException, BadRequestException {
+  public LoginResult login(LoginRequest loginRequest) throws DataAccessException, UnauthorizedException {
     //pass userName into userDao, get back a user object if exists
     UserDAO userDAO = new UserDAO();
     User user = userDAO.readUser(loginRequest.getUsername());

@@ -1,10 +1,8 @@
 package service.services;
 
 import dataaccess.*;
-import dataaccess.dao.sql.AuthDAO;
-import dataaccess.dao.sql.UserDAO;
+import dataaccess.dao.memory.*;
 import model.*;
-import org.mindrot.jbcrypt.BCrypt;
 import service.requests.RegisterRequest;
 import service.results.LoginResult;
 
