@@ -13,8 +13,6 @@ public class ChessBoard {
     private ChessPosition whiteKingPos;
     private ChessPosition blackKingPos;
 
-
-
     public ChessBoard() {
         //board constructor should not set up the board
         this.board = new ChessPiece[8][8];
@@ -137,7 +135,6 @@ public class ChessBoard {
             }
             printBoard= row  +"\n" + printBoard;
         }
-
         return "print board: " +
                 printBoard;
     }
