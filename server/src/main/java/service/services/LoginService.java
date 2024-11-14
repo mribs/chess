@@ -14,11 +14,13 @@ public class LoginService {
     //pass userName into userDao, get back a user object if exists
     UserDAO userDAO = new UserDAO();
     User user = userDAO.readUser(loginRequest.getUsername());
-
-    if (user == null || loginRequest.getPassword() == null) throw new UnauthorizedException();
+    if (user == null || loginRequest.getPassword() == null) {
+      throw new UnauthorizedException();
+    }
     //match passwords if not match throw unauthorized
-    if (!userDAO.verifyUser(user, loginRequest.getPassword())) throw new UnauthorizedException();
-
+    if (!userDAO.verifyUser(user, loginRequest.getPassword())) {
+      throw new UnauthorizedException();
+    }
     //make authToken
     AuthDAO authDAO = new AuthDAO();
     AuthToken authtoken = authDAO.createToken(user.getUsername());
