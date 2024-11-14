@@ -16,20 +16,11 @@ public class AuthDAO {
     Database.authTokenMap.put(authTokenString, newAuthToken);
     return newAuthToken;
   }
-
   //reads an authToken object
   public AuthToken readToken(String authToken) {
     AuthToken authToken1 = Database.authTokenMap.get(authToken);
     return authToken1;
   }
-////update an authToken object
-//  public void updateToken(String currAuthToken, AuthToken newAuthToken) throws UnauthorizedException {
-//    if (Database.authTokenMap.containsKey(currAuthToken)) {
-//      Database.authTokenMap.put(currAuthToken, newAuthToken);
-//    }
-//    else throw new UnauthorizedException();
-//  }
-//delete an authToken object
   public AuthToken deleteToken(String authToken) throws UnauthorizedException {
     AuthToken oldAuthToken = Database.authTokenMap.remove(authToken);
     if (oldAuthToken == null) {
@@ -37,7 +28,6 @@ public class AuthDAO {
     }
     return oldAuthToken;
   }
-
   public void clearTokens() {
     Database.authTokenMap.clear();
   }
