@@ -7,11 +7,12 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
 public class UserDAO extends DAO {
   //creates new user
   public void createUser(User user) throws AlreadyTakenException, BadRequestException, DataAccessException {
-    if (user == null || user.getUsername() == null) throw new BadRequestException();
+    if (user == null || user.getUsername() == null) {
+      throw new BadRequestException();
+    }
     //check to see if already exists
     User testUser = readUser(user.getUsername());
     if (testUser != null) {
@@ -21,9 +22,7 @@ public class UserDAO extends DAO {
 
     var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
     executeUpdate(statement, user.getUsername(), hashedPassword, user.getEmail());
-
   }
-
   //returns user information
   public User readUser(String userName) throws DataAccessException {
     try (var conn = DatabaseManager.getConnection()) {

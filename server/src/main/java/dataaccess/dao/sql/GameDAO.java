@@ -14,15 +14,15 @@ public class GameDAO extends DAO {
 
   //inserts new game into database
   public Game insert(String gameName) throws DataAccessException, BadRequestException {
-    if (gameName == "" || gameName == null) throw new BadRequestException();
+    if (gameName == "" || gameName == null) {
+      throw new BadRequestException();
+    }
     Game game = new Game(gameName);
     int gameID = game.getGameID();
     var gameJSON = new Gson().toJson(game.getGame());
 
-
     var statement = "INSERT INTO game (gameID, gameName, game, whiteUsername, blackUsername) VALUES (?, ?, ?, ?, ?)";
     executeUpdate(statement, String.valueOf(gameID), gameName, gameJSON,null,null);
-
     return game;
   }
 
@@ -63,7 +63,9 @@ public class GameDAO extends DAO {
 
   //uses player's username to "claim" a spot in a game
   public void claimSpot(Integer gameID, Game game) throws DataAccessException {
-    if (find(gameID) == null) throw new DataAccessException("cannot find gameID");
+    if (find(gameID) == null) {
+      throw new DataAccessException("cannot find gameID");
+    }
     String gameJson = new Gson().toJson(game.getGame());
     var statement = "UPDATE game SET gameName=?, game=?, whiteUsername=?, blackUsername=? WHERE gameID=?";
     executeUpdate(statement, game.getGameName(), gameJson, game.getWhiteUsername(), game.getBlackUsername(), String.valueOf(gameID));
@@ -101,7 +103,6 @@ public class GameDAO extends DAO {
     } catch (DataAccessException | SQLException e) {
       throw new RuntimeException(e);
     }
-
     return result;
   }
 }

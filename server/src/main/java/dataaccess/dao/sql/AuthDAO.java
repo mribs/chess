@@ -10,11 +10,15 @@ import java.util.UUID;
 public class AuthDAO extends DAO{
   //creates a new authToken object
   public AuthToken createToken(String username) throws DataAccessException, BadRequestException {
-    if (username == null) throw new BadRequestException();
+    if (username == null) {
+      throw new BadRequestException();
+    }
     String authTokenString = UUID.randomUUID().toString();
     AuthToken newAuthToken = new AuthToken(username, authTokenString);
 
-    if (newAuthToken == null) throw new DataAccessException("auth token didn't go");
+    if (newAuthToken == null) {
+      throw new DataAccessException("auth token didn't go");
+    }
 
     var statement = "INSERT INTO authToken (username, authToken) VALUES (?, ?)";
     executeUpdate(statement, newAuthToken.getUsername(), newAuthToken.getAuthToken());
@@ -45,14 +49,6 @@ public class AuthDAO extends DAO{
     var authToken = rs.getString("authtoken");
     return new AuthToken(userName, authToken);
   }
-  //update an authToken object
-//  public void updateToken(String currAuthToken, AuthToken newAuthToken) throws UnauthorizedException {
-//    if (TempDatabase.authTokenMap.containsKey(currAuthToken)) {
-//      TempDatabase.authTokenMap.put(currAuthToken, newAuthToken);
-//    }
-//    else throw new UnauthorizedException();
-//  }
-
   //delete an authToken object
   public void deleteToken(String authToken) throws DataAccessException {
     try (var conn = DatabaseManager.getConnection()) {
