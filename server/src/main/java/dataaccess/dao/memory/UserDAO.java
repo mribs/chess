@@ -1,6 +1,7 @@
 package dataaccess.dao.memory;
 
 import dataaccess.*;
+import model.DataAccessException;
 import model.User;
 
 public class UserDAO {

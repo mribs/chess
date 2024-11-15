@@ -2,6 +2,7 @@ package dataaccess.dao.sql;
 
 import dataaccess.*;
 import model.AuthToken;
+import model.DataAccessException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

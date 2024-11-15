@@ -4,6 +4,7 @@ package service.services;
 import dataaccess.*;
 import dataaccess.dao.sql.*;
 import model.AuthToken;
+import model.DataAccessException;
 import model.User;
 import service.requests.LoginRequest;
 import service.results.LoginResult;

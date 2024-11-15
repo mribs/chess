@@ -1,6 +1,7 @@
 package dataaccess;
 
 import dataaccess.dao.sql.GameDAO;
+import model.DataAccessException;
 import model.Game;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

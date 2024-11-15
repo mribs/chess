@@ -2,6 +2,7 @@ package dataaccess.handlers;
 
 import com.google.gson.Gson;
 import dataaccess.*;
+import model.DataAccessException;
 import service.services.LoginService;
 import service.requests.LoginRequest;
 import service.results.ErrorResult;

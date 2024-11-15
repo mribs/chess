@@ -1,7 +1,7 @@
 package ui;
 
 import chess.ChessGame;
-import dataaccess.DataAccessException;
+import model.DataAccessException;
 import model.*;
 import server.ServerFacade;
 
