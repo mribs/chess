@@ -13,8 +13,6 @@ public class ChessBoard {
     private ChessPosition whiteKingPos;
     private ChessPosition blackKingPos;
 
-
-
     public ChessBoard() {
         //board constructor should not set up the board
         this.board = new ChessPiece[8][8];
@@ -125,5 +123,19 @@ public class ChessBoard {
     @Override
     public int hashCode() {
         return Arrays.hashCode(board);
+    }
+
+    @Override
+    public String toString() {
+        String printBoard = "";
+        for (int i = 0; i < 8; i++) {
+            String row = "";
+            for (int j = 0; j  < 8; j++) {
+                row += "|" + this.board[i][j]+ "|";
+            }
+            printBoard= row  +"\n" + printBoard;
+        }
+        return "print board: " +
+                printBoard;
     }
 }

@@ -14,7 +14,6 @@ public class ChessPiece {
     ChessGame.TeamColor color;
     PieceType pieceType;
 
-
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.color = pieceColor;
         this.pieceType = type;
@@ -75,7 +74,6 @@ public class ChessPiece {
                 validMoves = pawnMoves(board, myPosition);
                 break;
         }
-
         return validMoves;
     }
 
@@ -186,14 +184,12 @@ public class ChessPiece {
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
         }
-
         return validMoves;
-    };
+    }
     private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition position) {
         Collection<ChessMove> validMoves = new HashSet<>();
         ChessPosition newPosition = position;
         boolean canMove = true;
-
         //up
         while (canMove) {
             newPosition=up(newPosition);
@@ -209,7 +205,6 @@ public class ChessPiece {
                 validMoves.add(new ChessMove(position, newPosition, null));
             } else canMove=false;
         }
-
         canMove = true;
         newPosition = position;
         //down
@@ -227,9 +222,10 @@ public class ChessPiece {
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
-            else canMove = false;
+            else {
+                canMove=false;
+            }
         }
-
         canMove = true;
         newPosition = position;
         //left
@@ -247,9 +243,10 @@ public class ChessPiece {
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
-            else canMove = false;
+            else {
+                canMove=false;
+            }
         }
-
         canMove = true;
         newPosition = position;
         //right
@@ -267,9 +264,10 @@ public class ChessPiece {
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
-            else canMove = false;
+            else {
+                canMove=false;
+            }
         }
-
         canMove = true;
         newPosition = position;
         //downLeft
@@ -287,7 +285,9 @@ public class ChessPiece {
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
-            else canMove = false;
+            else {
+                canMove=false;
+            }
         }
         canMove = true;
         //downRight
@@ -306,7 +306,9 @@ public class ChessPiece {
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
-            else canMove = false;
+            else {
+                canMove=false;
+            }
         }
         canMove = true;
         //upLeft
@@ -326,14 +328,15 @@ public class ChessPiece {
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
-            else canMove = false;
+            else {
+                canMove=false;
+            }
         }
         canMove = true;
         //upRight
         newPosition = position;
         while (canMove) {
             newPosition = upRight(newPosition);
-
             if (newPosition != null) {
                 if (board.getPiece(newPosition) != null) {
                     ChessPiece blockage =board.getPiece(newPosition);
@@ -347,15 +350,16 @@ public class ChessPiece {
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
-            else canMove = false;
+            else {
+                canMove=false;
+            }
         }
         return validMoves;
-    };
+    }
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition position) {
         Collection<ChessMove> validMoves = new HashSet<>();
         ChessPosition newPosition = position;
         boolean canMove = true;
-
         //downLeft
         while (canMove) {
             newPosition = downLeft(newPosition);
@@ -371,7 +375,9 @@ public class ChessPiece {
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
-            else canMove = false;
+            else {
+                canMove=false;
+            }
         }
         canMove = true;
         //downRight
@@ -390,7 +396,9 @@ public class ChessPiece {
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
-            else canMove = false;
+            else {
+                canMove=false;
+            }
         }
         canMove = true;
         //upLeft
@@ -410,14 +418,15 @@ public class ChessPiece {
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
-            else canMove = false;
+            else {
+                canMove=false;
+            }
         }
         canMove = true;
         //upRight
         newPosition = position;
         while (canMove) {
             newPosition = upRight(newPosition);
-
             if (newPosition != null) {
                 if (board.getPiece(newPosition) != null) {
                     ChessPiece blockage =board.getPiece(newPosition);
@@ -431,14 +440,16 @@ public class ChessPiece {
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
-            else canMove = false;
+            else {
+                canMove=false;
+            }
         }
         return validMoves;
     }
     private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition position) {
         Collection<ChessMove> validMoves = new HashSet<>();
-        ChessPosition newPosition = position;
-        //up up right
+        ChessPosition newPosition;
+        //up right
         newPosition = up(position);
         if (newPosition != null) newPosition = up(newPosition);
         if (newPosition != null) newPosition = right(newPosition);
@@ -452,7 +463,7 @@ public class ChessPiece {
                 validMoves.add(new ChessMove(position,newPosition,null));
             }
         }
-        //up up left
+        //up left
         newPosition = up(position);
         if (newPosition != null) newPosition = up(newPosition);
         if (newPosition != null) newPosition = left(newPosition);
@@ -551,12 +562,11 @@ public class ChessPiece {
             }
         }
         return validMoves;
-    };
+    }
     private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition position) {
         Collection<ChessMove> validMoves = new HashSet<>();
         ChessPosition newPosition = position;
         boolean canMove = true;
-
         //up
         while (canMove) {
             newPosition=up(newPosition);
@@ -570,9 +580,10 @@ public class ChessPiece {
                     }
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
-            } else canMove=false;
+            } else {
+                canMove=false;
+            }
         }
-
         canMove = true;
         newPosition = position;
         //down
@@ -590,9 +601,10 @@ public class ChessPiece {
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
-            else canMove = false;
+            else {
+                canMove=false;
+            }
         }
-
         canMove = true;
         newPosition = position;
         //left
@@ -610,9 +622,10 @@ public class ChessPiece {
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
-            else canMove = false;
+            else {
+                canMove=false;
+            }
         }
-
         canMove = true;
         newPosition = position;
         //right
@@ -630,14 +643,15 @@ public class ChessPiece {
                 }
                 validMoves.add(new ChessMove(position, newPosition, null));
             }
-            else canMove = false;
+            else {
+                canMove=false;
+            }
         }
         return validMoves;
     };
     private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition position) {
         Collection<ChessMove> validMoves = new HashSet<>();
         ChessPosition newPosition = position;
-
         if (color == ChessGame.TeamColor.WHITE) {
             //if first move
             newPosition = position;
@@ -781,50 +795,76 @@ public class ChessPiece {
         }
         return validMoves;
     };
-
     private ChessPosition upRight(ChessPosition currPosition) {
-        if ((currPosition.getRow() >= 8) || (currPosition.getColumn() >= 8)) return null;
+        if ((currPosition.getRow() >= 8) || (currPosition.getColumn() >= 8)) {
+            return null;
+        }
         return new ChessPosition(currPosition.getRow()+1, currPosition.getColumn()+1);
     }
     private ChessPosition upLeft(ChessPosition currPosition) {
-        if ((currPosition.getRow() >= 8) || (currPosition.getColumn() <= 1)) return null;
+        if ((currPosition.getRow() >= 8) || (currPosition.getColumn() <= 1)) {
+            return null;
+        }
         return new ChessPosition(currPosition.getRow()+1, currPosition.getColumn()-1);
     }
     private ChessPosition downLeft(ChessPosition currPosition) {
-        if ((currPosition.getRow() <= 1) || (currPosition.getColumn() <= 1)) return null;
+        if ((currPosition.getRow() <= 1) || (currPosition.getColumn() <= 1)) {
+            return null;
+        }
         return new ChessPosition(currPosition.getRow()-1, currPosition.getColumn()-1);
     }
     private ChessPosition downRight(ChessPosition currPosition) {
-        if ((currPosition.getRow() <= 1) || (currPosition.getColumn() >= 8)) return null;
+        if ((currPosition.getRow() <= 1) || (currPosition.getColumn() >= 8)) {
+            return null;
+        }
         return new ChessPosition(currPosition.getRow()-1, currPosition.getColumn()+1);
     }
     private ChessPosition up(ChessPosition currPosition) {
-        if (currPosition.getRow() >= 8) return null;
+        if (currPosition.getRow() >= 8) {
+            return null;
+        }
         return new ChessPosition(currPosition.getRow()+1, currPosition.getColumn());
     }
     private ChessPosition down(ChessPosition currPosition) {
-        if (currPosition.getRow() <= 1) return null;
+        if (currPosition.getRow() <= 1) {
+            return null;
+        }
         return new ChessPosition(currPosition.getRow()-1, currPosition.getColumn());
     }
     private ChessPosition right(ChessPosition currPosition) {
-        if (currPosition.getColumn() >= 8) return null;
+        if (currPosition.getColumn() >= 8) {
+            return null;
+        }
         return new ChessPosition(currPosition.getRow(), currPosition.getColumn()+1);
     }
     private ChessPosition left(ChessPosition currPosition) {
-        if (currPosition.getColumn() <= 1) return null;
+        if (currPosition.getColumn() <= 1) {
+            return null;
+        }
         return new ChessPosition(currPosition.getRow(), currPosition.getColumn()-1);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ChessPiece piece)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ChessPiece piece)) {
+            return false;
+        }
         return color == piece.color && pieceType == piece.pieceType;
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(color, pieceType);
     }
+    @Override
+    public String toString() {
+        char pieceChar = pieceType.toString().charAt(0);
+        if (color == color.WHITE) {
+            return Character.toUpperCase(pieceChar) + "";
+        } else {
+            return Character.toLowerCase(pieceChar) + "";
+        }
+    }
 }
-
