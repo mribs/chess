@@ -45,16 +45,14 @@ public class ServerFacade {
 
   public Game[] listGames(String authToken) throws DataAccessException {
     var path = "/game";
-    record listGamesResponse(Game[] games) {
-    }
-    var response = this.makeRequest("GET", path, null, authToken, listGamesResponse.class);
+    record ListGamesResponse(Game[] games) {}
+    var response = this.makeRequest("GET", path, null, authToken, ListGamesResponse.class);
     return response.games();
   }
-
   public ChessGame joinGame(int gameID, String color,String username, String authToken) throws DataAccessException {
     var path = "/game";
     Join join = new Join(gameID, color);
-    record joinGameResponse() {}
+    record JoinGameResponse() {}
     var response = this.makeRequest("PUT", path, join, authToken, ChessGame.class);
     return response;
   }

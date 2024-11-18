@@ -160,7 +160,7 @@ public class ChessGame {
                 return;
             }
         }
-        throw new InvalidMoveException("Move: " + move.getEndPosition() + "for " + gameBoard.getPiece(move.getStartPosition()).pieceType + " is invalid");
+        throw new InvalidMoveException("Move: " + move.getEndPosition() + "for " + gameBoard.getPiece(move.getStartPosition()).getPieceType() + " is invalid");
     }
 
     /**
