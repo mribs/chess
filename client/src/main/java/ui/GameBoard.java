@@ -16,7 +16,6 @@ public class GameBoard {
     this.board = game.getBoard();
     board.resetBoard();
 
-    //TODO UPDATE FOR GAMEPLAY
     fancyPrint("white");
     System.out.println();
     fancyPrint("black");

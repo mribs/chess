@@ -128,7 +128,9 @@ public class Player {
       gameID = gameList[gameID-1].getGameID();
     }
     ChessGame joined = postLogin.joinGame(gameID, color, authToken);
-    if (joined != null) return gameboard.startGame(joined, color);
+    if (joined != null) {
+      return gameboard.startGame(joined, color);
+    }
     else return "failed to join game";
   }
   private String observeGame() {
