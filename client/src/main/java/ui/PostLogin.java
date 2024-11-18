@@ -36,9 +36,9 @@ public class PostLogin {
     String returnString;
     try {
       gameID=serverFacade.createGame(authToken.getAuthToken(), gameName);
-      returnString ="Created! The gameID is: " + gameID;
+      returnString =gameName + " successfully created!";
     } catch (DataAccessException e) {
-      returnString = "Could not create the game: " + e.getMessage();
+      returnString = "Could not create the game :(";
     }
 
     return returnString;
@@ -48,7 +48,7 @@ public class PostLogin {
     try {
       games = serverFacade.listGames(authToken.getAuthToken());
     } catch (Exception e) {
-      System.out.println( "Could not list games: " + e.getMessage());
+      System.out.println( "Could not list games :(");
     }
     return games;
   }
@@ -58,7 +58,7 @@ public class PostLogin {
       ChessGame joined = serverFacade.joinGame(gameID, color, authToken.getUsername(), authToken.getAuthToken());
       return joined;
     } catch (Exception e) {
-      System.out.println("Couldn't join game: " + e.getMessage());
+      System.out.println("Couldn't join game :(");
     }
     return null;
   }

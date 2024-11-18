@@ -51,7 +51,7 @@ public class Player {
         loggedIn = true;
       }
     } catch (Exception e) {
-      returnString = ("Couldn't register user: " + e.getMessage());
+      returnString = ("Couldn't register user");
       loggedIn = false;
     }
 
@@ -72,7 +72,7 @@ public class Player {
         loggedIn = true;
       }
     } catch (Exception e) {
-      returnString = ("Login failed: " + e.getMessage());
+      returnString = ("Login failed");
       loggedIn = false;
     }
     return returnString;
@@ -85,7 +85,7 @@ public class Player {
       returnString = "Successfully logged out!";
       loggedIn = false;
     } catch (Exception e) {
-      returnString = "Failed to log out: " + e.getMessage();
+      returnString = "Failed to log out :(";
     }
     return returnString;
   }
@@ -96,7 +96,7 @@ public class Player {
       String gameName = scanner.nextLine();
       return postLogin.createGame(authToken, gameName);
     } catch (Exception e) {
-      return "error creating game: " + e.getMessage();
+      return "error creating game :( ";
     }
   }
 
@@ -107,19 +107,19 @@ public class Player {
       int indexPlusOne = 1;
       if (games == null || games.length == 0) return "No games to list";
       for (Game game : games) {
-        System.out.println(indexPlusOne + ":\n   gameID: " + game.getGameID() + ", Game Name: " + game.getGameName() +
+        System.out.println(indexPlusOne + ":\n Game Name: " + game.getGameName() +
                 ", White Player: " + game.getWhiteUsername() + ", Black Player: " + game.getBlackUsername());
         indexPlusOne++;
       }
       this.gameList = games;
       return "";
     }catch (Exception e) {
-      return "Could not list games: " + e.getMessage();
+      return "Could not list games :( ";
     }
   }
 
   private String joinGame() {
-    System.out.println("Enter gameID:");
+    System.out.println("Enter game number:");
     String stringGameID = scanner.nextLine();
     System.out.println("Which team? (white/black):");
     String color = scanner.nextLine();
@@ -145,15 +145,6 @@ public class Player {
     else return "failed to observe game";
   }
 
-
-  public Boolean getLoggedIn() {
-    return loggedIn;
-  }
-
-  public void setLoggedIn(Boolean loggedIn) {
-    this.loggedIn=loggedIn;
-  }
-
   public String evalLine(String line) {
     try {
       var tokens = line.toLowerCase().split(" ");
@@ -164,6 +155,7 @@ public class Player {
           case "quit" -> "quit";
           case "register" -> register();
           case "login" -> login();
+          case "help" -> help();
           default -> invalid();
         };
       }
@@ -175,6 +167,7 @@ public class Player {
           case "listgames" -> listGames();
           case "joingame" -> joinGame();
           case "observe" -> observeGame();
+          case "help" -> help();
           default -> invalid();
         };
       }
