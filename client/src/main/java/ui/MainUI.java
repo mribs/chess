@@ -16,7 +16,6 @@ public class MainUI {
     Scanner scanner = new Scanner(System.in);
     var result = "";
     while (!result.equals("quit")) {
-      //TODO: align this better
       System.out.println(EscapeSequences.SET_TEXT_BLINKING + "Enter Option >>");
       String line = scanner.nextLine();
 
@@ -34,6 +33,4 @@ public class MainUI {
     }
     System.out.println();
   }
-
-
 }
