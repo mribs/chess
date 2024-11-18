@@ -18,10 +18,6 @@ public class ChessPiece {
         this.color = pieceColor;
         this.type = type;
     }
-
-    /**
-     * The various different chess piece options
-     */
     public enum PieceType {
         KING,
         QUEEN,
@@ -30,28 +26,12 @@ public class ChessPiece {
         ROOK,
         PAWN
     }
-
-    /**
-     * @return Which team this chess piece belongs to
-     */
     public ChessGame.TeamColor getTeamColor() {
         return color;
     }
-
-    /**
-     * @return which type of chess piece this piece is
-     */
     public PieceType getPieceType() {
         return type;
     }
-
-    /**
-     * Calculates all the positions a chess piece can move to
-     * Does not take into account moves that are illegal due to leaving the king in
-     * danger
-     *
-     * @return Collection of valid moves
-     */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
         switch (piece.type) {
@@ -82,7 +62,6 @@ public class ChessPiece {
         Collection<ChessMove> potentialMoves = new HashSet<>();
         int row =myPosition.getRow();
         int col = myPosition.getColumn();
-        //2 and 1
         //up 2 right 1
         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(row + 2, col + 1), null));
         //down 2 right 1
@@ -91,7 +70,6 @@ public class ChessPiece {
         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(row + 1, col + 2), null));
         //down 1 right 2
         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(row - 1, col + 2), null));
-
         //up 2 left 1
         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(row + 2, col - 1), null));
         //down 2 left 1
@@ -100,7 +78,6 @@ public class ChessPiece {
         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(row + 1, col - 2), null));
         //down 1 left 2
         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(row - 1, col - 2), null));
-
         for (ChessMove move : potentialMoves) {
             row = move.getEndPosition().getRow();
             col = move.getEndPosition().getColumn();
@@ -113,7 +90,6 @@ public class ChessPiece {
             }
             validMoves.add(move);
         }
-
         return validMoves;
     }
 
@@ -122,7 +98,6 @@ public class ChessPiece {
         ChessMove potentialMove = null;
         ChessPiece blocker = null;
         Boolean canMove = Boolean.TRUE;
-
         //up
         potentialMove = up(myPosition);
         while (canMove) {
@@ -190,7 +165,6 @@ public class ChessPiece {
             validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), null));
             potentialMove = right(potentialMove.getEndPosition());
         }
-
         return validMoves;
     }
 
@@ -208,7 +182,6 @@ public class ChessPiece {
         ChessMove potentialMove = null;
         ChessPiece blocker = null;
         Boolean canMove = Boolean.TRUE;
-
         //upRight
         potentialMove = upRight(myPosition);
         while (canMove) {
@@ -302,11 +275,9 @@ public class ChessPiece {
             } else if (blocker.color != piece.color) {
                 validMoves.add(move);
             }
-
         }
         return validMoves;
     }
-
 
     private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition, ChessPiece piece) {
         Collection<ChessMove> validMoves = new HashSet<>();
@@ -334,11 +305,7 @@ public class ChessPiece {
                 potentialMove = new ChessMove(myPosition, new ChessPosition(row + 1, col), null);
                 blocker = board.getPiece(potentialMove.getEndPosition());
                 if (blocker == null ) {
-                    validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.ROOK));
-                    validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.KNIGHT));
-                    validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.BISHOP));
-                    validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.QUEEN));
-
+                    validMoves.addAll(addAllPromotion(myPosition, potentialMove.getEndPosition()));
                 }
                 //move diagonally for capture
                 if (col > 1 && row < 8) {
@@ -346,10 +313,7 @@ public class ChessPiece {
                     blocker=board.getPiece(potentialMove.getEndPosition());
                     if (blocker != null) {
                         if (blocker.color == ChessGame.TeamColor.BLACK) {
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.ROOK));
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.KNIGHT));
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.BISHOP));
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.QUEEN));
+                            validMoves.addAll(addAllPromotion(myPosition, potentialMove.getEndPosition()));
                         }
                     }
                 }
@@ -358,10 +322,7 @@ public class ChessPiece {
                     blocker=board.getPiece(potentialMove.getEndPosition());
                     if (blocker != null) {
                         if (blocker.color == ChessGame.TeamColor.BLACK) {
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.ROOK));
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.KNIGHT));
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.BISHOP));
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.QUEEN));
+                            validMoves.addAll(addAllPromotion(myPosition, potentialMove.getEndPosition()));
                         }
                     }
                 }
@@ -409,11 +370,7 @@ public class ChessPiece {
                 potentialMove = new ChessMove(myPosition, new ChessPosition(row - 1, col), null);
                 blocker = board.getPiece(potentialMove.getEndPosition());
                 if (blocker == null ) {
-                    validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.ROOK));
-                    validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.KNIGHT));
-                    validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.BISHOP));
-                    validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.QUEEN));
-
+                    validMoves.addAll(addAllPromotion(myPosition, potentialMove.getEndPosition()));
                 }
                 //move diagonally for capture
                 if (col > 1 && row > 1) {
@@ -421,10 +378,7 @@ public class ChessPiece {
                     blocker=board.getPiece(potentialMove.getEndPosition());
                     if (blocker != null) {
                         if (blocker.color == ChessGame.TeamColor.WHITE) {
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.ROOK));
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.KNIGHT));
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.BISHOP));
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.QUEEN));
+                            validMoves.addAll(addAllPromotion(myPosition, potentialMove.getEndPosition()));
                         }
                     }
                 }
@@ -433,17 +387,13 @@ public class ChessPiece {
                     blocker=board.getPiece(potentialMove.getEndPosition());
                     if (blocker != null) {
                         if (blocker.color == ChessGame.TeamColor.WHITE) {
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.ROOK));
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.KNIGHT));
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.BISHOP));
-                            validMoves.add(new ChessMove(myPosition, potentialMove.getEndPosition(), PieceType.QUEEN));
+                            validMoves.addAll(addAllPromotion(myPosition, potentialMove.getEndPosition()));
                         }
                     }
                 }
                 return validMoves;
             }
             //move down one if no one blocking
-
             potentialMove = down(myPosition);
             blocker = board.getPiece(potentialMove.getEndPosition());
             if (blocker == null ) {
@@ -472,50 +422,50 @@ public class ChessPiece {
         return validMoves;
     }
 
+    private Collection<ChessMove> addAllPromotion(ChessPosition myPosition, ChessPosition endPosition) {
+        Collection<ChessMove> promotionMoves = new HashSet<>();
+        promotionMoves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
+        promotionMoves.add(new ChessMove(myPosition, endPosition, PieceType.KNIGHT));
+        promotionMoves.add(new ChessMove(myPosition, endPosition, PieceType.BISHOP));
+        promotionMoves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
+        return promotionMoves;
+    }
+
     private ChessMove right(ChessPosition myPosition) {
         return new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() +1), null);
-
     }
 
     private ChessMove left(ChessPosition myPosition) {
         return new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() -1), null);
-
     }
 
     private ChessMove downRight(ChessPosition myPosition) {
         return new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() +1), null);
-
     }
 
     private ChessMove downLeft(ChessPosition myPosition) {
         return new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() -1), null);
-
     }
 
     private ChessMove upRight(ChessPosition myPosition) {
         return new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() +1), null);
-
     }
 
     private ChessMove upLeft(ChessPosition myPosition) {
         return new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() -1), null);
     }
-
     private ChessMove down(ChessPosition myPosition) {
         return new ChessMove(myPosition, new ChessPosition(myPosition.getRow()- 1, myPosition.getColumn()), null);
     }
-
     private ChessMove up(ChessPosition myPosition) {
         return new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()), null);
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ChessPiece piece)) return false;
         return color == piece.color && type == piece.type;
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(color, type);
