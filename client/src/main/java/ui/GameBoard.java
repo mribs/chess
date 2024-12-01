@@ -24,11 +24,27 @@ public class GameBoard {
   }
 
   public void fancyPrint(String color) {
-    Boolean reverse = false;
+    boolean reverse = false;
     if (color != null) color = color.toLowerCase();
     if ("black".equals(color)) reverse = true;
+
+    System.out.println();
+    System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+
+    // Print column labels (letters)
+    System.out.print("    "); // Indent for row numbers
+    for (int j = 1; j <= 8; j++) {
+      char colLabel = (char) ('A' + (reverse ? 8 - j : j - 1));
+      System.out.print(colLabel + "  "); // Adjust spacing as needed
+    }
+    System.out.println();
+
     for (int i = 1; i <= 8; i++) {
       int row = reverse ? i : 8 - i + 1;
+
+      // Print row label (numbers)
+      System.out.print(" " + row + " "); // Adjust spacing as needed
+
       for (int j = 1; j <= 8; j++) {
         int col = reverse ? 8 - j + 1 : j;
         System.out.print(EscapeSequences.moveCursorToLocation(col * 5, (reverse ? 8 - row + 2 : row + 1)));
@@ -53,6 +69,7 @@ public class GameBoard {
     }
     System.out.print(EscapeSequences.RESET_TEXT_COLOR);
   }
+
 
   private String printWhitePiece(ChessPiece piece) {
     switch (piece.getPieceType()) {
