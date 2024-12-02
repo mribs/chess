@@ -35,8 +35,11 @@ public class JoinGameService {
       }
       game.setBlackUsername(username);
     }
+    else if (playerColor == null){
+      return new JoinGameResult(gameID, null);
+    }
     else {
-      return new JoinGameResult(gameID, "Observing");
+      throw new BadRequestException();
     }
     //update game
     gameDAO.claimSpot(gameID, game);
