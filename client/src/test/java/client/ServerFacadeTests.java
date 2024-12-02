@@ -1,14 +1,15 @@
 package client;
 
-import model.DataAccessException;
+
 import dataaccess.dao.sql.*;
-import model.*;
+import model.AuthToken;
+import model.DataAccessException;
+import model.User;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 
 public class ServerFacadeTests {
 
@@ -21,7 +22,6 @@ public class ServerFacadeTests {
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
         facade = new ServerFacade("http://localhost:" + port);
-
     }
 
     @AfterAll

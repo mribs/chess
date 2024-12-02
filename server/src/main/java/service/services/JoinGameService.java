@@ -36,7 +36,7 @@ public class JoinGameService {
       game.setBlackUsername(username);
     }
     else {
-      throw new BadRequestException();
+      return new JoinGameResult(gameID, "Observing");
     }
     //update game
     gameDAO.claimSpot(gameID, game);
