@@ -36,7 +36,7 @@ public class JoinGameService {
       }
       game.setBlackUsername(username);
     }
-    else if (playerColor == null){
+    else if ("OBSERVE".equals(playerColor)){
       return new JoinGameResult(gameID, null);
     }
     else {

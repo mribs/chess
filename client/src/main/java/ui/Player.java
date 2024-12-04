@@ -143,7 +143,7 @@ public class Player {
     if (gameList != null && gameID <= gameList.length) {
       gameID = gameList[gameID-1].getGameID();
     }
-    ChessGame joined = postLogin.joinGame(gameID, null, authToken);
+    ChessGame joined = postLogin.joinGame(gameID, "OBSERVE", authToken);
     if (joined != null) {
       return gameboard.startGame(joined, null);
     }

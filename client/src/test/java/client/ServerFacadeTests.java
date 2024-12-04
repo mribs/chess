@@ -161,7 +161,7 @@ public class ServerFacadeTests {
         AuthToken finalToken=token;
         int finalGameID=gameID;
         assertDoesNotThrow(() ->
-                facade.joinGame(finalGameID, null, "testname" ,finalToken.getAuthToken())
+                facade.joinGame(finalGameID, "OBSERVE", "testname" ,finalToken.getAuthToken())
         );
     }
     @Test
