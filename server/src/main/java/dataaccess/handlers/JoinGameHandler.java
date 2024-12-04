@@ -24,25 +24,5 @@ public class JoinGameHandler implements Handler{
       JoinGameResult joinGameResult = joinGame.join(request, username);
       return joinGameResult;
     }, gson::toJson);
-    Spark.exception(DataAccessException.class, (ex, req, res) -> {
-      res.status(500);
-      ErrorResult result = new ErrorResult("Error: " + ex.getMessage());
-      res.body(gson.toJson(result));
-    });
-    Spark.exception(UnauthorizedException.class, (ex, req, res) -> {
-      res.status(401);
-      ErrorResult result = new ErrorResult("Error: " + ex.getMessage());
-      res.body(gson.toJson(result));
-    });
-    Spark.exception(BadRequestException.class, (ex, req, res) -> {
-      res.status(400);
-      ErrorResult result = new ErrorResult("Error: " + ex.getMessage());
-      res.body(gson.toJson(result));
-    });
-    Spark.exception(AlreadyTakenException.class, (ex, req, res) -> {
-      res.status(403);
-      ErrorResult result = new ErrorResult("Error: " + ex.getMessage());
-      res.body(gson.toJson(result));
-    });
   }
 }
