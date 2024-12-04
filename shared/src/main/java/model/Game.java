@@ -31,15 +31,6 @@ public class Game {
     this.game=game;
   }
   //getters and setters
-//FIXME: no oberservers?
-
-//  public List<String> getObservers() {
-//    return observers;
-//  }
-//
-//  public void addObserver(String observer) {
-//    this.observers.add(observer);
-//  }
 
   public int getGameID() {
     return gameID;
@@ -73,7 +64,8 @@ public class Game {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof Game game1)) return false;
-    return gameID == game1.gameID && Objects.equals(whiteUsername, game1.whiteUsername) && Objects.equals(blackUsername, game1.blackUsername) && Objects.equals(gameName, game1.gameName);
+    return gameID == game1.gameID && Objects.equals(whiteUsername, game1.whiteUsername) && Objects.equals(blackUsername,
+            game1.blackUsername) && Objects.equals(gameName, game1.gameName);
   }
 
   public Object getGameName() {

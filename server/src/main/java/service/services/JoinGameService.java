@@ -10,7 +10,8 @@ import service.results.JoinGameResult;
 public class JoinGameService {
   JoinGameRequest joinGameRequest;
   //return request result
-  public JoinGameResult join(JoinGameRequest joinGameRequest, String username) throws DataAccessException, AlreadyTakenException, BadRequestException {
+  public JoinGameResult join(JoinGameRequest joinGameRequest, String username) throws DataAccessException,
+          AlreadyTakenException, BadRequestException {
     GameDAO gameDAO = new GameDAO();
     Integer gameID = joinGameRequest.getGameID();
     //see if game exists

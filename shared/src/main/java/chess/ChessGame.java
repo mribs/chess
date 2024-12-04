@@ -91,7 +91,8 @@ public class ChessGame {
                 //check for turn
                 if (getTeamTurn() != piece.getTeamColor()) throw new InvalidMoveException("Not your turn");
                 boolean inCheck = checkForCheck(move, piece);
-                if (inCheck) throw new InvalidMoveException("Moving " + piece.getTeamColor() + " " + piece.getPieceType() + "to " + move.getEndPosition().toString() + " leaves in check");
+                if (inCheck) throw new InvalidMoveException("Moving " + piece.getTeamColor() + " " +
+                        piece.getPieceType() + "to " + move.getEndPosition().toString() + " leaves in check");
 
                 if (move.getPromotionPiece() != null) {
                     ChessPiece.PieceType type = move.getPromotionPiece();
@@ -120,7 +121,8 @@ public class ChessGame {
                 return;
             }
         }
-        throw new InvalidMoveException("Move: " + move.getEndPosition() + "for " + gameBoard.getPiece(move.getStartPosition()).getPieceType() + " is invalid");
+        throw new InvalidMoveException("Move: " + move.getEndPosition() + "for " +
+                gameBoard.getPiece(move.getStartPosition()).getPieceType() + " is invalid");
     }
     private boolean checkForCheck(ChessMove move, ChessPiece piece) {
         ChessGame testGame = new ChessGame();
