@@ -54,7 +54,6 @@ public class Player {
       returnString = ("Couldn't register user");
       loggedIn = false;
     }
-
     return returnString;
   }
 
@@ -105,7 +104,9 @@ public class Player {
       Game[] games =  postLogin.listGames(authToken);
       StringBuilder returnString = new StringBuilder();
       int indexPlusOne = 1;
-      if (games == null || games.length == 0) return "No games to list";
+      if (games == null || games.length == 0) {
+        return "No games to list";
+      }
       for (Game game : games) {
         System.out.println(indexPlusOne + ":\n Game Name: " + game.getGameName() +
                 ", White Player: " + game.getWhiteUsername() + ", Black Player: " + game.getBlackUsername());
@@ -131,7 +132,9 @@ public class Player {
     if (joined != null) {
       return gameboard.startGame(joined, color);
     }
-    else return "failed to join game";
+    else {
+      return "failed to join game";
+    }
   }
   private String observeGame() {
     System.out.println("Enter gameID:");
@@ -141,8 +144,12 @@ public class Player {
       gameID = gameList[gameID-1].getGameID();
     }
     ChessGame joined = postLogin.joinGame(gameID, null, authToken);
-    if (joined != null) return gameboard.startGame(joined, null);
-    else return "failed to observe game";
+    if (joined != null) {
+      return gameboard.startGame(joined, null);
+    }
+    else {
+      return "failed to observe game";
+    }
   }
 
   public String evalLine(String line) {

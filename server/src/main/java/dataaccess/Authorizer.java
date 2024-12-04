@@ -13,7 +13,9 @@ public class Authorizer{
 
     AuthToken token = authDAO.readToken(authToken);
 
-    if (token == null) throw new UnauthorizedException();
+    if (token == null) {
+      throw new UnauthorizedException();
+    }
 
     this.username = token.getUsername();
     return this.username;

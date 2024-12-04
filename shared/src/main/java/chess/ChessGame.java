@@ -62,7 +62,9 @@ public class ChessGame {
         }
         //get that piece's moves
         Collection<ChessMove> validMoves = piece.pieceMoves(gameBoard, startPosition);
-        if (validMoves == null) return null;
+        if (validMoves == null) {
+            return null;
+        }
         //check if any are legal (don't leave king in danger)
         for (ChessMove move : validMoves) {
             boolean inCheck = checkForCheck(move, piece);
@@ -84,15 +86,21 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
-        if (validMoves == null) throw new InvalidMoveException("No valid moves found");
+        if (validMoves == null) {
+            throw new InvalidMoveException("No valid moves found");
+        }
         for (ChessMove move1 : validMoves) {
             if (move.equals(move1)) {
                 ChessPiece piece = gameBoard.getPiece(move.getStartPosition());
                 //check for turn
-                if (getTeamTurn() != piece.getTeamColor()) throw new InvalidMoveException("Not your turn");
+                if (getTeamTurn() != piece.getTeamColor()) {
+                    throw new InvalidMoveException("Not your turn");
+                }
                 boolean inCheck = checkForCheck(move, piece);
-                if (inCheck) throw new InvalidMoveException("Moving " + piece.getTeamColor() + " " +
-                        piece.getPieceType() + "to " + move.getEndPosition().toString() + " leaves in check");
+                if (inCheck) {
+                    throw new InvalidMoveException("Moving " + piece.getTeamColor() + " " +
+                            piece.getPieceType() + "to " + move.getEndPosition().toString() + " leaves in check");
+                }
 
                 if (move.getPromotionPiece() != null) {
                     ChessPiece.PieceType type = move.getPromotionPiece();

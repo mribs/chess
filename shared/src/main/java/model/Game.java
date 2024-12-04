@@ -62,8 +62,12 @@ public class Game {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Game game1)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Game game1)) {
+      return false;
+    }
     return gameID == game1.gameID && Objects.equals(whiteUsername, game1.whiteUsername) && Objects.equals(blackUsername,
             game1.blackUsername) && Objects.equals(gameName, game1.gameName);
   }

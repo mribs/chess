@@ -268,7 +268,9 @@ public class ChessPiece {
         for (ChessMove move : potentialMoves) {
             int row =move.getEndPosition().getRow();
             int col =move.getEndPosition().getColumn();
-            if (row > 8 || row < 1 || col > 8 || col < 1) continue;
+            if (row > 8 || row < 1 || col > 8 || col < 1) {
+                continue;
+            }
             blocker = board.getPiece(move.getEndPosition());
             if (blocker == null) {
                 validMoves.add(move);
@@ -366,7 +368,9 @@ public class ChessPiece {
             validMoves = whitePawnMoves(board, myPosition, piece);
         }
         else if (piece.color == ChessGame.TeamColor.BLACK) {
-            if (row == 1) return validMoves;
+            if (row == 1) {
+                return validMoves;
+            }
             //move down two if in OG row
             if (row == 7) {
                 potentialMove = new ChessMove(myPosition, new ChessPosition(row - 2, col), null);
@@ -473,8 +477,12 @@ public class ChessPiece {
     }
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ChessPiece piece)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ChessPiece piece)) {
+            return false;
+        }
         return color == piece.color && type == piece.type;
     }
     @Override

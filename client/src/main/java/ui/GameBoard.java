@@ -25,8 +25,12 @@ public class GameBoard {
 
   public void fancyPrint(String color) {
     boolean reverse = false;
-    if (color != null) color = color.toLowerCase();
-    if ("black".equals(color)) reverse = true;
+    if (color != null) {
+      color = color.toLowerCase();
+    }
+    if ("black".equals(color)) {
+      reverse = true;
+    }
 
     System.out.println();
     System.out.print(EscapeSequences.RESET_TEXT_COLOR);
@@ -56,12 +60,15 @@ public class GameBoard {
         System.out.print(backgroundColor + textColor);
 
         ChessPiece piece = board.getPiece(new ChessPosition(row, col));
-        if (piece == null)
+        if (piece == null) {
           System.out.print(EscapeSequences.EMPTY);
-        else if (piece.getTeamColor().equals(ChessGame.TeamColor.WHITE))
+        }
+        else if (piece.getTeamColor().equals(ChessGame.TeamColor.WHITE)) {
           System.out.print(printWhitePiece(piece));
-        else
+        }
+        else {
           System.out.print(printBlackPiece(piece));
+        }
 
         System.out.print(EscapeSequences.RESET_BG_COLOR + EscapeSequences.RESET_TEXT_COLOR);
       }
