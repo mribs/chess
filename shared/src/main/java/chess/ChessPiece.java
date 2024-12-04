@@ -251,7 +251,6 @@ public class ChessPiece {
         }
         return validMoves;
     }
-
     private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition, ChessPiece piece) {
         Collection<ChessMove> validMoves = new HashSet<>();
         Collection<ChessMove> potentialMoves = new HashSet<>();
@@ -430,7 +429,6 @@ public class ChessPiece {
         }
         return validMoves;
     }
-
     private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition, ChessPiece piece) {
         Collection<ChessMove> validMoves = new HashSet<>();
         ChessMove potentialMove = null;
@@ -447,7 +445,6 @@ public class ChessPiece {
         }
         return validMoves;
     }
-
     private Collection<ChessMove> addAllPromotion(ChessPosition myPosition, ChessPosition endPosition) {
         Collection<ChessMove> promotionMoves = new HashSet<>();
         promotionMoves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
@@ -456,19 +453,15 @@ public class ChessPiece {
         promotionMoves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
         return promotionMoves;
     }
-
     private ChessMove right(ChessPosition myPosition) {
         return new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() +1), null);
     }
-
     private ChessMove left(ChessPosition myPosition) {
         return new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() -1), null);
     }
-
     private ChessMove downRight(ChessPosition myPosition) {
         return new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() +1), null);
     }
-
     private ChessMove downLeft(ChessPosition myPosition) {
         return new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() -1), null);
     }
