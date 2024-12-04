@@ -27,12 +27,6 @@ public class GameDAO extends DAO {
     return game;
   }
 
-  public void update(Game game) throws DataAccessException {
-    String statement = "UPDATE game SET game = ? WHERE gameId = ?;";
-    var gameJSON = new Gson().toJson(game.getGame());
-    executeUpdate(statement, gameJSON, game.getGameID());
-  }
-
   //finds game by gameID
   public Game find(Integer gameID) throws DataAccessException {
     try (var conn = DatabaseManager.getConnection()) {
@@ -70,12 +64,6 @@ public class GameDAO extends DAO {
     String gameJson = new Gson().toJson(game.getGame());
     var statement = "UPDATE game SET gameName=?, game=?, whiteUsername=?, blackUsername=? WHERE gameID=?";
     executeUpdate(statement, game.getGameName(), gameJson, game.getWhiteUsername(), game.getBlackUsername(), String.valueOf(gameID));
-  }
-
-  //removes game from database
-  public void remove(Integer gameID) throws DataAccessException {
-    var statement = "DELETE FROM game WHERE gameID=?";
-    executeUpdate(statement, gameID);
   }
 
   //clears database

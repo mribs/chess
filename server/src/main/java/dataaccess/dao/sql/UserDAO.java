@@ -53,13 +53,6 @@ public class UserDAO extends DAO {
     return BCrypt.checkpw(enteredPassword, hashedPassword);
   }
 
-
-  //deletes user
-  void deleteUser(User u) throws  DataAccessException {
-    var statement = "DELETE FROM user WHERE username=?";
-    executeUpdate(statement, u.getUsername());
-  }
-
   //clear users
   public void clearUsers() {
     var statement = "TRUNCATE user";
