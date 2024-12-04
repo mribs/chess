@@ -288,7 +288,9 @@ public class ChessPiece {
         int col =myPosition.getColumn();
         int checkRow = 0;
         int checkCol = 0;
-        if (row == 8) return validMoves;
+        if (row == 8) {
+            return validMoves;
+        }
         //move up two if in OG row
         if (row == 2) {
             potentialMove = new ChessMove(myPosition, new ChessPosition(row + 2, col), null);
@@ -355,6 +357,79 @@ public class ChessPiece {
         }
         return validMoves;
     }
+    private Collection<ChessMove> blackPawnMoves(ChessBoard board, ChessPosition myPosition, ChessPiece piece) {
+        Collection<ChessMove> validMoves = new HashSet<>();
+        ChessMove potentialMove = null;
+        ChessPiece blocker = null;
+        int row =myPosition.getRow();
+        int col =myPosition.getColumn();
+        if (row == 1) {
+            return validMoves;
+        }
+        //move down two if in OG row
+        if (row == 7) {
+            potentialMove = new ChessMove(myPosition, new ChessPosition(row - 2, col), null);
+            blocker = board.getPiece(potentialMove.getEndPosition());
+            if (blocker == null ) {
+                blocker = board.getPiece(new ChessPosition(row - 1, col));
+                if (blocker == null) {
+                    validMoves.add(potentialMove);
+                }
+            }
+        }else if (row == 2) {
+            potentialMove = new ChessMove(myPosition, new ChessPosition(row - 1, col), null);
+            blocker = board.getPiece(potentialMove.getEndPosition());
+            if (blocker == null ) {
+                validMoves.addAll(addAllPromotion(myPosition, potentialMove.getEndPosition()));
+            }
+            //move diagonally for capture
+            if (col > 1 && row > 1) {
+                potentialMove=downLeft(myPosition);
+                blocker=board.getPiece(potentialMove.getEndPosition());
+                if (blocker != null) {
+                    if (blocker.color == ChessGame.TeamColor.WHITE) {
+                        validMoves.addAll(addAllPromotion(myPosition, potentialMove.getEndPosition()));
+                    }
+                }
+            }
+            if (col < 8 && row > 1) {
+                potentialMove=downRight(myPosition);
+                blocker=board.getPiece(potentialMove.getEndPosition());
+                if (blocker != null) {
+                    if (blocker.color == ChessGame.TeamColor.WHITE) {
+                        validMoves.addAll(addAllPromotion(myPosition, potentialMove.getEndPosition()));
+                    }
+                }
+            }
+            return validMoves;
+        }
+        //move down one if no one blocking
+        potentialMove = down(myPosition);
+        blocker = board.getPiece(potentialMove.getEndPosition());
+        if (blocker == null ) {
+            validMoves.add(potentialMove);
+        }
+        //move diagonally for capture
+        if (col > 1 && row > 1) {
+            potentialMove=downLeft(myPosition);
+            blocker=board.getPiece(potentialMove.getEndPosition());
+            if (blocker != null) {
+                if (blocker.color == ChessGame.TeamColor.WHITE) {
+                    validMoves.add(potentialMove);
+                }
+            }
+        }
+        if ( col < 8 && row > 1) {
+            potentialMove=downRight(myPosition);
+            blocker=board.getPiece(potentialMove.getEndPosition());
+            if (blocker != null) {
+                if (blocker.color == ChessGame.TeamColor.WHITE) {
+                    validMoves.add(potentialMove);
+                }
+            }
+        }
+        return validMoves;
+    }
 
     private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition, ChessPiece piece) {
         Collection<ChessMove> validMoves = new HashSet<>();
@@ -368,71 +443,7 @@ public class ChessPiece {
             validMoves = whitePawnMoves(board, myPosition, piece);
         }
         else if (piece.color == ChessGame.TeamColor.BLACK) {
-            if (row == 1) {
-                return validMoves;
-            }
-            //move down two if in OG row
-            if (row == 7) {
-                potentialMove = new ChessMove(myPosition, new ChessPosition(row - 2, col), null);
-                blocker = board.getPiece(potentialMove.getEndPosition());
-                if (blocker == null ) {
-                    blocker = board.getPiece(new ChessPosition(row - 1, col));
-                    if (blocker == null) {
-                        validMoves.add(potentialMove);
-                    }
-                }
-            }else if (row == 2) {
-                potentialMove = new ChessMove(myPosition, new ChessPosition(row - 1, col), null);
-                blocker = board.getPiece(potentialMove.getEndPosition());
-                if (blocker == null ) {
-                    validMoves.addAll(addAllPromotion(myPosition, potentialMove.getEndPosition()));
-                }
-                //move diagonally for capture
-                if (col > 1 && row > 1) {
-                    potentialMove=downLeft(myPosition);
-                    blocker=board.getPiece(potentialMove.getEndPosition());
-                    if (blocker != null) {
-                        if (blocker.color == ChessGame.TeamColor.WHITE) {
-                            validMoves.addAll(addAllPromotion(myPosition, potentialMove.getEndPosition()));
-                        }
-                    }
-                }
-                if (col < 8 && row > 1) {
-                    potentialMove=downRight(myPosition);
-                    blocker=board.getPiece(potentialMove.getEndPosition());
-                    if (blocker != null) {
-                        if (blocker.color == ChessGame.TeamColor.WHITE) {
-                            validMoves.addAll(addAllPromotion(myPosition, potentialMove.getEndPosition()));
-                        }
-                    }
-                }
-                return validMoves;
-            }
-            //move down one if no one blocking
-            potentialMove = down(myPosition);
-            blocker = board.getPiece(potentialMove.getEndPosition());
-            if (blocker == null ) {
-                validMoves.add(potentialMove);
-            }
-            //move diagonally for capture
-            if (col > 1 && row > 1) {
-                potentialMove=downLeft(myPosition);
-                blocker=board.getPiece(potentialMove.getEndPosition());
-                if (blocker != null) {
-                    if (blocker.color == ChessGame.TeamColor.WHITE) {
-                        validMoves.add(potentialMove);
-                    }
-                }
-            }
-            if ( col < 8 && row > 1) {
-                potentialMove=downRight(myPosition);
-                blocker=board.getPiece(potentialMove.getEndPosition());
-                if (blocker != null) {
-                    if (blocker.color == ChessGame.TeamColor.WHITE) {
-                        validMoves.add(potentialMove);
-                    }
-                }
-            }
+            validMoves = blackPawnMoves(board, myPosition, piece);
         }
         return validMoves;
     }

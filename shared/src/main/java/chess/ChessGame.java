@@ -177,14 +177,13 @@ public class ChessGame {
             for (int c = 1; c <= 8; c++) {
                 ChessPiece piece = gameBoard.getPiece(new ChessPosition(r, c));
                 if (piece == null) {continue;}
-                if (piece.getTeamColor() != teamColor) {
-                    Collection<ChessMove> moves = piece.pieceMoves(gameBoard, new ChessPosition(r, c));
-                    if (moves != null) {
-                        for (ChessMove move : moves) {
-                            if (move.getEndPosition().equals(kingPos)) {
-                                return true;
-                            }
-                        }
+                if (piece.getTeamColor() == teamColor) {
+                    continue;
+                }
+                Collection<ChessMove> moves = piece.pieceMoves(gameBoard, new ChessPosition(r, c));
+                for (ChessMove move : moves) {
+                    if (move.getEndPosition().equals(kingPos)) {
+                        return true;
                     }
                 }
             }
