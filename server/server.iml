@@ -21,6 +21,7 @@
     <orderEntry type="library" name="slf4j.simple1" level="project" />
     <orderEntry type="library" name="mysql.connector.java" level="project" />
     <orderEntry type="library" name="mindrot.jbcrypt" level="project" />
+    <orderEntry type="library" name="glassfish.tyrus.bundles.standalone.client" level="project" />
     <orderEntry type="module" module-name="shared" />
     <orderEntry type="module" module-name="shared" scope="TEST" production-on-test="" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.30" level="project" />
@@ -53,7 +54,7 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-expression:6.1.2" level="project" />
     <orderEntry type="library" name="Maven: io.micrometer:micrometer-observation:1.12.1" level="project" />
     <orderEntry type="library" name="Maven: io.micrometer:micrometer-commons:1.12.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.glassfish.tyrus.bundles:tyrus-standalone-client:1.15" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.tyrus.bundles:tyrus-standalone-client:1.15" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: edu.byu.cs240:passoff-dependencies:1.0">
         <CLASSES>

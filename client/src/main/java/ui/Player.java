@@ -120,11 +120,23 @@ public class Player {
   }
 
   private String joinGame() {
+    int gameNum;
+    int gameID;
     System.out.println("Enter game number:");
     String stringGameID = scanner.nextLine();
     System.out.println("Which team? (white/black):");
     String color = scanner.nextLine();
-    int gameID = Integer.parseInt(stringGameID);
+    try {
+      gameNum=Integer.parseInt(stringGameID);
+    } catch (NumberFormatException e) {
+      return "Invalid game number";
+    }
+
+    if (gameList != null && gameNum <= gameList.length && gameNum > 0) {
+      gameID=gameList[gameNum - 1].getGameID();
+    } else {
+      return "Invalid game number";
+    }
     if (gameList != null && gameID <= gameList.length) {
       gameID = gameList[gameID-1].getGameID();
     }
@@ -137,17 +149,25 @@ public class Player {
     }
   }
   private String observeGame() {
-    System.out.println("Enter gameID:");
-    String stringGameID = scanner.nextLine();
-    int gameID = Integer.parseInt(stringGameID);
-    if (gameList != null && gameID <= gameList.length) {
-      gameID = gameList[gameID-1].getGameID();
+    int gameID=0;
+    System.out.println("Enter game number:");
+    String stringGameID=scanner.nextLine();
+    int gameNum;
+    try {
+      gameNum=Integer.parseInt(stringGameID);
+    } catch (NumberFormatException e) {
+      return "Invalid game number";
     }
-    ChessGame joined = postLogin.joinGame(gameID, "OBSERVE", authToken);
+
+    if (gameList != null && gameNum <= gameList.length && gameNum > 0) {
+      gameID=gameList[gameNum - 1].getGameID();
+    } else {
+      return "Invalid game number";
+    }
+    ChessGame joined=postLogin.joinGame(gameID, "OBSERVE", authToken);
     if (joined != null) {
       return gameboard.startGame(joined, null);
-    }
-    else {
+    } else {
       return "failed to observe game";
     }
   }
@@ -170,9 +190,9 @@ public class Player {
       else {
         return switch (cmd) {
           case "logout" -> logout();
-          case "creategame" -> createGame();
-          case "listgames" -> listGames();
-          case "joingame" -> joinGame();
+          case "create" -> createGame();
+          case "list" -> listGames();
+          case "join" -> joinGame();
           case "observe" -> observeGame();
           case "help" -> help();
           default -> invalid();

@@ -14,11 +14,12 @@ public class PostLogin {
   public String helpMenu() {
     String help ="""
             Help Menu
-            CreateGame : Create a new game
-            ListGames : List the existing games
-            JoinGame : Join an existing game as a player
+            Create : Create a new game
+            List : List the existing games
+            Join : Join an existing game as a player
             Observe : Join an existing game as an observer
             Logout : Logout
+            Help : Show this menu
             """;
     return help;
   }
