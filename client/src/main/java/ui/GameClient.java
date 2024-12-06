@@ -111,6 +111,10 @@ public class GameClient {
     return "quit";
   }
 
+  private String resign() {
+    return "quit";
+  }
+
   public String evalLine(String line) {
     try {
       var tokens = line.toLowerCase().split(" ");
@@ -123,6 +127,7 @@ public class GameClient {
         case "highlight" -> highlightMoves();
         case "leave" -> leave();
         case "move" -> makeMove();
+        case "resign" -> resign();
         default -> invalid();
       };
     } catch (Throwable e) {
