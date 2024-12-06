@@ -142,7 +142,7 @@ public class Player {
     }
     ChessGame joined = postLogin.joinGame(gameID, color, authToken);
     if (joined != null) {
-      return gameboard.startGame(joined, color);
+      return gameboard.startGame(joined, color, this);
     }
     else {
       return "failed to join game";
@@ -164,9 +164,10 @@ public class Player {
     } else {
       return "Invalid game number";
     }
+    //TODO do i actually need this? is it an api call?
     ChessGame joined=postLogin.joinGame(gameID, "OBSERVE", authToken);
     if (joined != null) {
-      return gameboard.startGame(joined, null);
+      return gameboard.startGame(joined, null, this);
     } else {
       return "failed to observe game";
     }

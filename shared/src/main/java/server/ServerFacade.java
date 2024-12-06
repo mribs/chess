@@ -52,7 +52,6 @@ public class ServerFacade {
   public ChessGame joinGame(int gameID, String color,String username, String authToken) throws DataAccessException {
     var path = "/game";
     Join join = new Join(gameID, color);
-    record JoinGameResponse() {}
     var response = this.makeRequest("PUT", path, join, authToken, ChessGame.class);
     return response;
   }

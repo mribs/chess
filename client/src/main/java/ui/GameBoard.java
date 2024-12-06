@@ -1,29 +1,36 @@
 package ui;
 
 import chess.*;
+import model.DataAccessException;
+
+import java.util.ArrayList;
 
 public class GameBoard {
-  private ChessGame game;
-  private ChessBoard board;
+  ChessGame game;
+  ChessBoard board;
+  Player player;
 
   public GameBoard() {
     this.game = new ChessGame();
     this.board = game.getBoard();
   }
 
-  public String startGame(ChessGame game, String playerColor) {
+  public String startGame(ChessGame game, String playerColor, Player player) {
     this.game = game;
     this.board = game.getBoard();
+    this.player = player;
     board.resetBoard();
 
-    fancyPrint("white");
-    System.out.println();
-    fancyPrint("black");
+    fancyPrint(playerColor, null, null);
+    try {
+      new GamePlayUI(this,playerColor, player).run();
+    } catch (DataAccessException e) {
+      System.out.println("something went wrong (gameplayui)");
+    }
 
-    return ("gameplay is not enabled now");
+    return ("exited game play");
   }
-
-  public void fancyPrint(String color) {
+  public void fancyPrint(String color, ArrayList<ChessPosition> highlightSquares, ChessPosition highlightPiece) {
     boolean reverse = false;
     if (color != null) {
       color = color.toLowerCase();
@@ -56,6 +63,13 @@ public class GameBoard {
         boolean isWhiteSquare = (row + col) % 2 == 1;
         String backgroundColor = isWhiteSquare ? EscapeSequences.SET_BG_COLOR_WHITE : EscapeSequences.SET_BG_COLOR_BLACK;
         String textColor = EscapeSequences.SET_TEXT_COLOR_MAGENTA;
+
+        if (highlightSquares != null && highlightSquares.contains(new ChessPosition(row, col))) {
+          backgroundColor = EscapeSequences.SET_BG_COLOR_GREEN;
+        }
+        if (highlightPiece != null && highlightPiece.equals(new ChessPosition(row, col))) {
+          backgroundColor = EscapeSequences.SET_BG_COLOR_YELLOW;
+        }
 
         System.out.print(backgroundColor + textColor);
 
