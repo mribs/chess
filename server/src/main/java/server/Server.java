@@ -9,7 +9,7 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-        Spark.webSocket("/ws", WebSocketServer.class);
+        Spark.webSocket("/ws", WSHandler.class);
 
         // Register your endpoints and handle exceptions here.
         Handler clearHandler = new ClearHandler();

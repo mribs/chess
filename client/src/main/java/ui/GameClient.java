@@ -101,11 +101,12 @@ public class GameClient {
     ChessPosition end = new ChessPosition(rowF, colF);
 
     gameBoard.game.makeMove(new ChessMove(start, end, null));
-
+//TODO: websockets
     redraw();
     return "move made";
   }
 
+  //TODO: implement leave and resign --with websockets??--
   private String leave() {
 
     return "quit";

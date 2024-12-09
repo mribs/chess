@@ -1,5 +1,7 @@
 package websocket.commands;
 
+import model.AuthToken;
+
 import java.util.Objects;
 
 /**
@@ -40,6 +42,12 @@ public class UserGameCommand {
     public Integer getGameID() {
         return gameID;
     }
+
+    public String getUserName(String authToken) {
+
+        return "username function not yet implemented";
+    }
+
 
     @Override
     public boolean equals(Object o) {
