@@ -1,6 +1,6 @@
 package dataaccess.dao.memory;
 
-import model.DataAccessException;
+import exceptions.DataAccessException;
 import dataaccess.Database;
 import model.Game;
 

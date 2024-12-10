@@ -1,8 +1,9 @@
 package dataaccess.dao.sql;
 
 import dataaccess.*;
+import exceptions.BadRequestException;
 import model.AuthToken;
-import model.DataAccessException;
+import exceptions.DataAccessException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

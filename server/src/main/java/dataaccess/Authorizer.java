@@ -2,8 +2,9 @@ package dataaccess;
 
 import dataaccess.dao.sql.AuthDAO;
 
+import exceptions.UnauthorizedException;
 import model.AuthToken;
-import model.DataAccessException;
+import exceptions.DataAccessException;
 
 public class Authorizer{
   private String username;

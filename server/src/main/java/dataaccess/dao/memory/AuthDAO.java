@@ -1,8 +1,8 @@
 package dataaccess.dao.memory;
 
-import model.DataAccessException;
+import exceptions.DataAccessException;
 import dataaccess.Database;
-import dataaccess.UnauthorizedException;
+import exceptions.UnauthorizedException;
 import model.AuthToken;
 
 import java.util.UUID;

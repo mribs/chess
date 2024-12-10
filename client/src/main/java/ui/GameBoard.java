@@ -1,7 +1,6 @@
 package ui;
 
 import chess.*;
-import model.DataAccessException;
 
 import java.util.ArrayList;
 
@@ -9,22 +8,24 @@ public class GameBoard {
   ChessGame game;
   ChessBoard board;
   Player player;
+  int gameID;
 
   public GameBoard() {
     this.game = new ChessGame();
     this.board = game.getBoard();
   }
 
-  public String startGame(ChessGame game, String playerColor, Player player) {
+  public String startGame(ChessGame game, String playerColor, Player player, int gameID) {
     this.game = game;
     this.board = game.getBoard();
     this.player = player;
+    this.gameID = gameID;
     board.resetBoard();
 
     fancyPrint(playerColor, null, null);
     try {
       new GamePlayUI(this,playerColor, player).run();
-    } catch (DataAccessException e) {
+    } catch (Exception e) {
       System.out.println("something went wrong (gameplayui)");
     }
 

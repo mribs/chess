@@ -1,7 +1,9 @@
 package service.services;
 
-import dataaccess.*;
 import dataaccess.dao.sql.*;
+import exceptions.AlreadyTakenException;
+import exceptions.BadRequestException;
+import exceptions.DataAccessException;
 import model.*;
 import service.requests.RegisterRequest;
 import service.results.LoginResult;

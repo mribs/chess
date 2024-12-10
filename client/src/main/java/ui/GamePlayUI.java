@@ -1,15 +1,16 @@
 package ui;
 
-import model.DataAccessException;
+import websocket.NotificationHandler;
+import websocket.messages.Notification;
 
 import java.util.Scanner;
 
-public class GamePlayUI {
+public class GamePlayUI implements NotificationHandler {
 
   private GameClient player;
 
-  public GamePlayUI(GameBoard gameBoard, String playerColor, Player player) throws DataAccessException, DataAccessException {
-    this.player = new GameClient(gameBoard, playerColor, player);
+  public GamePlayUI(GameBoard gameBoard, String playerColor, Player player) throws Exception {
+    this.player = new GameClient(gameBoard, playerColor, player, this);
   }
 
   public void run() {
@@ -35,5 +36,10 @@ public class GamePlayUI {
       }
     }
     System.out.println();
+  }
+
+  @Override
+  public void notify(Notification notification) {
+    System.out.println(notification.getMessage());
   }
 }

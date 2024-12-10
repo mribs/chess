@@ -12,7 +12,7 @@ public class Player {
   private PreLogin preLogin;
   private PostLogin postLogin;
   private Scanner scanner;
-  private ServerFacade serverFacade;
+  ServerFacade serverFacade;
   private AuthToken authToken;
   private Game[] gameList;
   private GameBoard gameboard;
@@ -142,7 +142,7 @@ public class Player {
     }
     ChessGame joined = postLogin.joinGame(gameID, color, authToken);
     if (joined != null) {
-      return gameboard.startGame(joined, color, this);
+      return gameboard.startGame(joined, color, this, gameID);
     }
     else {
       return "failed to join game";
@@ -167,7 +167,7 @@ public class Player {
     //TODO do i actually need this? is it an api call?
     ChessGame joined=postLogin.joinGame(gameID, "OBSERVE", authToken);
     if (joined != null) {
-      return gameboard.startGame(joined, null, this);
+      return gameboard.startGame(joined, null, this, gameID);
     } else {
       return "failed to observe game";
     }
@@ -208,4 +208,7 @@ public class Player {
     return "Invalid option\n" + help();
   }
 
+  public String getAuthToken() {
+    return authToken.getAuthToken();
+  }
 }

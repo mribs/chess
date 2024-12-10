@@ -1,11 +1,10 @@
-package server;
+package server.websocket;
 
 import com.google.gson.Gson;
-import dataaccess.UnauthorizedException;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
-import spark.Spark;
 import websocket.commands.UserGameCommand;
+import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
@@ -14,38 +13,34 @@ import java.io.IOException;
 public class WSHandler {
   private final Gson gson = new Gson();
 
+  private final ConnectionManager connections = new ConnectionManager();
   @OnWebSocketMessage
   public void onMessage(Session session, String message) {
     try {
       UserGameCommand command = gson.fromJson(message, UserGameCommand.class);
-
       // Throws a custom UnauthorizedException. Yours may work differently.
-      String username = command.getUserName((command.getAuthToken()));
-
-//      saveSession(command.getGameID(), session);
+      String authToken = command.getAuthToken();
 
       switch (command.getCommandType()) {
-        case CONNECT -> connect(session, username, command);
+        case CONNECT -> connect(session, authToken, command);
 //        case MAKE_MOVE -> makeMove(session, username, (MakeMoveCommand) command);
 //        case LEAVE -> leaveGame(session, username, (LeaveGameCommand) command);
 //        case RESIGN -> resign(session, username, (ResignCommand) command);
       }
     } catch (Exception ex) {
       ex.printStackTrace();
-//      sendMessage(session.getRemote(), new ErrorMessage("Error: " + ex.getMessage()));
     }
   }
 
-  private void connect(Session session,String username, Object command) {
+  private void connect(Session session,String authtoken, UserGameCommand command) {
     try {
-      sendMessage(session, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION));
+      connections.add(authtoken, session);
+      String username = command.getUserName(authtoken);
+      String message = String.format("%s has joined the game", username);
+      Notification notification = new Notification(message);
+      connections.broadcast(authtoken, notification);
     } catch (IOException e) {
-      System.out.println("sendMessager did not work");
+      System.out.println("message did not work");
     }
-  };
-
-  public void sendMessage(Session session, ServerMessage message) throws IOException {
-    session.getRemote().sendString(new Gson().toJson(message));
   }
-
 }

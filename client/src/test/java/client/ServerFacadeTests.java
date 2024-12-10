@@ -3,7 +3,7 @@ package client;
 
 import dataaccess.dao.sql.*;
 import model.AuthToken;
-import model.DataAccessException;
+import exceptions.DataAccessException;
 import model.User;
 import org.junit.jupiter.api.*;
 import server.Server;

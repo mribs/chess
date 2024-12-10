@@ -2,6 +2,7 @@ package server;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import exceptions.DataAccessException;
 import model.*;
 import java.io.*;
 import java.net.*;

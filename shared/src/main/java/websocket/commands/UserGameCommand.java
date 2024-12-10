@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 public class UserGameCommand {
 
-    private final CommandType commandType;
+    final CommandType commandType;
 
     private final String authToken;
 

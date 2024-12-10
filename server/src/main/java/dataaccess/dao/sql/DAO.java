@@ -1,6 +1,6 @@
 package dataaccess.dao.sql;
 
-import model.DataAccessException;
+import exceptions.DataAccessException;
 import dataaccess.DatabaseManager;
 
 import java.sql.SQLException;

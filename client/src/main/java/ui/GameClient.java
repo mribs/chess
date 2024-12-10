@@ -3,28 +3,33 @@ package ui;
 import chess.ChessMove;
 import chess.ChessPosition;
 import chess.InvalidMoveException;
-import com.sun.nio.sctp.NotificationHandler;
-import model.DataAccessException;
+import server.ServerFacade;
+import websocket.NotificationHandler;
+import websocket.WebSocketClient;
+import websocket.messages.Notification;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Scanner;
 
-public class GameClient {
+public class GameClient implements NotificationHandler {
   private Scanner scanner;
-//  private WebsocketFacade facade;
   private GameBoard gameBoard;
   private String playerColor;
-  private NotificationHandler notificationHandler;
   private Player playerInfo;
+  private ServerFacade serverFacade;
+  private WebSocketClient wsFacade;
 
-  public GameClient(GameBoard gameBoard, String playerColor, Player player) throws DataAccessException {
+  public GameClient(GameBoard gameBoard, String playerColor, Player player, NotificationHandler notificationHandler) throws Exception {
     this.gameBoard=gameBoard;
     this.scanner = new Scanner(System.in);
-//    this.facade = new WebsocketFacade(serverURL);
+    this.wsFacade = new WebSocketClient(notificationHandler);
     this.playerColor = playerColor;
     this.playerInfo = player;
+    this.serverFacade = player.serverFacade;
+
+    wsFacade.joinGame(playerInfo.getAuthToken(), gameBoard.gameID);
   }
 
 
@@ -138,5 +143,10 @@ public class GameClient {
 
   private String invalid() {
     return "Invalid option\n" + help();
+  }
+
+  @Override
+  public void notify(Notification notification) {
+
   }
 }

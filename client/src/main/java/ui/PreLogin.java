@@ -1,6 +1,6 @@
 package ui;
 
-import model.DataAccessException;
+import exceptions.DataAccessException;
 import model.*;
 import server.ServerFacade;
 

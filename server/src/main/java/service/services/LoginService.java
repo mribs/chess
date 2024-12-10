@@ -1,10 +1,11 @@
 package service.services;
 
 
-import dataaccess.*;
 import dataaccess.dao.sql.*;
+import exceptions.BadRequestException;
+import exceptions.UnauthorizedException;
 import model.AuthToken;
-import model.DataAccessException;
+import exceptions.DataAccessException;
 import model.User;
 import service.requests.LoginRequest;
 import service.results.LoginResult;

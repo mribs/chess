@@ -1,6 +1,7 @@
 package server;
 
 import dataaccess.handlers.*;
+import server.websocket.WSHandler;
 import spark.*;
 
 public class Server {

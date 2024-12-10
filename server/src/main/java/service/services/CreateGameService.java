@@ -1,8 +1,8 @@
 package service.services;
 
-import dataaccess.*;
 import dataaccess.dao.sql.GameDAO;
-import model.DataAccessException;
+import exceptions.BadRequestException;
+import exceptions.DataAccessException;
 import model.Game;
 import service.requests.CreateGameRequest;
 import service.results.CreateGameResult;
