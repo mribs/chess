@@ -6,14 +6,13 @@ import chess.InvalidMoveException;
 import server.ServerFacade;
 import websocket.NotificationHandler;
 import websocket.WebSocketClient;
-import websocket.messages.Notification;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Scanner;
 
-public class GameClient implements NotificationHandler {
+public class GameClient {
   private Scanner scanner;
   private GameBoard gameBoard;
   private String playerColor;
@@ -143,10 +142,5 @@ public class GameClient implements NotificationHandler {
 
   private String invalid() {
     return "Invalid option\n" + help();
-  }
-
-  @Override
-  public void notify(Notification notification) {
-
   }
 }

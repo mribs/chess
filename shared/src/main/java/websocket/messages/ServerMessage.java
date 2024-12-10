@@ -1,5 +1,7 @@
 package websocket.messages;
 
+import com.google.gson.Gson;
+
 import java.util.Objects;
 
 /**
@@ -22,6 +24,15 @@ public class ServerMessage {
         this.serverMessageType = type;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public ServerMessage(ServerMessageType serverMessageType, String message) {
+        this.serverMessageType=serverMessageType;
+        this.message=message;
+    }
+
     public ServerMessageType getServerMessageType() {
         return this.serverMessageType;
     }
@@ -41,5 +52,10 @@ public class ServerMessage {
     @Override
     public int hashCode() {
         return Objects.hash(getServerMessageType());
+    }
+
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
     }
 }

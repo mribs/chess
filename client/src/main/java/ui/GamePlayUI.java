@@ -1,7 +1,7 @@
 package ui;
 
 import websocket.NotificationHandler;
-import websocket.messages.Notification;
+import websocket.messages.ServerMessage;
 
 import java.util.Scanner;
 
@@ -39,7 +39,7 @@ public class GamePlayUI implements NotificationHandler {
   }
 
   @Override
-  public void notify(Notification notification) {
+  public void notify(ServerMessage notification) {
     System.out.println(notification.getMessage());
   }
 }

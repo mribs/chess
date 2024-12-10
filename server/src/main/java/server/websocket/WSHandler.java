@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
 import websocket.commands.UserGameCommand;
-import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
@@ -37,7 +36,7 @@ public class WSHandler {
       connections.add(authtoken, session);
       String username = command.getUserName(authtoken);
       String message = String.format("%s has joined the game", username);
-      Notification notification = new Notification(message);
+      ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
       connections.broadcast(authtoken, notification);
     } catch (IOException e) {
       System.out.println("message did not work");
