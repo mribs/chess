@@ -14,7 +14,6 @@ import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
-import websocket.messages.ErrorMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
@@ -61,7 +60,7 @@ public class WSHandler {
           gameDAO.updateBlack(gameID, null);
         }
       } else {
-        ErrorMessage errorMessage=new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: game cannot be found");
+        ServerMessage errorMessage=new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: game cannot be found");
         connections.sendToRoot(gameID, authToken, errorMessage);
       }
       String message = String.format("%s has left the game", username);
@@ -94,12 +93,12 @@ public class WSHandler {
         } else if (username.equals(gameInfo.getBlackUsername())) {
           teamColor=ChessGame.TeamColor.BLACK;
         } else {
-          ErrorMessage errorMessage=new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: Observers can't resign");
+          ServerMessage errorMessage=new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: Observers can't resign");
           connections.sendToRoot(gameID, authToken, errorMessage);
           return;
         }
         if (game.gameIsOver) {
-          ErrorMessage errorMessage=new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: Game is already over");
+          ServerMessage errorMessage=new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: Game is already over");
           connections.sendToRoot(gameID, authToken, errorMessage);
           return;
         }
@@ -111,10 +110,10 @@ public class WSHandler {
       }
     } catch (UnauthorizedException e) {
       connections.add(gameID, authToken, session);
-      ServerMessage errorMessage=new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: unauthorized");
+      ServerMessage errorMessage=new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: unauthorized");
       connections.sendNoConnect(authToken, session, errorMessage);
     } catch (DataAccessException e) {
-      ServerMessage errorMessage=new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: something " +
+      ServerMessage errorMessage=new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: something " +
               "strange is happening in oz");
       connections.sendToRoot(gameID, authToken, errorMessage);
     } catch (IOException e) {
@@ -140,13 +139,13 @@ public class WSHandler {
         connections.broadcast(command.getGameID(), authToken, notification);
       }
       else {
-        ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: game cannot be found");
+        ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: game cannot be found");
         connections.sendToRoot(command.getGameID(), authToken, errorMessage);
       }
     } catch (IOException | DataAccessException e) {
       System.out.println("message did not work");
     } catch (UnauthorizedException e) {
-      ServerMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: unauthorized");
+      ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: unauthorized");
       connections.sendNoConnect( authToken, session, errorMessage);
     }
   }
@@ -177,24 +176,24 @@ public class WSHandler {
         game.makeMove(move);
         gameDAO.updateGame(gameID, game);
       } else {
-        ErrorMessage errorMessage=new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: game cannot be found");
+        ServerMessage errorMessage=new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: game cannot be found");
         connections.sendToRoot(gameID, authToken, errorMessage);
       }
       ServerMessage serverMessage=new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
       String message = String.format("%s made a move", username);
       ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-      connections.sendToAll(gameID, serverMessage);
       connections.broadcast(gameID, authToken, notification);
+      connections.sendToAll(gameID, serverMessage);
     } catch (IOException e) {
       System.out.println("load game no good");
     } catch (DataAccessException e) {
       System.out.println("game not found");
     } catch (InvalidMoveException e) {
-      ServerMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: Invalid Move");
+      ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: Invalid Move");
       connections.sendToRoot(command.getGameID(), authToken, errorMessage);
     } catch (UnauthorizedException e) {
       connections.add(command.getGameID(), authToken, session);
-      ServerMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: unauthorized");
+      ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: unauthorized");
       connections.sendNoConnect(authToken, session, errorMessage);
     }
   }

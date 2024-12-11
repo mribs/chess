@@ -6,27 +6,29 @@ import java.util.ArrayList;
 
 public class GameBoard {
   ChessGame game;
-  ChessBoard board;
   Player player;
   int gameID;
 
   public GameBoard() {
     this.game = new ChessGame();
-    this.board = game.getBoard();
   }
+
+  public void setGame(ChessGame game) {
+    this.game = game;
+  }
+
 
   public String startGame(ChessGame game, String playerColor, Player player, int gameID) {
     this.game = game;
-    this.board = game.getBoard();
     this.player = player;
     this.gameID = gameID;
-    board.resetBoard();
+    game.gameBoard.resetBoard();
 
     fancyPrint(playerColor, null, null);
     try {
       new GamePlayUI(this,playerColor, player).run();
     } catch (Exception e) {
-      System.out.println("something went wrong (gameplayui)");
+      System.out.println(e.getStackTrace());
     }
 
     return ("exited game play");
@@ -74,7 +76,7 @@ public class GameBoard {
 
         System.out.print(backgroundColor + textColor);
 
-        ChessPiece piece = board.getPiece(new ChessPosition(row, col));
+        ChessPiece piece = game.gameBoard.getPiece(new ChessPosition(row, col));
         if (piece == null) {
           System.out.print(EscapeSequences.EMPTY);
         }

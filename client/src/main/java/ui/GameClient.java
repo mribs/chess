@@ -70,7 +70,7 @@ public class GameClient {
     int row = Integer.parseInt(pieceY);
     ChessPosition start = new ChessPosition(row, col);
 
-    if (gameBoard.board.getPiece(new ChessPosition(row, col)) == null) {
+    if (gameBoard.game.gameBoard.getPiece(new ChessPosition(row, col)) == null) {
       return "No piece at given position";
     }
     Collection<ChessMove> validMoves = gameBoard.game.validMoves(new ChessPosition(row, col));
@@ -85,7 +85,7 @@ public class GameClient {
     gameBoard.fancyPrint(playerColor, highlightSquares, new ChessPosition(row, col));
     return "Valid moves highlighted";
   }
-  private String makeMove() throws InvalidMoveException, DataAccessException {
+  private String makeMove() throws InvalidMoveException {
     System.out.println("Enter start letter (a-h):");
     String pieceX = scanner.nextLine().toLowerCase();
     System.out.println("Enter start number (1-8):");
@@ -104,22 +104,32 @@ public class GameClient {
     int rowF = Integer.parseInt(pieceYF);
     ChessPosition end = new ChessPosition(rowF, colF);
 
-    //FIXME only client side
     ChessMove move = new ChessMove(start, end, null);
     //websockets
-    wsFacade.makeMove(playerInfo.getAuthToken(), gameBoard.gameID, move);
-    return "move made";
+    try {
+      wsFacade.makeMove(playerInfo.getAuthToken(), gameBoard.gameID, move);
+      return "";
+    } catch (DataAccessException e) {
+      throw new InvalidMoveException("Invalid move");
+    }
   }
 
-  //TODO: implement leave and resign --with websockets??--
-  private String leave() {
-    wsFacade.
-
-    return "quit";
+  private String leave(){
+    try {
+      wsFacade.leave(playerInfo.getAuthToken(), gameBoard.gameID);
+      return "quit";
+    } catch (DataAccessException e) {
+      return "could not leave game";
+    }
   }
 
-  private String resign() {
-    return "quit";
+  private String resign(){
+    try {
+      wsFacade.resign(playerInfo.getAuthToken(), gameBoard.gameID);
+      return "quit";
+    } catch (DataAccessException e) {
+      return "Cant resign";
+    }
   }
 
   public String evalLine(String line) {
@@ -143,7 +153,7 @@ public class GameClient {
   }
 
   public void updateGame(ChessGame game) {
-    this.gameBoard.game = game;
+    this.gameBoard.setGame(game);
     gameBoard.fancyPrint(playerColor, null, null);
   }
 

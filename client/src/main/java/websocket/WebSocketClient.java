@@ -25,7 +25,8 @@ public class WebSocketClient extends Endpoint {
     this.session.addMessageHandler(new MessageHandler.Whole<String>() {
       @Override
       public void onMessage(String message) {
-        ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
+        Gson gson = new Gson();
+        ServerMessage notification = gson.fromJson(message, ServerMessage.class);
         notificationHandler.notify(notification);
       }
     });

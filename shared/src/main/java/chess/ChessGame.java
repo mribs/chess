@@ -11,7 +11,7 @@ import java.util.HashSet;
  */
 public class ChessGame {
     TeamColor whosTurn;
-    ChessBoard gameBoard;
+    public ChessBoard gameBoard;
     Boolean checkmate;
     public Boolean gameIsOver;
 
