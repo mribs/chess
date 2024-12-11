@@ -103,4 +103,19 @@ public class GameDAO extends DAO {
     var statement = "UPDATE game SET game=? WHERE gameID=?";
     executeUpdate(statement, gameJson, String.valueOf(gameID));
   }
+  public void updateWhite(int gameID, String white) throws DataAccessException {
+    if (find(gameID) == null) {
+      throw new DataAccessException("cannot find gameID");
+    }
+    var statement = "UPDATE game SET whiteUsername=? WHERE gameID=?";
+    executeUpdate(statement, white, String.valueOf(gameID));
+  }
+  public void updateBlack(int gameID, String black) throws DataAccessException {
+    if (find(gameID) == null) {
+      throw new DataAccessException("cannot find gameID");
+    }
+    var statement = "UPDATE game SET blackUsername=? WHERE gameID=?";
+    executeUpdate(statement, black, String.valueOf(gameID));
+  }
+
 }

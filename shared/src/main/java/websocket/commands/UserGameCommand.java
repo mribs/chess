@@ -43,13 +43,6 @@ public class UserGameCommand {
         return gameID;
     }
 
-    public String getUserName(String authToken) {
-        //FIXME should I pull the username from a different place than here??
-
-        return "<username>";
-    }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

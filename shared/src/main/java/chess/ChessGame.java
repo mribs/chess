@@ -13,12 +13,14 @@ public class ChessGame {
     TeamColor whosTurn;
     ChessBoard gameBoard;
     Boolean checkmate;
+    public Boolean gameIsOver;
 
     public ChessGame() {
         whosTurn = TeamColor.WHITE;
         gameBoard = new ChessBoard();
         gameBoard.resetBoard();
         checkmate = false;
+        gameIsOver = false;
     }
 
     /**
@@ -27,6 +29,11 @@ public class ChessGame {
     public TeamColor getTeamTurn() {
         return whosTurn;
     }
+    public void gameOver() {
+        checkmate = true;
+        gameIsOver = true;
+    }
+
 
     /**
      * Set's which teams turn it is
@@ -53,6 +60,9 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        if (checkmate) {
+            return null;
+        }
         Collection<ChessMove> trueValidMoves = new HashSet<>();
         //get piece at location
         ChessPiece piece =getBoard().getPiece(startPosition);

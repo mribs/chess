@@ -5,14 +5,35 @@ import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionManager {
-  public final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
+  public final ConcurrentHashMap<Integer, List<Connection>> games = new ConcurrentHashMap<>();
 
-  public void add(String authToken, Session session) {
+  public void add(int gameID, String authToken, Session session) {
     var connection = new Connection(authToken, session);
-    connections.put(authToken, connection);
+    List existingConnections = new ArrayList();
+    if (games.containsKey(gameID)) {
+      existingConnections = games.get(gameID);
+      existingConnections.add(connection);
+    } else {
+      existingConnections = new ArrayList();
+      existingConnections.add(connection);
+    }
+    games.put(gameID, existingConnections);
+  }
+  public void remove(int gameID, String authToken) {
+    List<Connection> connections;
+    if (games.containsKey(gameID)) {
+      connections=games.get(gameID);
+      for (Connection c : connections) {
+          if (c.authToken.equals(authToken)) {
+            connections.remove(c);
+            break;
+          }
+      }
+    }
   }
 
   public void sendNoConnect(String authToken, Session session, ServerMessage message) {
@@ -22,10 +43,11 @@ public class ConnectionManager {
       throw new RuntimeException(e);
     }
   }
-  public void sendToRoot(String authToken, ServerMessage message){
+  public void sendToRoot(int gameID, String authToken, ServerMessage message){
     try {
       var removeList=new ArrayList<Connection>();
-      for (var c : connections.values()) {
+      List<Connection> connections = games.get(gameID);
+      for (Connection c : connections) {
         if (c.session.isOpen()) {
           if (c.authToken.equals(authToken)) {
             c.send(message.toString());
@@ -40,9 +62,10 @@ public class ConnectionManager {
     }
   }
 
-  public void broadcast(String excludeAuthToken, ServerMessage notification) throws IOException {
-    var removeList = new ArrayList<Connection>();
-    for (var c : connections.values()) {
+  public void broadcast(int gameID, String excludeAuthToken, ServerMessage notification) throws IOException {
+    var removeList=new ArrayList<Connection>();
+    List<Connection> connections = games.get(gameID);
+    for (Connection c : connections) {
       if (c.session.isOpen()) {
         if (!c.authToken.equals(excludeAuthToken)) {
           c.send(notification.toString());
@@ -57,9 +80,10 @@ public class ConnectionManager {
     }
   }
 
-  public void sendToAll(ServerMessage message) throws IOException {
-    var removeList = new ArrayList<Connection>();
-    for (var c : connections.values()) {
+  public void sendToAll(int gameID, ServerMessage message) throws IOException {
+    var removeList=new ArrayList<Connection>();
+    List<Connection> connections = games.get(gameID);
+    for (Connection c : connections) {
       if (c.session.isOpen()) {
         c.send(message.toString());
       } else {

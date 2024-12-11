@@ -37,7 +37,7 @@ public class WebSocketClient extends Endpoint {
       UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authtoken, gameID);
       this.session.getBasicRemote().sendText(new Gson().toJson(command));
     } catch (IOException ex) {
-      throw new DataAccessException(ex.getMessage());
+      throw new DataAccessException("failed to join game");
     }
   }
 
@@ -47,6 +47,22 @@ public class WebSocketClient extends Endpoint {
       this.session.getBasicRemote().sendText(new Gson().toJson(command));
     } catch (IOException ex) {
       throw new DataAccessException(ex.getMessage());
+    }
+  }
+  public void leave(String authtoken, int gameID) throws DataAccessException {
+    try {
+      UserGameCommand leaveCommand=new UserGameCommand(UserGameCommand.CommandType.LEAVE, authtoken, gameID);
+      this.session.getBasicRemote().sendText(new Gson().toJson(leaveCommand));
+    } catch (IOException e) {
+      throw new DataAccessException("failed to leave game");
+    }
+  }
+  public void resign(String authtoken, int gameID) throws DataAccessException {
+    try {
+      UserGameCommand resignCommand=new UserGameCommand(UserGameCommand.CommandType.RESIGN, authtoken, gameID);
+      this.session.getBasicRemote().sendText(new Gson().toJson(resignCommand));
+    } catch (IOException e) {
+      throw new DataAccessException("failed to resign from game");
     }
   }
 

@@ -61,13 +61,14 @@ public class GameClient {
     return "board redrawn";
   }
   private String highlightMoves() {
-    System.out.println("Enter piece X position (1-8):");
-    String pieceX = scanner.nextLine();
-    System.out.println("Enter piece Y position (1-8):");
+    System.out.println("Enter piece letter (a-h):");
+    String pieceX = scanner.nextLine().toLowerCase();
+    System.out.println("Enter piece number (1-8):");
     String pieceY = scanner.nextLine();
 
-    int col = Integer.parseInt(pieceX);
+    int col = pieceX.charAt(0) - 'a' + 1;
     int row = Integer.parseInt(pieceY);
+    ChessPosition start = new ChessPosition(row, col);
 
     if (gameBoard.board.getPiece(new ChessPosition(row, col)) == null) {
       return "No piece at given position";
@@ -85,37 +86,34 @@ public class GameClient {
     return "Valid moves highlighted";
   }
   private String makeMove() throws InvalidMoveException, DataAccessException {
-    //TODO letters for x position
-    System.out.println("Enter piece X position (1-8):");
-    String pieceX = scanner.nextLine();
-    System.out.println("Enter piece Y position (1-8):");
+    System.out.println("Enter start letter (a-h):");
+    String pieceX = scanner.nextLine().toLowerCase();
+    System.out.println("Enter start number (1-8):");
     String pieceY = scanner.nextLine();
 
-    int col = Integer.parseInt(pieceX);
+    int col = pieceX.charAt(0) - 'a' + 1; // Convert letter to column number
     int row = Integer.parseInt(pieceY);
     ChessPosition start = new ChessPosition(row, col);
 
-    System.out.println("Enter goal X position (1-8):");
+    System.out.println("Enter goal letter (a-h):");
     String pieceXF = scanner.nextLine();
-    System.out.println("Enter goal Y position (1-8):");
+    System.out.println("Enter goal number (1-8):");
     String pieceYF = scanner.nextLine();
 
-    int colF = Integer.parseInt(pieceXF);
+    int colF = pieceXF.charAt(0) - 'a' + 1; // Convert letter to column number
     int rowF = Integer.parseInt(pieceYF);
     ChessPosition end = new ChessPosition(rowF, colF);
 
     //FIXME only client side
     ChessMove move = new ChessMove(start, end, null);
-    gameBoard.game.makeMove(move);
-
     //websockets
     wsFacade.makeMove(playerInfo.getAuthToken(), gameBoard.gameID, move);
-    redraw();
     return "move made";
   }
 
   //TODO: implement leave and resign --with websockets??--
   private String leave() {
+    wsFacade.
 
     return "quit";
   }
@@ -145,7 +143,6 @@ public class GameClient {
   }
 
   public void updateGame(ChessGame game) {
-    //FIXME did not update the game...
     this.gameBoard.game = game;
     gameBoard.fancyPrint(playerColor, null, null);
   }
