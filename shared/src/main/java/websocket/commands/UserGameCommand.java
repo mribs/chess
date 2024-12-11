@@ -44,8 +44,9 @@ public class UserGameCommand {
     }
 
     public String getUserName(String authToken) {
+        //FIXME should I pull the username from a different place than here??
 
-        return "username function not yet implemented";
+        return "<username>";
     }
 
 

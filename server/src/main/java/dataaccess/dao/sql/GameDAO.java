@@ -94,4 +94,13 @@ public class GameDAO extends DAO {
     }
     return result;
   }
+
+  public void updateGame(int gameID, ChessGame game) throws DataAccessException {
+    if (find(gameID) == null) {
+      throw new DataAccessException("cannot find gameID");
+    }
+    String gameJson = new Gson().toJson(game);
+    var statement = "UPDATE game SET game=? WHERE gameID=?";
+    executeUpdate(statement, gameJson, String.valueOf(gameID));
+  }
 }

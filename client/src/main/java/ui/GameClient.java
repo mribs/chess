@@ -1,8 +1,7 @@
 package ui;
 
-import chess.ChessMove;
-import chess.ChessPosition;
-import chess.InvalidMoveException;
+import chess.*;
+import exceptions.DataAccessException;
 import server.ServerFacade;
 import websocket.NotificationHandler;
 import websocket.WebSocketClient;
@@ -85,7 +84,8 @@ public class GameClient {
     gameBoard.fancyPrint(playerColor, highlightSquares, new ChessPosition(row, col));
     return "Valid moves highlighted";
   }
-  private String makeMove() throws InvalidMoveException {
+  private String makeMove() throws InvalidMoveException, DataAccessException {
+    //TODO letters for x position
     System.out.println("Enter piece X position (1-8):");
     String pieceX = scanner.nextLine();
     System.out.println("Enter piece Y position (1-8):");
@@ -104,8 +104,12 @@ public class GameClient {
     int rowF = Integer.parseInt(pieceYF);
     ChessPosition end = new ChessPosition(rowF, colF);
 
-    gameBoard.game.makeMove(new ChessMove(start, end, null));
-//TODO: websockets
+    //FIXME only client side
+    ChessMove move = new ChessMove(start, end, null);
+    gameBoard.game.makeMove(move);
+
+    //websockets
+    wsFacade.makeMove(playerInfo.getAuthToken(), gameBoard.gameID, move);
     redraw();
     return "move made";
   }
@@ -138,6 +142,12 @@ public class GameClient {
     } catch (Throwable e) {
       return e.getMessage();
     }
+  }
+
+  public void updateGame(ChessGame game) {
+    //FIXME did not update the game...
+    this.gameBoard.game = game;
+    gameBoard.fancyPrint(playerColor, null, null);
   }
 
   private String invalid() {

@@ -164,7 +164,6 @@ public class Player {
     } else {
       return "Invalid game number";
     }
-    //TODO do i actually need this? is it an api call?
     ChessGame joined=postLogin.joinGame(gameID, "OBSERVE", authToken);
     if (joined != null) {
       return gameboard.startGame(joined, null, this, gameID);

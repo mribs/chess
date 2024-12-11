@@ -40,6 +40,10 @@ public class GamePlayUI implements NotificationHandler {
 
   @Override
   public void notify(ServerMessage notification) {
-    System.out.println(notification.getMessage());
+    switch (notification.getServerMessageType()) {
+      case NOTIFICATION -> System.out.println(notification.getMessage());
+      case LOAD_GAME -> player.updateGame(notification.getGame());
+    }
+
   }
 }

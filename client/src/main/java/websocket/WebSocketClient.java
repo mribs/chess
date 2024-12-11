@@ -1,7 +1,9 @@
 package websocket;
 
+import chess.ChessMove;
 import com.google.gson.Gson;
 import exceptions.DataAccessException;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
@@ -29,10 +31,19 @@ public class WebSocketClient extends Endpoint {
     });
   }
 
-  //TODO: implement various messages to send
   public void joinGame(String authtoken, int gameID) throws DataAccessException {
     try {
+      //FIXME: need different messages for observer and player joining
       UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authtoken, gameID);
+      this.session.getBasicRemote().sendText(new Gson().toJson(command));
+    } catch (IOException ex) {
+      throw new DataAccessException(ex.getMessage());
+    }
+  }
+
+  public void makeMove(String authtoken, int gameID, ChessMove move) throws DataAccessException {
+    try {
+      MakeMoveCommand command = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, authtoken, gameID, move);
       this.session.getBasicRemote().sendText(new Gson().toJson(command));
     } catch (IOException ex) {
       throw new DataAccessException(ex.getMessage());
