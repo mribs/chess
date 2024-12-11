@@ -1,6 +1,5 @@
 package ui;
 
-import com.google.gson.Gson;
 import websocket.NotificationHandler;
 import websocket.messages.ServerMessage;
 
@@ -42,7 +41,6 @@ public class GamePlayUI implements NotificationHandler {
   @Override
   public void notify(ServerMessage message) {
     switch (message.getServerMessageType()) {
-      //FIXME
       case NOTIFICATION -> System.out.println(message.getMessage());
       case ERROR -> error(message);
       case LOAD_GAME -> gameClient.updateGame(message.getGame());

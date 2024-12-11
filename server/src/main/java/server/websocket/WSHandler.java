@@ -93,18 +93,22 @@ public class WSHandler {
         } else if (username.equals(gameInfo.getBlackUsername())) {
           teamColor=ChessGame.TeamColor.BLACK;
         } else {
-          ServerMessage errorMessage=new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: Observers can't resign");
+          ServerMessage errorMessage=new ServerMessage(ServerMessage.ServerMessageType.ERROR, null,
+                  "Error: Observers can't resign");
           connections.sendToRoot(gameID, authToken, errorMessage);
           return;
         }
         if (game.gameIsOver) {
-          ServerMessage errorMessage=new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: Game is already over");
+          ServerMessage errorMessage=new ServerMessage(ServerMessage.ServerMessageType.ERROR, null,
+                  "Error: Game is already over, please use leave command to exit");
           connections.sendToRoot(gameID, authToken, errorMessage);
           return;
         }
-        String message=String.format("%s resigned", username);
+        String message=String.format("%s resigned, please leave the game", username);
         ServerMessage resignation=new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.sendToAll(gameID, resignation);
+        connections.broadcast(gameID, authToken, resignation);
+        ServerMessage resigned = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, "You resigned");
+        connections.sendToRoot(gameID, authToken, resigned);
         game.gameOver();
         gameDAO.updateGame(gameID, game);
       }
@@ -121,13 +125,14 @@ public class WSHandler {
     }
   }
 
-  private void connect(Session session,String authToken, UserGameCommand command) {
+  private void connect(Session session, String authToken, UserGameCommand command) {
     try {
       connections.add(command.getGameID(), authToken, session);
       Authorizer authorizer = new Authorizer();
       authorizer.authorize(authToken);
       String username = new AuthDAO().readToken(authToken).getUsername();
-      String message = String.format("%s has joined the game", username);
+      String color = command.getColor();
+      String message = String.format("%s has joined the game as %s", username, color);
       ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
 
       GameDAO gameDAO = new GameDAO();
@@ -160,7 +165,7 @@ public class WSHandler {
       ChessGame game=null;
       int gameID=command.getGameID();
       Game gameInfo =gameDAO.find(gameID);
-      ChessGame.TeamColor teamColor = null;
+      ChessGame.TeamColor teamColor;
       if (gameInfo != null) {
         game=gameInfo.getGame();
         if (username.equals(gameInfo.getWhiteUsername())) {
@@ -174,9 +179,18 @@ public class WSHandler {
           throw new InvalidMoveException("It's not your turn");
         }
         game.makeMove(move);
+        if (game.isInCheck(teamColor)) {
+          ServerMessage checkMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, "you are in check");
+          connections.sendToRoot(gameID, authToken, checkMessage);
+        }
+        if (game.isInCheckmate(teamColor)) {
+          ServerMessage checkMateMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, "CHECKMATE");
+          connections.sendToAll(gameID, checkMateMessage);
+        }
         gameDAO.updateGame(gameID, game);
       } else {
-        ServerMessage errorMessage=new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: game cannot be found");
+        ServerMessage errorMessage=new ServerMessage(ServerMessage.ServerMessageType.ERROR, null,
+                "Error: game cannot be found");
         connections.sendToRoot(gameID, authToken, errorMessage);
       }
       ServerMessage serverMessage=new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
@@ -189,11 +203,13 @@ public class WSHandler {
     } catch (DataAccessException e) {
       System.out.println("game not found");
     } catch (InvalidMoveException e) {
-      ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: Invalid Move");
+      ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null,
+              "Error: Invalid Move");
       connections.sendToRoot(command.getGameID(), authToken, errorMessage);
     } catch (UnauthorizedException e) {
       connections.add(command.getGameID(), authToken, session);
-      ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: unauthorized");
+      ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null,
+              "Error: unauthorized");
       connections.sendNoConnect(authToken, session, errorMessage);
     }
   }

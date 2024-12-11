@@ -16,7 +16,6 @@ public class GameClient {
   private GameBoard gameBoard;
   private String playerColor;
   private Player playerInfo;
-  private ServerFacade serverFacade;
   private WebSocketClient wsFacade;
 
   public GameClient(GameBoard gameBoard, String playerColor, Player player, NotificationHandler notificationHandler) throws Exception {
@@ -25,9 +24,8 @@ public class GameClient {
     this.wsFacade = new WebSocketClient(notificationHandler);
     this.playerColor = playerColor;
     this.playerInfo = player;
-    this.serverFacade = player.serverFacade;
 
-    wsFacade.joinGame(playerInfo.getAuthToken(), gameBoard.gameID);
+    wsFacade.joinGame(playerInfo.getAuthToken(), gameBoard.gameID, playerColor);
   }
 
 
@@ -126,6 +124,9 @@ public class GameClient {
   private String resign(){
     try {
       wsFacade.resign(playerInfo.getAuthToken(), gameBoard.gameID);
+      if (playerColor == null || playerColor == "observer") {
+        return"";
+      }
       return "quit";
     } catch (DataAccessException e) {
       return "Cant resign";

@@ -32,10 +32,12 @@ public class WebSocketClient extends Endpoint {
     });
   }
 
-  public void joinGame(String authtoken, int gameID) throws DataAccessException {
+  public void joinGame(String authtoken, int gameID, String color) throws DataAccessException {
     try {
-      //FIXME: need different messages for observer and player joining
-      UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authtoken, gameID);
+      if(color == null) {
+        color = "observer";
+      }
+      UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authtoken, gameID, color);
       this.session.getBasicRemote().sendText(new Gson().toJson(command));
     } catch (IOException ex) {
       throw new DataAccessException("failed to join game");

@@ -17,12 +17,21 @@ public class UserGameCommand {
     private final String authToken;
 
     private final Integer gameID;
+    private String color;
 
+    public UserGameCommand(CommandType commandType, String authToken, Integer gameID, String color) {
+        this.commandType = commandType;
+        this.authToken = authToken;
+        this.gameID = gameID;
+        this.color = color;
+    }
     public UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
         this.commandType = commandType;
         this.authToken = authToken;
         this.gameID = gameID;
+        this.color = null;
     }
+
 
     public enum CommandType {
         CONNECT,
@@ -42,6 +51,7 @@ public class UserGameCommand {
     public Integer getGameID() {
         return gameID;
     }
+    public String getColor() {return color;}
 
     @Override
     public boolean equals(Object o) {
