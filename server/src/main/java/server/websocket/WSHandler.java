@@ -98,10 +98,12 @@ public class WSHandler {
     } catch (DataAccessException e) {
       System.out.println("game not found");
     } catch (InvalidMoveException e) {
-      System.out.println("make move (WSHandler) didn't work??");
-    } catch (UnauthorizedException e) {
-      ServerMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: unauthorized");
+      ServerMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: Invalid Move");
       connections.sendToRoot(authToken, errorMessage);
+    } catch (UnauthorizedException e) {
+      connections.add(authToken, session);
+      ServerMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: unauthorized");
+      connections.sendNoConnect(authToken, session, errorMessage);
     }
   }
 }

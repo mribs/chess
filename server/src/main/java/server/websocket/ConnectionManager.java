@@ -10,9 +10,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConnectionManager {
   public final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
 
-  public void add(String username, Session session) {
-    var connection = new Connection(username, session);
-    connections.put(username, connection);
+  public void add(String authToken, Session session) {
+    var connection = new Connection(authToken, session);
+    connections.put(authToken, connection);
+  }
+
+  public void sendNoConnect(String authToken, Session session, ServerMessage message) {
+    try {
+      new Connection(authToken, session).send(message.toString());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
   public void sendToRoot(String authToken, ServerMessage message){
     try {
