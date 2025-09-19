@@ -57,7 +57,7 @@ public class ChessPiece {
         if (piece == null) {
             return null;
         }
-        
+
         return new HashSet<>();
     }
 
@@ -75,5 +75,10 @@ public class ChessPiece {
     @Override
     public int hashCode() {
         return Objects.hash(color, type);
+    }
+
+    @Override
+    public String toString() {
+        return color + " " + type + " ";
     }
 }
