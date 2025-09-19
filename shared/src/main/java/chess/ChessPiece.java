@@ -57,8 +57,69 @@ public class ChessPiece {
         if (piece == null) {
             return null;
         }
+        switch (piece.type) {
+            case PAWN -> {
+                return pawnMoves(board, myPosition);
+            }
+            case ROOK -> {
+                return rookMoves(board, myPosition);
+            }
+            case KNIGHT -> {
+                return knightMoves(board, myPosition);
+            }
+            case BISHOP -> {
+                return bishopMoves(board, myPosition);
+            }
+            case QUEEN -> {
+                return queenMoves(board, myPosition);
+            }
+            case KING -> {
+                return kingMoves(board, myPosition);
+            }
 
-        return new HashSet<>();
+        }
+        return null;
+    }
+
+    private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
+        return null;
+    }
+
+    private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
+        return null;
+    }
+
+    private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
+        return null;
+    }
+
+    private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
+        return null;
+    }
+
+    private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
+        return null;
+    }
+
+    private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
+        return null;
+    }
+
+    //    Helper functions for declaring moves, diagonal movement is combinations of these
+    private ChessPosition moveForward(ChessPosition startPosition) {
+        return null;
+    }
+
+    private ChessPosition moveBack(ChessPosition startPosition) {
+        return null;
+    }
+
+    private ChessPosition moveRight(ChessPosition startPosition) {
+        return null;
+    }
+
+    private ChessPosition moveLeft(ChessPosition startPosition) {
+        return null;
     }
 
     @Override
