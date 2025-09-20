@@ -271,7 +271,9 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition, ChessPiece myPiece) {
-        return null;
+        Collection<ChessMove> validMoves = rookMoves(board, myPosition, myPiece);
+        validMoves.addAll(bishopMoves(board, myPosition, myPiece));
+        return validMoves;
     }
 
     private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition, ChessPiece myPiece) {
