@@ -335,6 +335,9 @@ public class ChessPiece {
 
     //    Helper functions for moves, diagonal movement is combinations of these
     private ChessPosition moveForward(ChessPosition startPosition) {
+        if (startPosition == null) {
+            return null;
+        }
         int startRow = startPosition.getRow();
         int startCol = startPosition.getColumn();
         if (startRow < 7) {
@@ -344,6 +347,9 @@ public class ChessPiece {
     }
 
     private ChessPosition moveBack(ChessPosition startPosition) {
+        if (startPosition == null) {
+            return null;
+        }
         int startRow = startPosition.getRow();
         int startCol = startPosition.getColumn();
         if (startRow > 0) {
@@ -353,6 +359,9 @@ public class ChessPiece {
     }
 
     private ChessPosition moveRight(ChessPosition startPosition) {
+        if (startPosition == null) {
+            return null;
+        }
         int startRow = startPosition.getRow();
         int startCol = startPosition.getColumn();
         if (startCol < 7) {
@@ -362,6 +371,9 @@ public class ChessPiece {
     }
 
     private ChessPosition moveLeft(ChessPosition startPosition) {
+        if (startPosition == null) {
+            return null;
+        }
         int startRow = startPosition.getRow();
         int startCol = startPosition.getColumn();
         if (startCol > 0) {
@@ -380,6 +392,9 @@ public class ChessPiece {
     }
 
     private BlockedType checkBlocked(ChessPiece myPiece, ChessBoard board, ChessPosition goalPosition) {
+        if (goalPosition == null) {
+            return null;
+        }
         ChessPiece enemy = board.getPiece(goalPosition);
         if (enemy == null) {
             return BlockedType.OPEN;
