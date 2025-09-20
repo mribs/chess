@@ -165,7 +165,7 @@ public class ChessPiece {
     private ChessPosition moveForward(ChessPosition startPosition) {
         int startRow = startPosition.getRow();
         int startCol = startPosition.getColumn();
-        if (startRow < 8) {
+        if (startRow < 7) {
             return new ChessPosition(startRow + 1, startCol, Boolean.TRUE);
         }
         return null;
@@ -183,7 +183,7 @@ public class ChessPiece {
     private ChessPosition moveRight(ChessPosition startPosition) {
         int startRow = startPosition.getRow();
         int startCol = startPosition.getColumn();
-        if (startCol < 8) {
+        if (startCol < 7) {
             return new ChessPosition(startRow, startCol + 1, Boolean.TRUE);
         }
         return null;
