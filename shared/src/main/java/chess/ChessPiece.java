@@ -88,43 +88,49 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition, ChessPiece myPiece) {
-        Collection<ChessMove> validMoves = new HashSet<>();
+        Collection<ChessMove> potentialMoves = new HashSet<>();
         ChessPosition forwardOne = null;
 
         if (myPiece.color == ChessGame.TeamColor.WHITE) {
             forwardOne = moveForward(myPosition);
             if (checkBlocked(myPiece, board, forwardOne) == BlockedType.OPEN) {
-                validMoves.add(new ChessMove(myPosition, forwardOne));
+                potentialMoves.add(new ChessMove(myPosition, forwardOne));
                 //  if first move and not blocked can move two
                 if (myPosition.getRow() == 1 && checkBlocked(myPiece, board, moveForward(forwardOne)) == BlockedType.OPEN) {
-                    validMoves.add(new ChessMove(myPosition, moveForward(forwardOne)));
+                    potentialMoves.add(new ChessMove(myPosition, moveForward(forwardOne)));
                 }
             }
-//            TODO: if end of board, pawn promotion
         }
         if (myPiece.color == ChessGame.TeamColor.BLACK) {
 //            Black technically is moving backward, but for my own sanity it shall be marked as forward
             forwardOne = moveBack(myPosition);
             if (checkBlocked(myPiece, board, forwardOne) == BlockedType.OPEN) {
-                validMoves.add(new ChessMove(myPosition, forwardOne));
+                potentialMoves.add(new ChessMove(myPosition, forwardOne));
                 //  if first move and not blocked can move two
                 if (myPosition.getRow() == 6 && checkBlocked(myPiece, board, moveBack(forwardOne)) == BlockedType.OPEN) {
-                    validMoves.add(new ChessMove(myPosition, moveBack(forwardOne)));
+                    potentialMoves.add(new ChessMove(myPosition, moveBack(forwardOne)));
                 }
             }
-            // if capturable piece is diagonal can go diagonal
-
-//            TODO: if end of board, pawn promotion
         }
 
 //        add diagonal movements if enemy
         ChessPosition diagonalLeft = moveLeft(forwardOne);
         ChessPosition diagonalRight = moveRight(forwardOne);
         if (diagonalLeft != null && checkBlocked(myPiece, board, diagonalLeft) == BlockedType.ENEMY) {
-            validMoves.add(new ChessMove(myPosition, diagonalLeft));
+            potentialMoves.add(new ChessMove(myPosition, diagonalLeft));
         }
         if (diagonalRight != null && checkBlocked(myPiece, board, diagonalRight) == BlockedType.ENEMY) {
-            validMoves.add(new ChessMove(myPosition, diagonalRight));
+            potentialMoves.add(new ChessMove(myPosition, diagonalRight));
+        }
+//        promotion moves
+        Collection<ChessMove> validMoves = new HashSet<>();
+        for (ChessMove move : potentialMoves) {
+            if ((myPiece.color == ChessGame.TeamColor.WHITE && move.getEndPosition().getRow() == 7)
+                    || (myPiece.color == ChessGame.TeamColor.BLACK && move.getEndPosition().getRow() == 0)) {
+                validMoves.addAll(pawnPromote(move.getStartPosition(), move.getEndPosition()));
+            } else {
+                validMoves.add(move);
+            }
         }
 
         return validMoves;
@@ -185,6 +191,15 @@ public class ChessPiece {
             return new ChessPosition(startRow, startCol - 1, Boolean.TRUE);
         }
         return null;
+    }
+
+    private Collection<ChessMove> pawnPromote(ChessPosition startPosition, ChessPosition endPosition) {
+        Collection<ChessMove> promotionMoves = new HashSet<>();
+        promotionMoves.add(new ChessMove(startPosition, endPosition, PieceType.ROOK));
+        promotionMoves.add(new ChessMove(startPosition, endPosition, PieceType.KNIGHT));
+        promotionMoves.add(new ChessMove(startPosition, endPosition, PieceType.BISHOP));
+        promotionMoves.add(new ChessMove(startPosition, endPosition, PieceType.QUEEN));
+        return promotionMoves;
     }
 
     private BlockedType checkBlocked(ChessPiece myPiece, ChessBoard board, ChessPosition goalPosition) {
