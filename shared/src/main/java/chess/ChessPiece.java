@@ -198,7 +198,60 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition, ChessPiece myPiece) {
-        return null;
+        Collection<ChessMove> validMoves = new HashSet<>();
+        ChessPosition movedTwo = myPosition;
+        ChessPosition movedOne = myPosition;
+        BlockedType blocked = null;
+//        moves two and 1
+//        up 2 over 1
+        movedTwo = moveForward(moveForward(myPosition));
+        movedOne = moveLeft(movedTwo);
+        blocked = checkBlocked(myPiece, board, movedOne);
+        if (movedOne != null && (blocked == BlockedType.OPEN || blocked == BlockedType.ENEMY)) {
+            validMoves.add(new ChessMove(myPosition, movedOne));
+        }
+        movedOne = moveRight(movedTwo);
+        blocked = checkBlocked(myPiece, board, movedOne);
+        if (movedOne != null && (blocked == BlockedType.OPEN || blocked == BlockedType.ENEMY)) {
+            validMoves.add(new ChessMove(myPosition, movedOne));
+        }
+//        down 2 over 1
+        movedTwo = moveBack(moveBack(myPosition));
+        movedOne = moveLeft(movedTwo);
+        blocked = checkBlocked(myPiece, board, movedOne);
+        if (movedOne != null && (blocked == BlockedType.OPEN || blocked == BlockedType.ENEMY)) {
+            validMoves.add(new ChessMove(myPosition, movedOne));
+        }
+        movedOne = moveRight(movedTwo);
+        blocked = checkBlocked(myPiece, board, movedOne);
+        if (movedOne != null && (blocked == BlockedType.OPEN || blocked == BlockedType.ENEMY)) {
+            validMoves.add(new ChessMove(myPosition, movedOne));
+        }
+//        right 2 vert 1
+        movedTwo = moveRight(moveRight(myPosition));
+        movedOne = moveForward(movedTwo);
+        blocked = checkBlocked(myPiece, board, movedOne);
+        if (movedOne != null && (blocked == BlockedType.OPEN || blocked == BlockedType.ENEMY)) {
+            validMoves.add(new ChessMove(myPosition, movedOne));
+        }
+        movedOne = moveBack(movedTwo);
+        blocked = checkBlocked(myPiece, board, movedOne);
+        if (movedOne != null && (blocked == BlockedType.OPEN || blocked == BlockedType.ENEMY)) {
+            validMoves.add(new ChessMove(myPosition, movedOne));
+        }
+//        left 2 vert 1
+        movedTwo = moveLeft(moveLeft(myPosition));
+        movedOne = moveForward(movedTwo);
+        blocked = checkBlocked(myPiece, board, movedOne);
+        if (movedOne != null && (blocked == BlockedType.OPEN || blocked == BlockedType.ENEMY)) {
+            validMoves.add(new ChessMove(myPosition, movedOne));
+        }
+        movedOne = moveBack(movedTwo);
+        blocked = checkBlocked(myPiece, board, movedOne);
+        if (movedOne != null && (blocked == BlockedType.OPEN || blocked == BlockedType.ENEMY)) {
+            validMoves.add(new ChessMove(myPosition, movedOne));
+        }
+        return validMoves;
     }
 
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition, ChessPiece myPiece) {
