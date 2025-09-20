@@ -17,6 +17,11 @@ public class ChessPosition {
         this.col = col - 1;
     }
 
+    public ChessPosition(int row, int col, Boolean boardReady) {
+        this.row = row;
+        this.col = col;
+    }
+
     /**
      * @return which row this position is in
      * 1 codes for the bottom row
