@@ -93,41 +93,30 @@ public class ChessPiece {
 
         if (myPiece.color == ChessGame.TeamColor.WHITE) {
             forwardOne = moveForward(myPosition);
-            validMoves.add(new ChessMove(myPosition, forwardOne));
-            //  if first move can move two
-            if (myPosition.getRow() == 1) {
-                validMoves.add(new ChessMove(myPosition, moveForward(forwardOne)));
+            if (checkBlocked(myPiece, board, forwardOne) == BlockedType.OPEN) {
+                validMoves.add(new ChessMove(myPosition, forwardOne));
+                //  if first move and not blocked can move two
+                if (myPosition.getRow() == 1 && checkBlocked(myPiece, board, moveForward(forwardOne)) == BlockedType.OPEN) {
+                    validMoves.add(new ChessMove(myPosition, moveForward(forwardOne)));
+                }
             }
-            // if capturable piece is diagonal can go diagonal
-//            ChessPosition diagonalLeft = moveLeft(forwardOne);
-//            ChessPosition diagonalRight = moveRight(forwardOne);
-//            if (diagonalLeft != null && checkBlocked(myPiece, board, diagonalLeft) == BlockedType.ENEMY) {
-//                validMoves.add(new ChessMove(myPosition, diagonalLeft));
-//            }
-//            if (diagonalRight != null && checkBlocked(myPiece, board, diagonalRight) == BlockedType.ENEMY) {
-//                validMoves.add(new ChessMove(myPosition, diagonalRight));
-//            }
 //            TODO: if end of board, pawn promotion
         }
         if (myPiece.color == ChessGame.TeamColor.BLACK) {
 //            Black technically is moving backward, but for my own sanity it shall be marked as forward
             forwardOne = moveBack(myPosition);
-            validMoves.add(new ChessMove(myPosition, forwardOne));
-            //  if first move can move two
-            if (myPosition.getRow() == 6) {
-                validMoves.add(new ChessMove(myPosition, moveBack(forwardOne)));
+            if (checkBlocked(myPiece, board, forwardOne) == BlockedType.OPEN) {
+                validMoves.add(new ChessMove(myPosition, forwardOne));
+                //  if first move and not blocked can move two
+                if (myPosition.getRow() == 6 && checkBlocked(myPiece, board, moveBack(forwardOne)) == BlockedType.OPEN) {
+                    validMoves.add(new ChessMove(myPosition, moveBack(forwardOne)));
+                }
             }
             // if capturable piece is diagonal can go diagonal
 
 //            TODO: if end of board, pawn promotion
         }
-//        remove invalid moves (blocked moves)
-        for (ChessMove move : validMoves) {
-            BlockedType blockedType = checkBlocked(myPiece, board, move.getEndPosition());
-            if (blockedType == BlockedType.BLOCKED || blockedType == BlockedType.ENEMY) {
-                validMoves.remove(move);
-            }
-        }
+
 //        add diagonal movements if enemy
         ChessPosition diagonalLeft = moveLeft(forwardOne);
         ChessPosition diagonalRight = moveRight(forwardOne);
