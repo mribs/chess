@@ -330,7 +330,37 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition, ChessPiece myPiece) {
-        return null;
+        Collection<ChessMove> potentialMoves = new HashSet<>();
+        ChessPosition nextSquare = myPosition;
+        ChessPosition currPosition = myPosition;
+//        forward (and variations)
+        currPosition = moveForward(myPosition);
+        potentialMoves.add(new ChessMove(myPosition, currPosition));
+        nextSquare = moveLeft(currPosition);
+        potentialMoves.add(new ChessMove(myPosition, nextSquare));
+        nextSquare = moveRight(currPosition);
+        potentialMoves.add(new ChessMove(myPosition, nextSquare));
+//        backward (and variations)
+        currPosition = moveBack(myPosition);
+        potentialMoves.add(new ChessMove(myPosition, currPosition));
+        nextSquare = moveLeft(currPosition);
+        potentialMoves.add(new ChessMove(myPosition, nextSquare));
+        nextSquare = moveRight(currPosition);
+        potentialMoves.add(new ChessMove(myPosition, nextSquare));
+//        right and left
+        currPosition = moveLeft(myPosition);
+        potentialMoves.add(new ChessMove(myPosition, currPosition));
+        currPosition = moveRight(myPosition);
+        potentialMoves.add(new ChessMove(myPosition, currPosition));
+
+        Collection<ChessMove> validMoves = new HashSet<>();
+        for (ChessMove move : potentialMoves) {
+            if (checkBlocked(myPiece, board, move.getEndPosition()) == BlockedType.BLOCKED || move.getEndPosition() == null) {
+            } else {
+                validMoves.add(move);
+            }
+        }
+        return validMoves;
     }
 
     //    Helper functions for moves, diagonal movement is combinations of these
