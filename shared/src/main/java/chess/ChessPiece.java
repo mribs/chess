@@ -68,7 +68,7 @@ public class ChessPiece {
                 return pawnMoves(board, myPosition, piece);
             }
             case ROOK -> {
-                return rookMoves(board, myPosition);
+                return rookMoves(board, myPosition, piece);
             }
             case KNIGHT -> {
                 return knightMoves(board, myPosition);
@@ -136,8 +136,65 @@ public class ChessPiece {
         return validMoves;
     }
 
-    private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
-        return null;
+    private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition, ChessPiece myPiece) {
+        Collection<ChessMove> validMoves = new HashSet<>();
+        ChessPosition nextSquare = null;
+        BlockedType blocked = null;
+        int startRow = myPosition.getRow();
+        int startCol = myPosition.getColumn();
+        ChessPosition currPosition = myPosition;
+//        move up board
+        for (int i = startRow; i < 7; i++) {
+            nextSquare = moveForward(currPosition);
+            blocked = checkBlocked(myPiece, board, nextSquare);
+            if (blocked == BlockedType.OPEN) {
+                validMoves.add(new ChessMove(myPosition, nextSquare));
+                currPosition = nextSquare;
+            } else if (blocked == BlockedType.ENEMY) {
+                validMoves.add(new ChessMove(myPosition, nextSquare));
+                break;
+            }
+        }
+//        move down board
+        currPosition = myPosition;
+        for (int i = startRow; i > 0; i--) {
+            nextSquare = moveBack(currPosition);
+            blocked = checkBlocked(myPiece, board, nextSquare);
+            if (blocked == BlockedType.OPEN) {
+                validMoves.add(new ChessMove(myPosition, nextSquare));
+                currPosition = nextSquare;
+            } else if (blocked == BlockedType.ENEMY) {
+                validMoves.add(new ChessMove(myPosition, nextSquare));
+                break;
+            }
+        }
+//        move left across board
+        currPosition = myPosition;
+        for (int i = startCol; i > 0; i--) {
+            nextSquare = moveLeft(currPosition);
+            blocked = checkBlocked(myPiece, board, nextSquare);
+            if (blocked == BlockedType.OPEN) {
+                validMoves.add(new ChessMove(myPosition, nextSquare));
+                currPosition = nextSquare;
+            } else if (blocked == BlockedType.ENEMY) {
+                validMoves.add(new ChessMove(myPosition, nextSquare));
+                break;
+            }
+        }
+//        move Right across board
+        currPosition = myPosition;
+        for (int i = startCol; i < 7; i++) {
+            nextSquare = moveRight(currPosition);
+            blocked = checkBlocked(myPiece, board, nextSquare);
+            if (blocked == BlockedType.OPEN) {
+                validMoves.add(new ChessMove(myPosition, nextSquare));
+                currPosition = nextSquare;
+            } else if (blocked == BlockedType.ENEMY) {
+                validMoves.add(new ChessMove(myPosition, nextSquare));
+                break;
+            }
+        }
+        return validMoves;
     }
 
     private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
