@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.TreeMap;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -102,8 +103,28 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
-
+        ChessPosition kingPosition = null;
+        if (teamColor == TeamColor.WHITE) {
+            kingPosition = gameBoard.getWhiteKingPos();
+        } else {
+            kingPosition = gameBoard.getBlackKingPos();
+        }
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                ChessPosition currPosition = new ChessPosition(row, col);
+                ChessPiece piece = gameBoard.getPiece(currPosition);
+                if (piece == null || piece.getTeamColor() == teamTurn) {
+                    continue;
+                }
+                Collection<ChessMove> pieceMoves = piece.pieceMoves(gameBoard, currPosition);
+                for (ChessMove move : pieceMoves) {
+                    if (move.getEndPosition() == kingPosition) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
