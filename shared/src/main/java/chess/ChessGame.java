@@ -80,6 +80,14 @@ public class ChessGame {
         }
         gameBoard.addPiece(move.getEndPosition(), movingPiece);
         gameBoard.addPiece(move.getStartPosition(), null);
+        //track king if relevant
+        if (movingPiece.getPieceType() == ChessPiece.PieceType.KING) {
+            if (movingPiece.getTeamColor() == TeamColor.WHITE) {
+                gameBoard.setWhiteKingPos(move.getEndPosition());
+            } else {
+                gameBoard.setBlackKingPos(move.getEndPosition());
+            }
+        }
         if (teamTurn == TeamColor.WHITE) {
             teamTurn = TeamColor.BLACK;
         } else {
@@ -94,7 +102,8 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        
+        throw new RuntimeException("Not implemented");
+
     }
 
     /**
