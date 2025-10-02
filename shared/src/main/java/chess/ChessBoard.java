@@ -70,9 +70,11 @@ public class ChessBoard {
         addPiece(new ChessPosition(8, 6), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
 //        Queens & Kings
         addPiece(new ChessPosition(1, 4), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN));
-        addPiece(new ChessPosition(1, 5), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
+        whiteKingPos = new ChessPosition(1, 5);
+        addPiece(whiteKingPos, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
         addPiece(new ChessPosition(8, 4), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN));
-        addPiece(new ChessPosition(8, 5), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
+        blackKingPos = new ChessPosition(8, 5);
+        addPiece(blackKingPos, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
 
     }
 
@@ -82,6 +84,22 @@ public class ChessBoard {
                 board[i][j] = null;
             }
         }
+    }
+
+    public ChessPosition getWhiteKingPos() {
+        return whiteKingPos;
+    }
+
+    public void setWhiteKingPos(ChessPosition whiteKingPos) {
+        this.whiteKingPos = whiteKingPos;
+    }
+
+    public ChessPosition getBlackKingPos() {
+        return blackKingPos;
+    }
+
+    public void setBlackKingPos(ChessPosition blackKingPos) {
+        this.blackKingPos = blackKingPos;
     }
 
     @Override
