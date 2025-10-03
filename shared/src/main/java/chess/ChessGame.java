@@ -58,7 +58,46 @@ public class ChessGame {
         if (piece == null) {
             return null;
         }
-        return piece.pieceMoves(gameBoard, startPosition);
+        Collection<ChessMove> pieceMoves = piece.pieceMoves(gameBoard, startPosition);
+        Collection<ChessMove> validMoves = pieceMoves;
+        for (ChessMove move : pieceMoves) {
+            if (leavesKingInCheck(move, piece.getTeamColor())) {
+                validMoves.remove(move);
+            }
+        }
+        return validMoves;
+    }
+
+    private Boolean leavesKingInCheck(ChessMove move, TeamColor team) {
+        ChessPiece capturedPiece = null;
+        capturedPiece = testMove(move);
+        if (isInCheck(team)) {
+            this.undoMove(move, capturedPiece);
+            return Boolean.TRUE;
+        }
+        this.undoMove(move, capturedPiece);
+        return Boolean.FALSE;
+    }
+
+    private ChessPiece testMove(ChessMove move) {
+        ChessPiece movingPiece = gameBoard.getPiece(move.getStartPosition());
+        ChessPiece capturedPiece = gameBoard.getPiece(move.getEndPosition());
+        gameBoard.addPiece(move.getEndPosition(), movingPiece);
+        gameBoard.addPiece(move.getStartPosition(), null);
+        return capturedPiece;
+    }
+
+    private void undoMove(ChessMove move, ChessPiece capturedPiece) {
+        ChessPosition capturedPosition = move.getEndPosition();
+        ChessPosition movingPosition = move.getStartPosition();
+        ChessPiece movingPiece = gameBoard.getPiece(movingPosition);
+        gameBoard.addPiece(movingPosition, movingPiece);
+        if (capturedPiece == null) {
+            gameBoard.addPiece(capturedPosition, null);
+            return;
+        }
+        gameBoard.addPiece(capturedPosition, capturedPiece);
+
     }
 
     /**
@@ -111,7 +150,7 @@ public class ChessGame {
         }
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
-                ChessPosition currPosition = new ChessPosition(row, col);
+                ChessPosition currPosition = new ChessPosition(row, col, Boolean.TRUE);
                 ChessPiece piece = gameBoard.getPiece(currPosition);
                 if (piece == null || piece.getTeamColor() == teamTurn) {
                     continue;
