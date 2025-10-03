@@ -10,8 +10,6 @@ import java.util.Arrays;
  */
 public class ChessBoard {
     private ChessPiece[][] board;
-    private ChessPosition whiteKingPos;
-    private ChessPosition blackKingPos;
 
     public ChessBoard() {
         board = new ChessPiece[8][8];
@@ -70,11 +68,9 @@ public class ChessBoard {
         addPiece(new ChessPosition(8, 6), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
 //        Queens & Kings
         addPiece(new ChessPosition(1, 4), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN));
-        whiteKingPos = new ChessPosition(1, 5);
-        addPiece(whiteKingPos, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
+        addPiece(new ChessPosition(1, 5), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
         addPiece(new ChessPosition(8, 4), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN));
-        blackKingPos = new ChessPosition(8, 5);
-        addPiece(blackKingPos, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
+        addPiece(new ChessPosition(8, 5), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
 
     }
 
@@ -86,20 +82,16 @@ public class ChessBoard {
         }
     }
 
-    public ChessPosition getWhiteKingPos() {
-        return whiteKingPos;
-    }
-
-    public void setWhiteKingPos(ChessPosition whiteKingPos) {
-        this.whiteKingPos = whiteKingPos;
-    }
-
-    public ChessPosition getBlackKingPos() {
-        return blackKingPos;
-    }
-
-    public void setBlackKingPos(ChessPosition blackKingPos) {
-        this.blackKingPos = blackKingPos;
+    public ChessPosition getKingPos(ChessGame.TeamColor color) {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                ChessPiece piece = board[row][col];
+                if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == color) {
+                    return new ChessPosition(row, col, Boolean.TRUE);
+                }
+            }
+        }
+        return null;
     }
 
     @Override
