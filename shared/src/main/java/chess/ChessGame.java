@@ -3,7 +3,6 @@ package chess;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.TreeMap;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -70,8 +69,7 @@ public class ChessGame {
     }
 
     private Boolean leavesKingInCheck(ChessMove move, TeamColor team) {
-        ChessPiece capturedPiece = null;
-        capturedPiece = testMove(move);
+        ChessPiece capturedPiece = testMove(move);
         if (isInCheck(team)) {
             this.undoMove(move, capturedPiece);
             return Boolean.TRUE;
@@ -177,7 +175,21 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                ChessPosition position = new ChessPosition(row, col, Boolean.TRUE);
+                ChessPiece piece = gameBoard.getPiece(position);
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    if (!validMoves(position).isEmpty()) {
+                        return Boolean.FALSE;
+                    }
+                }
+            }
+        }
+        if (isInCheck(teamColor)) {
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
     }
 
     /**
