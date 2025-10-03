@@ -17,7 +17,7 @@ public class ChessPosition {
         this.col = col - 1;
     }
 
-    public ChessPosition(int row, int col, Boolean boardReady) {
+    public ChessPosition(int row, int col, boolean boardReady) {
         this.row = row;
         this.col = col;
     }

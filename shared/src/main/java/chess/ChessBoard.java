@@ -1,8 +1,6 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -12,8 +10,6 @@ import java.util.Objects;
  */
 public class ChessBoard {
     private ChessPiece[][] board;
-    private ChessPosition whiteKingPos;
-    private ChessPosition blackKingPos;
 
     public ChessBoard() {
         board = new ChessPiece[8][8];
@@ -38,6 +34,10 @@ public class ChessBoard {
      */
     public ChessPiece getPiece(ChessPosition position) {
         return board[position.getRow()][position.getColumn()];
+    }
+
+    public ChessPiece[][] getBoard() {
+        return board;
     }
 
     /**
@@ -80,6 +80,18 @@ public class ChessBoard {
                 board[i][j] = null;
             }
         }
+    }
+
+    public ChessPosition getKingPos(ChessGame.TeamColor color) {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                ChessPiece piece = board[row][col];
+                if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == color) {
+                    return new ChessPosition(row, col, Boolean.TRUE);
+                }
+            }
+        }
+        return null;
     }
 
     @Override
