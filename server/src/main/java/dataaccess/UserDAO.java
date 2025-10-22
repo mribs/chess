@@ -1,10 +1,8 @@
 package dataaccess;
 
-public class UserDAO {
+public interface UserDAO {
     //    TODO: correct return types and parameters
-    public void createUser(String username, String password) {
-    }
+    public void createUser(String username, String password);
 
-    public void getUser(String username) {
-    }
+    public void getUser(String username);
 }
