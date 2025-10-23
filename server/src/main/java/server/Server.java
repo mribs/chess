@@ -1,11 +1,14 @@
 package server;
 
-import io.javalin.*;
+//imports lifted from web-api instruction
+
+import com.google.gson.Gson;
+import io.javalin.Javalin;
+import io.javalin.http.Context;
+
 import service.AuthService;
 import service.GameService;
 import service.UserService;
-import io.javalin.http.Context;
-
 
 public class Server {
 
@@ -15,8 +18,7 @@ public class Server {
     private GameService gameService;
 
     public Server() {
-        javalin = Javalin.create(config -> config.staticFiles.add("web"))
-                .delete("/db", this::clearDatabase);
+        javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register your endpoints and exception handlers here.
 
