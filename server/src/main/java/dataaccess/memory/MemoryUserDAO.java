@@ -1,5 +1,6 @@
 package dataaccess.memory;
 
+import dataaccess.MemoryDatabase;
 import dataaccess.UserDAO;
 
 public class MemoryUserDAO implements UserDAO {
@@ -16,8 +17,8 @@ public class MemoryUserDAO implements UserDAO {
 
     @Override
     public void clearUsers() {
-        throw new UnsupportedOperationException("Not supported yet.");
         // clear users from database... which i don't have yet
+        MemoryDatabase.userMap.clear();
     }
 
 }
