@@ -1,14 +1,16 @@
 package server;
 
 //imports lifted from web-api instruction
-
 import com.google.gson.Gson;
+
 import io.javalin.*;
 import io.javalin.http.Context;
+import model.UserData;
 
 import service.AuthService;
 import service.GameService;
 import service.UserService;
+import service.request.*;
 
 public class Server {
 
@@ -20,6 +22,7 @@ public class Server {
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
         javalin.delete("/db", this::clearDatabase);
+        javalin.post("/user", this::registerUser);
 
     }
 
@@ -28,6 +31,12 @@ public class Server {
         authService.clearAuths();
         gameService.clearGames();
         ctx.status(204);
+    }
+
+    private void registerUser(Context ctx) {
+        RegisterRequest registerRequest = new Gson().fromJson(ctx.body(), RegisterRequest.class);
+        user = userService.addUser(user);
+        ctx.json(new Gson().toJson(pet));
     }
 
     public int run(int desiredPort) {
