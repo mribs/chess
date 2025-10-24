@@ -33,6 +33,7 @@ public class Server {
         javalin.delete("/db", this::clearDatabase);
         javalin.post("/user", this::registerUser);
         javalin.post("/session", this::loginUser);
+        javalin.delete("/session", this::logoutUser);
 
         userService = new UserService(new MemoryUserDAO(), new MemoryAuthDAO());
         authService = new AuthService(new MemoryAuthDAO());
@@ -59,7 +60,7 @@ public class Server {
         userService.clearUsers();
         authService.clearAuths();
         gameService.clearGames();
-        ctx.status(204);
+        ctx.status(200);
     }
 
     private void registerUser(Context ctx) throws DataAccessException {
@@ -72,6 +73,14 @@ public class Server {
         LoginRequest loginRequest = new Gson().fromJson(ctx.body(), LoginRequest.class);
         LoginResult loginResult = userService.login(loginRequest);
         ctx.json(new Gson().toJson(loginResult));
+    }
+
+    private void logoutUser(Context ctx) throws DataAccessException {
+        String authToken = ctx.header("Authorization");
+        authService.authorize(authToken);
+        LogoutRequest logoutRequest = new LogoutRequest(authToken);
+        userService.logout(logoutRequest);
+        ctx.status(200);
     }
 
     public int run(int desiredPort) {

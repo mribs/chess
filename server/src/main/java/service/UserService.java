@@ -6,6 +6,7 @@ import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
 import service.request.LoginRequest;
+import service.request.LogoutRequest;
 import service.request.RegisterRequest;
 import service.result.LoginResult;
 
@@ -56,8 +57,14 @@ public class UserService {
 
     }
 
-    //     public void logout(LogoutRequest logoutRequest) {
-//     }
+    public void logout(LogoutRequest logoutRequest) throws DataAccessException {
+        String authToken = logoutRequest.authToken();
+        if (authToken == null) {
+            throw new DataAccessException("unauthorized");
+        }
+        authDAO.deleteAuth(authToken);
+    }
+
     public void clearUsers() {
         userDAO.clearUsers();
 

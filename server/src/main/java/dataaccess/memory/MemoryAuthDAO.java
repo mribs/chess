@@ -18,12 +18,12 @@ public class MemoryAuthDAO implements AuthDAO {
 
     @Override
     public AuthData getAuth(String authToken) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return MemoryDatabase.authMap.get(authToken);
     }
 
     @Override
     public void deleteAuth(String authToken) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        MemoryDatabase.authMap.remove(authToken);
     }
 
     @Override
