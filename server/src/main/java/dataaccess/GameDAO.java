@@ -1,6 +1,7 @@
 package dataaccess;
 
 public interface GameDAO {
+
     //   FIXME:add correct returns and fix variable types
     public void createGame(String gameName);
 
@@ -9,5 +10,7 @@ public interface GameDAO {
     public void listGames();
 
     public void updateGame(String gameID, String game);
+
+    public void clearGames();
 
 }
