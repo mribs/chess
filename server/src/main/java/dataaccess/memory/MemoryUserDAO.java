@@ -2,17 +2,18 @@ package dataaccess.memory;
 
 import dataaccess.MemoryDatabase;
 import dataaccess.UserDAO;
+import model.UserData;
 
 public class MemoryUserDAO implements UserDAO {
 
     @Override
-    public void createUser(String username, String password) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void createUser(UserData userData) {
+        MemoryDatabase.userMap.put(userData.username(), userData);
     }
 
     @Override
-    public void getUser(String username) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public UserData getUser(String username) {
+        return MemoryDatabase.userMap.getOrDefault(username, null);
     }
 
     @Override

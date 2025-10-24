@@ -2,16 +2,22 @@ package dataaccess.memory;
 
 import dataaccess.AuthDAO;
 import dataaccess.MemoryDatabase;
+import model.AuthData;
+
+import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO {
 
     @Override
-    public void createAuth() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public AuthData createAuth(String username) {
+        String authTokenString = UUID.randomUUID().toString();
+        AuthData authData = new AuthData(authTokenString, username);
+        MemoryDatabase.authMap.put(authTokenString, authData);
+        return authData;
     }
 
     @Override
-    public void getAuth(String authToken) {
+    public AuthData getAuth(String authToken) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -1,11 +1,13 @@
 package dataaccess;
 
+import model.AuthData;
+
 public interface AuthDAO {
 
     //    TODO: correct return types and parameters
-    public void createAuth();
+    public AuthData createAuth(String username);
 
-    public void getAuth(String authToken);
+    public AuthData getAuth(String authToken);
 
     public void deleteAuth(String authToken);
 
