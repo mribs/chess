@@ -5,6 +5,8 @@ import dataaccess.GameDAO;
 import dataaccess.MemoryDatabase;
 import model.GameData;
 
+import java.util.Collection;
+
 public class MemoryGameDAO implements GameDAO {
     private static int nextGameID = 1;
 
@@ -18,18 +20,18 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public void getGame(String gameID) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public GameData getGame(int gameID) {
+        return MemoryDatabase.gameMap.get(gameID);
     }
 
     @Override
-    public void listGames() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Collection<GameData> listGames() {
+        return MemoryDatabase.gameMap.values();
     }
 
     @Override
-    public void updateGame(String gameID, String game) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void updateGame(int gameID, GameData gameUpdate) {
+        MemoryDatabase.gameMap.put(gameID, gameUpdate);
     }
 
     @Override

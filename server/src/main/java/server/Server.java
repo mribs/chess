@@ -37,6 +37,8 @@ public class Server {
         javalin.delete("/session", this::logoutUser);
 //        game paths
         javalin.post("/game", this::createGame);
+        javalin.get("/game", this::listGames);
+        javalin.put("/game", this::joinGame);
 
         userService = new UserService(new MemoryUserDAO(), new MemoryAuthDAO());
         authService = new AuthService(new MemoryAuthDAO());
@@ -89,9 +91,28 @@ public class Server {
     private void createGame(Context ctx) throws DataAccessException {
         String authToken = ctx.header("Authorization");
         authService.authorize(authToken);
+
         CreateGameRequest createGameRequest = new Gson().fromJson(ctx.body(), CreateGameRequest.class);
         CreateGameResult createGameResult = gameService.createGame(createGameRequest);
         ctx.json((new Gson().toJson(createGameResult)));
+    }
+
+    private void joinGame(Context ctx) throws DataAccessException {
+        String authToken = ctx.header("Authorization");
+        authService.authorize(authToken);
+        String username = authService.getUsername(authToken);
+        JoinGameRequest joinGameRequest = new Gson().fromJson(ctx.body(), JoinGameRequest.class);
+        gameService.joinGame(joinGameRequest, username);
+        ctx.status(200);
+    }
+
+
+    private void listGames(Context ctx) throws DataAccessException {
+        String authToken = ctx.header("Authorization");
+        authService.authorize(authToken);
+
+        ListGamesResult listGamesResult = gameService.listGames();
+        ctx.json((new Gson().toJson(listGamesResult)));
     }
 
     public int run(int desiredPort) {

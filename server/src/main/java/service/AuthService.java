@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
+import model.AuthData;
 
 public class AuthService {
 
@@ -15,6 +16,11 @@ public class AuthService {
         if (authDAO.getAuth(authToken) == null) {
             throw new DataAccessException("unauthorized");
         }
+    }
+
+    public String getUsername(String authToken) {
+        AuthData authData = authDAO.getAuth(authToken);
+        return authData.username();
     }
 
     public void clearAuths() {
