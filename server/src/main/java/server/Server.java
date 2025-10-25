@@ -31,9 +31,12 @@ public class Server {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
         javalin.exception(Exception.class, this::exceptionHandler);
         javalin.delete("/db", this::clearDatabase);
+//        user paths
         javalin.post("/user", this::registerUser);
         javalin.post("/session", this::loginUser);
         javalin.delete("/session", this::logoutUser);
+//        game paths
+        javalin.post("/game", this::createGame);
 
         userService = new UserService(new MemoryUserDAO(), new MemoryAuthDAO());
         authService = new AuthService(new MemoryAuthDAO());
@@ -81,6 +84,14 @@ public class Server {
         LogoutRequest logoutRequest = new LogoutRequest(authToken);
         userService.logout(logoutRequest);
         ctx.status(200);
+    }
+
+    private void createGame(Context ctx) throws DataAccessException {
+        String authToken = ctx.header("Authorization");
+        authService.authorize(authToken);
+        CreateGameRequest createGameRequest = new Gson().fromJson(ctx.body(), CreateGameRequest.class);
+        CreateGameResult createGameResult = gameService.createGame(createGameRequest);
+        ctx.json((new Gson().toJson(createGameResult)));
     }
 
     public int run(int desiredPort) {
