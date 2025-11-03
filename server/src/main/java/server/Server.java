@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 
 import dataaccess.DataAccessException;
 //if using memory database
+import dataaccess.DatabaseManager;
 import dataaccess.memory.*;
 //if using SQL database
 import dataaccess.SQL.*;
@@ -48,6 +49,11 @@ public class Server {
 //        gameService = new GameService(new MemoryGameDAO());
 
 //        sql database services
+        try {
+            DatabaseManager.createDatabase();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         userService = new UserService(new SQLUserDAO(), new SQLAuthDAO());
         authService = new AuthService(new SQLAuthDAO());
         gameService = new GameService(new SQLGameDAO());

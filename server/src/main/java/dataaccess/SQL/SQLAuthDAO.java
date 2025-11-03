@@ -3,10 +3,15 @@ package dataaccess.SQL;
 import dataaccess.AuthDAO;
 import model.AuthData;
 
+import java.util.UUID;
+
 public class SQLAuthDAO implements AuthDAO {
     @Override
     public AuthData createAuth(String username) {
-        return null;
+        String authTokenString = UUID.randomUUID().toString();
+        AuthData authData = new AuthData(authTokenString, username);
+        
+        return authData;
     }
 
     @Override
