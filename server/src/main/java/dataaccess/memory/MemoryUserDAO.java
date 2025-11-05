@@ -4,6 +4,8 @@ import dataaccess.MemoryDatabase;
 import dataaccess.UserDAO;
 import model.UserData;
 
+import java.util.Objects;
+
 public class MemoryUserDAO implements UserDAO {
 
     @Override
@@ -15,6 +17,12 @@ public class MemoryUserDAO implements UserDAO {
     public UserData getUser(String username) {
         return MemoryDatabase.userMap.getOrDefault(username, null);
     }
+
+    @Override
+    public boolean verifyPassword(String password, String expectedPassword) {
+        return Objects.equals(password, expectedPassword);
+    }
+
 
     @Override
     public void clearUsers() {
