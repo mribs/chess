@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class SQLGameDAO implements GameDAO {
     @Override
@@ -25,6 +24,9 @@ public class SQLGameDAO implements GameDAO {
         int gameID;
         try (var conn = DatabaseManager.getConnection();
              var prepStatement = conn.prepareStatement(createGameStatement, Statement.RETURN_GENERATED_KEYS)) {
+            if (gameName == null) {
+                throw new DataAccessException("Bad Request");
+            }
             prepStatement.setString(1, gameDataJson);
             prepStatement.executeUpdate();
             try (var result = prepStatement.getGeneratedKeys()) {
