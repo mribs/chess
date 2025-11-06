@@ -7,9 +7,8 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 //if using memory database
 import dataaccess.DatabaseManager;
-import dataaccess.memory.*;
 //if using SQL database
-import dataaccess.SQL.*;
+import dataaccess.sql.*;
 
 import io.javalin.*;
 import io.javalin.http.Context;
@@ -43,12 +42,7 @@ public class Server {
         javalin.get("/game", this::listGames);
         javalin.put("/game", this::joinGame);
 
-//        memory database services
-//        userService = new UserService(new MemoryUserDAO(), new MemoryAuthDAO());
-//        authService = new AuthService(new MemoryAuthDAO());
-//        gameService = new GameService(new MemoryGameDAO());
-
-//        sql database services
+//        sql database services, switch to memoryDAO's (and toss trycatch block) to switch
         try {
             DatabaseManager.createDatabase();
         } catch (DataAccessException e) {
