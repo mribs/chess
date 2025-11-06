@@ -11,7 +11,6 @@ import java.sql.SQLException;
 public class SQLUserDAO implements UserDAO {
     @Override
     public void createUser(UserData userData) {
-//        TODO: if user already exists throw exception (maybe in my service class actuallly...
         var createStatement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
         try (var conn = DatabaseManager.getConnection();
              var prepStatement = conn.prepareStatement(createStatement)) {
