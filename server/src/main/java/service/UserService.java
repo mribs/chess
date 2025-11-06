@@ -49,7 +49,7 @@ public class UserService {
             throw new DataAccessException("bad request");
         }
         UserData user = userDAO.getUser(username);
-        if (user == null || !Objects.equals(user.password(), password)) {
+        if (user == null || !userDAO.verifyPassword(password, user.password())) {
             throw new DataAccessException("unauthorized");
         }
         AuthData authData = authDAO.createAuth(username);

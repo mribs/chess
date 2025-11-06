@@ -9,5 +9,7 @@ public interface UserDAO {
 
     public UserData getUser(String username);
 
+    public boolean verifyPassword(String password, String expectedPassword);
+
     public void clearUsers();
 }

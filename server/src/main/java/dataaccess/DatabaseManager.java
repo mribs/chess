@@ -27,6 +27,43 @@ public class DatabaseManager {
         } catch (SQLException ex) {
             throw new DataAccessException("failed to create database", ex);
         }
+        createTables();
+    }
+
+    //create tables code from old version of this project (i wrote it, not plagiarism)
+    static void createTables() {
+        try (var conn = DatabaseManager.getConnection()) {
+            var createUserTable = """
+                    CREATE TABLE IF NOT EXISTS user (
+                    username VARCHAR(255) NOT NULL,
+                    password VARCHAR(255) NOT NULL,
+                    email VARCHAR(255) NOT NULL,
+                    PRIMARY KEY (username)
+                    )""";
+            var createAuthTokenTable = """
+                    CREATE TABLE IF NOT EXISTS authToken (
+                    username VARCHAR(255) NOT NULL,
+                    authToken VARCHAR(255) NOT NULL,
+                    PRIMARY KEY (authToken)
+                    )""";
+            var createGameTable = """
+                    CREATE TABLE IF NOT EXISTS game (
+                    gameID INT AUTO_INCREMENT,
+                    gameData TEXT NOT NULL,
+                    PRIMARY KEY (gameID)
+                    )""";
+            try (var createUserTableStatement = conn.prepareStatement(createUserTable)) {
+                createUserTableStatement.executeUpdate();
+            }
+            try (var createAuthTableStatement = conn.prepareStatement(createAuthTokenTable)) {
+                createAuthTableStatement.executeUpdate();
+            }
+            try (var createGameTableStatement = conn.prepareStatement(createGameTable)) {
+                createGameTableStatement.executeUpdate();
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     /**
@@ -41,7 +78,7 @@ public class DatabaseManager {
      * }
      * </code>
      */
-    static Connection getConnection() throws DataAccessException {
+    public static Connection getConnection() throws DataAccessException {
         try {
             //do not wrap the following line with a try-with-resources
             var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);

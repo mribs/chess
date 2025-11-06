@@ -5,9 +5,12 @@ package server;
 import com.google.gson.Gson;
 
 import dataaccess.DataAccessException;
-import dataaccess.memory.MemoryAuthDAO;
-import dataaccess.memory.MemoryGameDAO;
-import dataaccess.memory.MemoryUserDAO;
+//if using memory database
+import dataaccess.DatabaseManager;
+import dataaccess.memory.*;
+//if using SQL database
+import dataaccess.SQL.*;
+
 import io.javalin.*;
 import io.javalin.http.Context;
 
@@ -40,9 +43,20 @@ public class Server {
         javalin.get("/game", this::listGames);
         javalin.put("/game", this::joinGame);
 
-        userService = new UserService(new MemoryUserDAO(), new MemoryAuthDAO());
-        authService = new AuthService(new MemoryAuthDAO());
-        gameService = new GameService(new MemoryGameDAO());
+//        memory database services
+//        userService = new UserService(new MemoryUserDAO(), new MemoryAuthDAO());
+//        authService = new AuthService(new MemoryAuthDAO());
+//        gameService = new GameService(new MemoryGameDAO());
+
+//        sql database services
+        try {
+            DatabaseManager.createDatabase();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+        userService = new UserService(new SQLUserDAO(), new SQLAuthDAO());
+        authService = new AuthService(new SQLAuthDAO());
+        gameService = new GameService(new SQLGameDAO());
 
     }
 
