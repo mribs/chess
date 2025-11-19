@@ -4,17 +4,20 @@ import client.ServerFacade;
 import model.AuthData;
 
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class UserUI {
     private boolean loggedIn;
     ServerFacade serverFacade;
     private AuthData authData;
     private PreLoginUI preLogin;
+    private Scanner scanner;
 
     public UserUI(String serverUrl) {
         this.loggedIn = false;
         this.serverFacade = new ServerFacade(serverUrl);
         this.authData = null;
+        this.scanner = new Scanner(System.in);
         this.preLogin = new PreLoginUI(this.serverFacade);
     }
 
@@ -27,7 +30,25 @@ public class UserUI {
     }
 
     public String register() {
-        return null;
+        String returnString = null;
+        try {
+            System.out.println("Enter username:");
+            String username = scanner.nextLine();
+            System.out.println("Enter password:");
+            String password = scanner.nextLine();
+            System.out.println("Enter email:");
+            String email = scanner.nextLine();
+
+            authData = preLogin.registerUser(username, password, email);
+            if (authData.authToken() != null) {
+                returnString = "Hiya " + authData.username() + "!";
+                loggedIn = true;
+            }
+        } catch (Exception e) {
+            returnString = "Couldn't register user";
+            loggedIn = false;
+        }
+        return returnString;
     }
 
     public String login() {

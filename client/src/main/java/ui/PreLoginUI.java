@@ -1,6 +1,8 @@
 package ui;
 
 import client.ServerFacade;
+import model.AuthData;
+import model.UserData;
 
 public class PreLoginUI {
     private ServerFacade serverFacade;
@@ -21,5 +23,14 @@ public class PreLoginUI {
                  Register : register a new user
                  Quit : close chess
                 """;
+    }
+
+    public AuthData registerUser(String username, String password, String email) {
+        try {
+            AuthData authData = serverFacade.register(username, password, email);
+            return authData;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
