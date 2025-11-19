@@ -13,6 +13,7 @@ public class UserUI {
         this.loggedIn = false;
         this.serverFacade = new ServerFacade(serverUrl);
         this.authData = null;
+        this.preLogin = new PreLoginUI(this.serverFacade);
     }
 
     public String getHelp() {
