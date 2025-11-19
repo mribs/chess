@@ -2,14 +2,14 @@ package ui;
 
 import client.ServerFacade;
 import model.AuthData;
-import model.GameData;
 
-public class User {
+public class UserUI {
     private boolean loggedIn;
     ServerFacade serverFacade;
     private AuthData authData;
+    private PreLoginUI preLogin;
 
-    public User(String serverUrl) {
+    public UserUI(String serverUrl) {
         this.loggedIn = false;
         this.serverFacade = new ServerFacade(serverUrl);
         this.authData = null;
@@ -20,7 +20,7 @@ public class User {
 //            help menu with authorized things
         }
 //        help menu with login options
-        return null;
+        return preLogin.getHelp();
     }
 
     public String register() {

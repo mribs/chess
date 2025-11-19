@@ -12,8 +12,8 @@ public class ServerFacade {
     private final HttpClient httpClient;
     private Gson gson;
 
-    public ServerFacade(int port) {
-        this.serverUrl = "string to fix";
+    public ServerFacade(String serverUrl) {
+        this.serverUrl = serverUrl;
         this.httpClient = HttpClient.newHttpClient();
         this.gson = new Gson();
     }
