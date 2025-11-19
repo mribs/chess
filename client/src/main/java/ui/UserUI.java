@@ -3,6 +3,8 @@ package ui;
 import client.ServerFacade;
 import model.AuthData;
 
+import java.util.Arrays;
+
 public class UserUI {
     private boolean loggedIn;
     ServerFacade serverFacade;
@@ -50,5 +52,40 @@ public class UserUI {
 
     public String observeGame() {
         return null;
+    }
+
+    public String invalidResponse() {
+        return "Invalid input\n" + getHelp();
+    }
+
+    public String evalLine(String line) {
+        try {
+            var tokens = line.toLowerCase().split(" ");
+            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            if (!loggedIn) {
+                return switch (cmd) {
+                    case "quit" -> "quit";
+                    case "register" -> register();
+                    case "login" -> login();
+                    case "help" -> getHelp();
+                    default -> invalidResponse();
+                };
+            }
+//            if logged in
+            else {
+                return switch (cmd) {
+                    case "logout" -> logout();
+                    case "create" -> createGame();
+                    case "list" -> listGames();
+                    case "join" -> joinGame();
+                    case "observe" -> observeGame();
+                    case "help" -> getHelp();
+                    default -> invalidResponse();
+                };
+            }
+        } catch (Throwable e) {
+            return e.getMessage();
+        }
     }
 }
