@@ -7,13 +7,15 @@ import server.Server;
 
 import java.util.List;
 
+import serverfacade.ServerFacade;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ServerFacadeTests {
 
     private static Server server;
-    static client.ServerFacade facade;
+    static ServerFacade facade;
     private AuthData authData;
 
     @BeforeAll
@@ -21,7 +23,7 @@ public class ServerFacadeTests {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
-        facade = new client.ServerFacade("http://localhost:" + port);
+        facade = new ServerFacade("http://localhost:" + port);
     }
 
     @BeforeEach

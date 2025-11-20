@@ -1,0 +1,139 @@
+package serverfacade;
+
+import com.google.gson.Gson;
+import model.AuthData;
+import model.GameData;
+import model.UserData;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.*;
+import java.net.http.HttpClient;
+import java.util.List;
+import java.util.Objects;
+
+public class ServerFacade {
+    private final String serverUrl;
+    private final HttpClient httpClient;
+    private Gson gson;
+
+    public ServerFacade(String serverUrl) {
+        this.serverUrl = serverUrl;
+        this.httpClient = HttpClient.newHttpClient();
+        this.gson = new Gson();
+    }
+
+    public void clear() {
+        var path = "/db";
+        this.makeRequest("DELETE", path);
+    }
+
+    public AuthData register(String username, String password, String email) {
+        var path = "/user";
+        UserData userData = new UserData(username, password, email);
+        return this.makeRequest("POST", path, userData, AuthData.class);
+    }
+
+    public AuthData login(String username, String password) {
+        return null;
+    }
+
+    public void logout(String authToken) {
+    }
+
+    public GameData createGame(String gameName, String authToken) {
+        return null;
+    }
+
+    public List listGames(String authtoken) {
+        return List.of();
+    }
+
+    public GameData joinGame(String test1, String white, String username, String s) {
+        return null;
+    }
+
+    //    these are largely copied from when I last did this project because I don't want to re-write them
+//    makeRequest no data
+    private void makeRequest(String method, String path) {
+        try {
+            URL url = (new URI(serverUrl + path)).toURL();
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod(method);
+            http.connect();
+            throwIfNotSuccessful(http);
+        } catch (URISyntaxException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //    makeRequest no authorization
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) {
+        try {
+            URL url = (new URI(serverUrl + path)).toURL();
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod(method);
+            http.setDoOutput(true);
+
+            writeBody(request, http);
+            http.connect();
+            throwIfNotSuccessful(http);
+            return readBody(http, responseClass);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+
+    //make request with authorization
+    private <T> T makeRequest(String method, String path, Object request, String authtoken, Class<T> responseClass) {
+        try {
+            URL url = (new URI(serverUrl + path)).toURL();
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod(method);
+            http.setRequestProperty("authorization", authtoken);
+            http.setDoOutput(true);
+
+            writeBody(request, http);
+            http.connect();
+            throwIfNotSuccessful(http);
+            return readBody(http, responseClass);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void writeBody(Object request, HttpURLConnection http) throws IOException {
+        if (request != null) {
+            http.addRequestProperty("Content-Type", "application/json");
+            String reqData = new Gson().toJson(request);
+            try (OutputStream reqBody = http.getOutputStream()) {
+                reqBody.write(reqData.getBytes());
+            }
+        }
+    }
+
+    private void throwIfNotSuccessful(HttpURLConnection http) throws IOException {
+        var status = http.getResponseCode();
+        if (!isSuccessful(status)) {
+            throw new RuntimeException("failure: " + status);
+        }
+    }
+
+    private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
+        T response = null;
+        if (responseClass == null) {
+            return null;
+        }
+        try (InputStream respBody = http.getInputStream()) {
+            InputStreamReader reader = new InputStreamReader(respBody);
+            response = new Gson().fromJson(reader, responseClass);
+        }
+        return response;
+    }
+
+    private boolean isSuccessful(int status) {
+        return status / 100 == 2;
+    }
+}

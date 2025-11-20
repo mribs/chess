@@ -1,6 +1,6 @@
 package ui;
 
-import client.ServerFacade;
+import serverfacade.ServerFacade;
 import model.AuthData;
 import model.UserData;
 
