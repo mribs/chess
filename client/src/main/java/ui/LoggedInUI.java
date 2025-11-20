@@ -1,7 +1,11 @@
 package ui;
 
 import model.AuthData;
+import model.GameData;
 import serverfacade.ServerFacade;
+
+import java.util.Collection;
+import java.util.List;
 
 public class LoggedInUI {
     private final ServerFacade serverFacade;
@@ -36,5 +40,18 @@ public class LoggedInUI {
             throw new RuntimeException(e);
         }
         return "Hurry Back";
+    }
+
+    public int createGame(String authToken, String gameName) {
+        try {
+            GameData gameData = serverFacade.createGame(gameName, authToken);
+            return gameData.gameID();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Collection<GameData> listGames(String authToken) {
+        return serverFacade.listGames(authToken);
     }
 }

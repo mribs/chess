@@ -5,6 +5,7 @@ import model.GameData;
 import org.junit.jupiter.api.*;
 import server.Server;
 
+import java.util.Collection;
 import java.util.List;
 
 import serverfacade.ServerFacade;
@@ -71,7 +72,7 @@ public class ServerFacadeTests {
     @Test
     void listGames() {
         GameData gameData = facade.createGame("Test1", authData.authToken());
-        List gameList = facade.listGames(authData.authToken());
+        Collection<GameData> gameList = facade.listGames(authData.authToken());
         assertEquals(gameList.size(), 1);
     }
 

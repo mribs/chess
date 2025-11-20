@@ -1,9 +1,12 @@
 package ui;
 
+import model.GameData;
 import serverfacade.ServerFacade;
 import model.AuthData;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Scanner;
 
 public class UserUI {
@@ -85,11 +88,37 @@ public class UserUI {
     }
 
     public String createGame() {
-        return null;
+        System.out.println("Enter game name:");
+        String gameName = scanner.nextLine();
+
+        String returnString = null;
+        try {
+            int gameID = postLogin.createGame(authData.authToken(), gameName);
+            returnString = gameName + " has been created. The game ID is: " + gameID;
+        } catch (Exception e) {
+            returnString = "There was a problem making your game";
+        }
+        return returnString;
     }
 
     public String listGames() {
-        return null;
+        StringBuilder returnString = new StringBuilder();
+        try {
+            Collection<GameData> gameList = postLogin.listGames(authData.authToken());
+            int index = 1;
+            if (gameList == null || gameList.isEmpty()) {
+                return "Be the first to create a game";
+            }
+            for (GameData game : gameList) {
+                String gameString = index + ": " + game.gameName() + "\n    White username: " + game.whiteUsername()
+                        + " Black username: " + game.blackUsername() + "\n";
+                returnString.append(gameString);
+                index += 1;
+            }
+        } catch (Exception e) {
+            returnString.append("There was a problem making your game");
+        }
+        return returnString.toString();
     }
 
     public String joinGame() {

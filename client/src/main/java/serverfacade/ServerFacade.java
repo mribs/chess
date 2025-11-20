@@ -1,8 +1,10 @@
 package serverfacade;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
+import model.ListGamesResult;
 import model.UserData;
 
 import java.io.IOException;
@@ -11,8 +13,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.*;
 import java.net.http.HttpClient;
+import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -48,11 +50,15 @@ public class ServerFacade {
     }
 
     public GameData createGame(String gameName, String authToken) {
-        return null;
+        GameData game = new GameData(0, gameName, null, null, new ChessGame());
+        var path = "/game";
+        return this.makeRequest("POST", path, game, authToken, GameData.class);
     }
 
-    public List listGames(String authtoken) {
-        return List.of();
+    public Collection<GameData> listGames(String authtoken) {
+        var path = "/game";
+        ListGamesResult result = this.makeRequest("GET", path, null, authtoken, ListGamesResult.class);
+        return result.games();
     }
 
     public GameData joinGame(String test1, String white, String username, String s) {
