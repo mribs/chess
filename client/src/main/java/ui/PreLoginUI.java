@@ -11,7 +11,7 @@ public class PreLoginUI {
     }
 //    Options pre-logging in
 //    Get help
-//    quit chess
+//    quit chess -- not part of this though
 //    login
 //    register new user
 

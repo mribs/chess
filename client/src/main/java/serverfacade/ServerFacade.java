@@ -43,6 +43,8 @@ public class ServerFacade {
     }
 
     public void logout(String authToken) {
+        var path = "/session";
+        this.makeRequest("DELETE", path, null, authToken, null);
     }
 
     public GameData createGame(String gameName, String authToken) {

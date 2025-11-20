@@ -11,6 +11,7 @@ public class UserUI {
     ServerFacade serverFacade;
     private AuthData authData;
     private PreLoginUI preLogin;
+    private LoggedInUI postLogin;
     private Scanner scanner;
 
     public UserUI(String serverUrl) {
@@ -19,11 +20,12 @@ public class UserUI {
         this.authData = null;
         this.scanner = new Scanner(System.in);
         this.preLogin = new PreLoginUI(this.serverFacade);
+        this.postLogin = new LoggedInUI(this.serverFacade);
     }
 
     public String getHelp() {
         if (loggedIn) {
-//            help menu with authorized things
+            return postLogin.getHelp();
         }
 //        help menu with login options
         return preLogin.getHelp();
@@ -72,7 +74,14 @@ public class UserUI {
     }
 
     public String logout() {
-        return null;
+        String returnString = null;
+        try {
+            returnString = postLogin.logout(authData);
+        } catch (Exception e) {
+            returnString = "You're stuck here (couldn't log out)";
+        }
+        loggedIn = false;
+        return returnString;
     }
 
     public String createGame() {
