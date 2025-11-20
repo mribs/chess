@@ -37,7 +37,9 @@ public class ServerFacade {
     }
 
     public AuthData login(String username, String password) {
-        return null;
+        var path = "/session";
+        UserData userData = new UserData(username, password);
+        return this.makeRequest("POST", path, userData, AuthData.class);
     }
 
     public void logout(String authToken) {

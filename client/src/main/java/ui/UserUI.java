@@ -52,7 +52,23 @@ public class UserUI {
     }
 
     public String login() {
-        return null;
+        String returnString = null;
+        try {
+            System.out.println("Enter username:");
+            String username = scanner.nextLine();
+            System.out.println("Enter password:");
+            String password = scanner.nextLine();
+
+            authData = preLogin.login(username, password);
+            if (authData.authToken() != null) {
+                returnString = "Hiya " + authData.username() + "!";
+                loggedIn = true;
+            }
+        } catch (Exception e) {
+            returnString = "Failed to Login";
+            loggedIn = false;
+        }
+        return returnString;
     }
 
     public String logout() {

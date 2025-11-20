@@ -27,8 +27,15 @@ public class PreLoginUI {
 
     public AuthData registerUser(String username, String password, String email) {
         try {
-            AuthData authData = serverFacade.register(username, password, email);
-            return authData;
+            return serverFacade.register(username, password, email);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public AuthData login(String username, String password) {
+        try {
+            return serverFacade.login(username, password);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
