@@ -2,10 +2,9 @@ package ui;
 
 import serverfacade.ServerFacade;
 import model.AuthData;
-import model.UserData;
 
 public class PreLoginUI {
-    private ServerFacade serverFacade;
+    private final ServerFacade serverFacade;
 
     public PreLoginUI(ServerFacade serverFacade) {
         this.serverFacade = serverFacade;
