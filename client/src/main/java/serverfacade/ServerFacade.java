@@ -2,10 +2,7 @@ package serverfacade;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import model.AuthData;
-import model.GameData;
-import model.ListGamesResult;
-import model.UserData;
+import model.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,14 +52,17 @@ public class ServerFacade {
         return this.makeRequest("POST", path, game, authToken, GameData.class);
     }
 
-    public Collection<GameData> listGames(String authtoken) {
+    public List<GameData> listGames(String authToken) {
         var path = "/game";
-        ListGamesResult result = this.makeRequest("GET", path, null, authtoken, ListGamesResult.class);
+        ListGamesResult result = this.makeRequest("GET", path, null, authToken, ListGamesResult.class);
         return result.games();
     }
 
-    public GameData joinGame(String test1, String white, String username, String s) {
-        return null;
+    public GameData joinGame(int gameID, String playerColor, AuthData authData) {
+        var path = "/game";
+        playerColor = playerColor.toUpperCase();
+        JoinGameRequest joinGameRequest = new JoinGameRequest(playerColor, gameID);
+        return this.makeRequest("PUT", path, joinGameRequest, authData.authToken(), GameData.class);
     }
 
     //    these are largely copied from when I last did this project because I don't want to re-write them
@@ -97,12 +97,12 @@ public class ServerFacade {
     }
 
     //make request with authorization
-    private <T> T makeRequest(String method, String path, Object request, String authtoken, Class<T> responseClass) {
+    private <T> T makeRequest(String method, String path, Object request, String authToken, Class<T> responseClass) {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
-            http.setRequestProperty("authorization", authtoken);
+            http.setRequestProperty("authorization", authToken);
             http.setDoOutput(true);
 
             writeBody(request, http);
@@ -132,7 +132,7 @@ public class ServerFacade {
     }
 
     private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
-        T response = null;
+        T response;
         if (responseClass == null) {
             return null;
         }

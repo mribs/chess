@@ -80,7 +80,7 @@ public class ServerFacadeTests {
     void joinGame() {
         GameData gameData = facade.createGame("Test1", authData.authToken());
         assertDoesNotThrow(() ->
-                facade.joinGame("Test1", "white", authData.username(), authData.authToken())
+                facade.joinGame(gameData.gameID(), "white", authData)
         );
     }
 }

@@ -4,8 +4,6 @@ import model.GameData;
 import serverfacade.ServerFacade;
 import model.AuthData;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,9 +11,10 @@ public class UserUI {
     private boolean loggedIn;
     ServerFacade serverFacade;
     private AuthData authData;
-    private PreLoginUI preLogin;
-    private LoggedInUI postLogin;
-    private Scanner scanner;
+    private final PreLoginUI preLogin;
+    private final LoggedInUI postLogin;
+    private final Scanner scanner;
+    private List<GameData> gameList;
 
     public UserUI(String serverUrl) {
         this.loggedIn = false;
@@ -77,7 +76,7 @@ public class UserUI {
     }
 
     public String logout() {
-        String returnString = null;
+        String returnString;
         try {
             returnString = postLogin.logout(authData);
         } catch (Exception e) {
@@ -91,7 +90,7 @@ public class UserUI {
         System.out.println("Enter game name:");
         String gameName = scanner.nextLine();
 
-        String returnString = null;
+        String returnString;
         try {
             int gameID = postLogin.createGame(authData.authToken(), gameName);
             returnString = gameName + " has been created. The game ID is: " + gameID;
@@ -104,7 +103,7 @@ public class UserUI {
     public String listGames() {
         StringBuilder returnString = new StringBuilder();
         try {
-            Collection<GameData> gameList = postLogin.listGames(authData.authToken());
+            gameList = postLogin.listGames(authData.authToken());
             int index = 1;
             if (gameList == null || gameList.isEmpty()) {
                 return "Be the first to create a game";
@@ -122,7 +121,42 @@ public class UserUI {
     }
 
     public String joinGame() {
-        return null;
+        System.out.println("Enter game number (from list):");
+        String gameNumberString = scanner.nextLine();
+        System.out.println("Which (available) team? w/b:");
+        String playerColor = scanner.nextLine();
+        switch (playerColor) {
+            case "w" -> playerColor = "WHITE";
+            case "b" -> playerColor = "BLACK";
+            default -> {
+                return "invalid team color";
+            }
+        }
+
+        int gameNumber;
+        int gameID;
+        try {
+            gameNumber = Integer.parseInt(gameNumberString);
+        } catch (Exception e) {
+            return "Invalid game number";
+        }
+        if (gameList != null && gameNumber <= gameList.size() && gameNumber > 0) {
+            gameID = gameList.get(gameNumber - 1).gameID();
+        } else {
+            return "Invalid game number";
+        }
+        if (gameID <= gameList.size()) {
+            gameID = gameList.get(gameNumber - 1).gameID();
+        }
+        GameData gameData = postLogin.joinGame(gameID, playerColor, this.authData);
+        if (gameData != null) {
+//            temporay(phase 5) just print out the board from color perspective
+            GameUI gameUI = new GameUI(gameData, authData, playerColor);
+            gameUI.run();
+        } else {
+            return "failed to join game";
+        }
+        return "Exited gameplay";
     }
 
     public String observeGame() {
@@ -137,7 +171,6 @@ public class UserUI {
         try {
             var tokens = line.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
-            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             if (!loggedIn) {
                 return switch (cmd) {
                     case "quit" -> "quit";

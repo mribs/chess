@@ -51,7 +51,11 @@ public class LoggedInUI {
         }
     }
 
-    public Collection<GameData> listGames(String authToken) {
+    public List<GameData> listGames(String authToken) {
         return serverFacade.listGames(authToken);
+    }
+
+    public GameData joinGame(int gameID, String playerColor, AuthData authData) {
+        return serverFacade.joinGame(gameID, playerColor, authData);
     }
 }
