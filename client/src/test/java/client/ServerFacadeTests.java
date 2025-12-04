@@ -45,15 +45,40 @@ public class ServerFacadeTests {
     }
 
     @Test
+    void clearTest() {
+        facade.clear();
+        assertThrows(Exception.class, () -> {
+            facade.login("test", "pass");
+        });
+    }
+
+    @Test
     void register() {
         var authData = facade.register("player1", "pass", "email");
         assertNotEquals(authData.authToken(), null);
     }
 
     @Test
+    void registerFail() {
+        assertThrows(Exception.class, () -> {
+            facade.register("test", "pass", "email");
+        });
+    }
+
+    @Test
     void login() {
         var authData = facade.login("test", "pass");
         assertNotNull(authData);
+    }
+
+    @Test
+    void loginFail() {
+        assertThrows(Exception.class, () -> {
+            facade.login("nonexistent", "pass");
+        });
+        assertThrows(Exception.class, () -> {
+            facade.login("test", "incorrect");
+        });
     }
 
     @Test
@@ -64,9 +89,25 @@ public class ServerFacadeTests {
     }
 
     @Test
+    void logoutFail() {
+//        would fail if invalid authtoken ig
+        assertThrows(Exception.class, () -> {
+            facade.logout("not real");
+        });
+    }
+
+    @Test
     void createGame() {
         GameData gameData = facade.createGame("TestGame", authData.authToken());
         assertNotNull(gameData);
+    }
+
+    @Test
+    void createGameFail() {
+//        fails w/ invalid auth
+        assertThrows(Exception.class, () -> {
+            facade.createGame("test1", "not real");
+        });
     }
 
     @Test
@@ -77,10 +118,33 @@ public class ServerFacadeTests {
     }
 
     @Test
+    void listGamesFail() {
+//        fails w/ invalid auth
+        assertThrows(Exception.class, () -> {
+            facade.listGames("nonexistent");
+        });
+    }
+
+    @Test
     void joinGame() {
         GameData gameData = facade.createGame("Test1", authData.authToken());
         assertDoesNotThrow(() ->
                 facade.joinGame(gameData.gameID(), "white", authData)
         );
+        assertDoesNotThrow(() ->
+                facade.joinGame(gameData.gameID(), "black", authData)
+        );
+        assertDoesNotThrow(() ->
+                facade.joinGame(gameData.gameID(), "observe", authData)
+        );
+    }
+
+    @Test
+    void joinGameFail() {
+        GameData gameData = facade.createGame("testGame", authData.authToken());
+        facade.joinGame(gameData.gameID(), "white", authData);
+        assertThrows(Exception.class, () -> {
+            facade.joinGame(gameData.gameID(), "white", authData);
+        });
     }
 }
