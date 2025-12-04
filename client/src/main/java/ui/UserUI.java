@@ -93,7 +93,7 @@ public class UserUI {
         String returnString;
         try {
             int gameID = postLogin.createGame(authData.authToken(), gameName);
-            returnString = gameName + " has been created. The game ID is: " + gameID;
+            returnString = gameName + " has been created.";
         } catch (Exception e) {
             returnString = "There was a problem making your game";
         }
@@ -109,8 +109,16 @@ public class UserUI {
                 return "Be the first to create a game";
             }
             for (GameData game : gameList) {
-                String gameString = index + ": " + game.gameName() + "\n    White username: " + game.whiteUsername()
-                        + " Black username: " + game.blackUsername() + "\n";
+                String whiteUsername = game.whiteUsername();
+                String blackUsername = game.blackUsername();
+                if (whiteUsername == null) {
+                    whiteUsername = "available";
+                }
+                if (blackUsername == null) {
+                    blackUsername = "available";
+                }
+                String gameString = index + ": " + game.gameName() + "\n    White username: " + whiteUsername
+                        + " Black username: " + blackUsername + "\n";
                 returnString.append(gameString);
                 index += 1;
             }
@@ -140,7 +148,12 @@ public class UserUI {
         } catch (Exception e) {
             return "Invalid game number";
         }
-        GameData gameData = postLogin.joinGame(gameID, playerColor, this.authData);
+        GameData gameData;
+        try {
+            gameData = postLogin.joinGame(gameID, playerColor, this.authData);
+        } catch (Exception e) {
+            return "failed to join game";
+        }
         if (gameData != null) {
 //            temporay(phase 5) just print out the board from color perspective
             GameUI gameUI = new GameUI(gameData, authData, playerColor);
