@@ -11,7 +11,7 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessGame {
-    ChessBoard gameBoard;
+    public ChessBoard gameBoard;
     TeamColor teamTurn;
 
     public ChessGame() {

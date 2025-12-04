@@ -13,6 +13,7 @@ import dataaccess.sql.*;
 import io.javalin.*;
 import io.javalin.http.Context;
 
+import model.GameData;
 import service.AuthService;
 import service.GameService;
 import service.UserService;
@@ -110,8 +111,8 @@ public class Server {
         authService.authorize(authToken);
         String username = authService.getUsername(authToken);
         JoinGameRequest joinGameRequest = new Gson().fromJson(ctx.body(), JoinGameRequest.class);
-        gameService.joinGame(joinGameRequest, username);
-        ctx.status(200);
+        GameData gameData = gameService.joinGame(joinGameRequest, username);
+        ctx.json((new Gson().toJson(gameData)));
     }
 
 
