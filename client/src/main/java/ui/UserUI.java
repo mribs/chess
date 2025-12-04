@@ -125,28 +125,20 @@ public class UserUI {
         String gameNumberString = scanner.nextLine();
         System.out.println("Which (available) team? w/b:");
         String playerColor = scanner.nextLine();
+        playerColor = playerColor.toUpperCase();
         switch (playerColor) {
-            case "w" -> playerColor = "WHITE";
-            case "b" -> playerColor = "BLACK";
+            case "W", "WHITE" -> playerColor = "WHITE";
+            case "B", "BLACK" -> playerColor = "BLACK";
             default -> {
                 return "invalid team color";
             }
         }
 
-        int gameNumber;
         int gameID;
         try {
-            gameNumber = Integer.parseInt(gameNumberString);
+            gameID = findGameID(gameNumberString);
         } catch (Exception e) {
             return "Invalid game number";
-        }
-        if (gameList != null && gameNumber <= gameList.size() && gameNumber > 0) {
-            gameID = gameList.get(gameNumber - 1).gameID();
-        } else {
-            return "Invalid game number";
-        }
-        if (gameID <= gameList.size()) {
-            gameID = gameList.get(gameNumber - 1).gameID();
         }
         GameData gameData = postLogin.joinGame(gameID, playerColor, this.authData);
         if (gameData != null) {
@@ -159,8 +151,33 @@ public class UserUI {
         return "Exited gameplay";
     }
 
+    private int findGameID(String gameNumber) throws Exception {
+        int gameNumberInt = Integer.parseInt(gameNumber);
+        if (gameList != null && gameNumberInt <= gameList.size() && gameNumberInt > 0) {
+            return gameList.get(gameNumberInt - 1).gameID();
+        } else {
+            throw new Exception("Invalid game number");
+        }
+    }
+
     public String observeGame() {
-        return null;
+        System.out.println("Enter game number (from list):");
+        String gameNumberString = scanner.nextLine();
+        int gameID;
+        try {
+            gameID = findGameID(gameNumberString);
+        } catch (Exception e) {
+            return "Invalid game number";
+        }
+        GameData gameData = postLogin.joinGame(gameID, "OBSERVE", authData);
+        if (gameData != null) {
+//            temporay(phase 5) just print out the board from color perspective
+            GameUI gameUI = new GameUI(gameData, authData, "OBSERVE");
+            gameUI.run();
+        } else {
+            return "failed to join game";
+        }
+        return "Exited gameplay";
     }
 
     public String invalidResponse() {

@@ -55,6 +55,8 @@ public class GameService {
                 throw new DataAccessException("already taken");
             }
             newGameData = new GameData(gameData.gameID(), gameData.gameName(), gameData.whiteUsername(), username, gameData.game());
+        } else if (Objects.equals(playerColor, "OBSERVE")) {
+            newGameData = gameData;
         } else {
             throw new DataAccessException("bad request");
         }
