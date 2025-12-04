@@ -6,7 +6,6 @@ import model.GameData;
 import service.request.CreateGameRequest;
 import service.request.JoinGameRequest;
 import service.result.CreateGameResult;
-import service.result.JoinGameResult;
 import service.result.ListGamesResult;
 
 import java.util.Collection;
@@ -38,7 +37,7 @@ public class GameService {
         return new ListGamesResult(games);
     }
 
-    public JoinGameResult joinGame(JoinGameRequest joinGameRequest, String username) throws DataAccessException {
+    public GameData joinGame(JoinGameRequest joinGameRequest, String username) throws DataAccessException {
         String playerColor = joinGameRequest.playerColor();
         int gameID = joinGameRequest.gameID();
         GameData gameData = gameDAO.getGame(gameID);
@@ -60,6 +59,6 @@ public class GameService {
             throw new DataAccessException("bad request");
         }
         gameDAO.updateGame(gameID, newGameData);
-        return new JoinGameResult(newGameData);
+        return newGameData;
     }
 }

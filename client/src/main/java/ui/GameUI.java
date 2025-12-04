@@ -5,24 +5,32 @@ import model.GameData;
 import chess.*;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GameUI {
     GameData gameData;
     AuthData authData;
     String playerColor;
     ChessGame chessGame;
+    ChessBoard board;
 
     public GameUI(GameData gameData, AuthData authData, String playerColor) {
         this.gameData = gameData;
         this.authData = authData;
         this.playerColor = playerColor;
         this.chessGame = gameData.game();
+        this.board = gameData.game().getBoard();
     }
 
     public void run() {
         System.out.println("Welcome to " + gameData.gameName() + "!\n" +
                 "And may the odds be ever in your favor");
-
+        String printColor = playerColor;
+        if (Objects.equals(playerColor, "observe")) {
+            printColor = "WHITE";
+        }
+        fancyPrint(printColor, null, null);
+        System.out.println("Gameplay not currently implemented, exiting");
     }
 
     //    Board print code copied from my earlier version of project, I don't want to redo it
@@ -36,6 +44,10 @@ public class GameUI {
         }
 
         System.out.println();
+        if (this.board == null) {
+            System.out.println("There's no board to be found");
+            return;
+        }
         System.out.print(EscapeSequences.RESET_TEXT_COLOR);
 
         // Print column labels (letters)
@@ -83,6 +95,7 @@ public class GameUI {
             System.out.println(); // Move to the next line for the next row
         }
         System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+        System.out.print(EscapeSequences.RESET_BG_COLOR);
     }
 
 
