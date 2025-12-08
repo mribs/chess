@@ -206,7 +206,7 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
 
     @Override
     public void handleClose(@NotNull WsCloseContext wsCloseContext) throws Exception {
-//TODO gotta put stuff here probably
+//        removing connections is handled elsewhere... but I need this override.
     }
 
     @Override
