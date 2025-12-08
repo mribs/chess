@@ -1,5 +1,7 @@
 package websocket.messages;
 
+import model.GameData;
+
 import java.util.Objects;
 
 /**
@@ -10,6 +12,9 @@ import java.util.Objects;
  */
 public class ServerMessage {
     ServerMessageType serverMessageType;
+    String message;
+    GameData gameData;
+    String errorMessage;
 
     public enum ServerMessageType {
         LOAD_GAME,
@@ -21,8 +26,36 @@ public class ServerMessage {
         this.serverMessageType = type;
     }
 
+    public ServerMessage(ServerMessageType type, String message) {
+        this.serverMessageType = type;
+        this.message = message;
+    }
+
+    public ServerMessage(ServerMessageType type, GameData gameData) {
+        this.serverMessageType = type;
+        this.gameData = gameData;
+    }
+
+    public ServerMessage(ServerMessageType type, String message, String errorMessage) {
+        this.serverMessageType = type;
+        this.message = message;
+        this.errorMessage = errorMessage;
+    }
+
     public ServerMessageType getServerMessageType() {
         return this.serverMessageType;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public GameData getGameData() {
+        return gameData;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
     @Override
@@ -39,5 +72,15 @@ public class ServerMessage {
     @Override
     public int hashCode() {
         return Objects.hash(getServerMessageType());
+    }
+
+    @Override
+    public String toString() {
+        return "ServerMessage{" +
+                "serverMessageType=" + serverMessageType +
+                ", message='" + message + '\'' +
+                ", gameData=" + gameData +
+                ", errorMessage='" + errorMessage + '\'' +
+                '}';
     }
 }

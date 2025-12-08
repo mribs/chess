@@ -13,7 +13,11 @@ import dataaccess.sql.*;
 import io.javalin.*;
 import io.javalin.http.Context;
 
+import io.javalin.websocket.WsCloseHandler;
+import io.javalin.websocket.WsConnectHandler;
+import io.javalin.websocket.WsMessageHandler;
 import model.GameData;
+import server.websocket.WebsocketHandler;
 import service.AuthService;
 import service.GameService;
 import service.UserService;
@@ -26,14 +30,17 @@ import java.util.Objects;
 public class Server {
 
     private final Javalin javalin;
-    private UserService userService;
-    private AuthService authService;
-    private GameService gameService;
+    private final UserService userService;
+    private final AuthService authService;
+    private final GameService gameService;
+    private final WebsocketHandler websocketHandler;
 
     public Server() {
+        this.websocketHandler = new WebsocketHandler();
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
         javalin.exception(Exception.class, this::exceptionHandler);
         javalin.delete("/db", this::clearDatabase);
+
 //        user paths
         javalin.post("/user", this::registerUser);
         javalin.post("/session", this::loginUser);
@@ -42,6 +49,12 @@ public class Server {
         javalin.post("/game", this::createGame);
         javalin.get("/game", this::listGames);
         javalin.put("/game", this::joinGame);
+//        websocket
+        javalin.ws("/ws", ws -> {
+            ws.onConnect(websocketHandler);
+            ws.onMessage(websocketHandler);
+            ws.onClose(websocketHandler);
+        });
 
 //        sql database services, switch to memoryDAO's (and toss trycatch block) to switch
         try {
