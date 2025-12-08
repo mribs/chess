@@ -39,7 +39,9 @@ public class ConnectionManager {
 
     public void sendConnectionFailure(String authToken, Session session, ServerMessage message) {
         try {
-            new Connection(authToken, session).sendMessage(message.toString());
+            Gson gson = new Gson();
+            String jsonMessage = gson.toJson(message);
+            new Connection(authToken, session).sendMessage(jsonMessage);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
