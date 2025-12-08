@@ -44,6 +44,33 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
     }
 
     private void leaveGame(String authToken, UserGameCommand command) {
+        try {
+            String username = new SQLAuthDAO().getAuth(authToken).username();
+            SQLGameDAO gameDAO = new SQLGameDAO();
+            GameData gameData = null;
+            int gameID = command.getGameID();
+            gameData = gameDAO.getGame(gameID);
+            ChessGame.TeamColor teamColor = null;
+            if (gameData != null) {
+                ChessGame game = gameData.game();
+                if (username.equals(gameData.whiteUsername())) {
+                    GameData updatedData = new GameData(gameData.gameID(), gameData.gameName(), null, gameData.blackUsername(), game);
+                    gameDAO.updateGame(gameID, updatedData);
+                } else if (username.equals(gameData.blackUsername())) {
+                    GameData updatedData = new GameData(gameData.gameID(), gameData.gameName(), gameData.whiteUsername(), null, game);
+                    gameDAO.updateGame(gameID, updatedData);
+                }
+            } else {
+                ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: game cannot be found");
+                connectionManager.sendToRoot(gameID, authToken, errorMessage);
+            }
+            String message = String.format("%s has left the game", username);
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+            connectionManager.broadcast(gameID, authToken, notification);
+            connectionManager.remove(gameID, authToken);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void resign(String authToken, UserGameCommand command) {
