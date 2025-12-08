@@ -52,9 +52,9 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
             ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
 
             SQLGameDAO gameDAO = new SQLGameDAO();
-            GameData game = gameDAO.getGame(command.getGameID());
-            if (game != null) {
-                ServerMessage loadGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
+            GameData gameData = gameDAO.getGame(command.getGameID());
+            if (gameData.game() != null) {
+                ServerMessage loadGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, gameData);
                 connectionManager.sendToRoot(command.getGameID(), authToken, loadGameMessage);
                 connectionManager.broadcast(command.getGameID(), authToken, notification);
             } else {
