@@ -74,6 +74,46 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
     }
 
     private void resign(String authToken, UserGameCommand command) {
+        int gameID = command.getGameID();
+        try {
+            String username = new SQLAuthDAO().getAuth(authToken).username();
+            SQLGameDAO gameDAO = new SQLGameDAO();
+            GameData gameData = gameDAO.getGame(gameID);
+            ChessGame.TeamColor teamColor = null;
+            if (gameData != null) {
+                ChessGame game = gameData.game();
+                if (username.equals(gameData.whiteUsername())) {
+                    teamColor = ChessGame.TeamColor.WHITE;
+                } else if (username.equals(gameData.blackUsername())) {
+                    teamColor = ChessGame.TeamColor.BLACK;
+                } else {
+                    ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null,
+                            "Error: Observers can't resign");
+                    connectionManager.sendToRoot(gameID, authToken, errorMessage);
+                    return;
+                }
+                if (game.isOver()) {
+                    ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null,
+                            "Error: Game is already over, please use leave command to exit");
+                    connectionManager.sendToRoot(gameID, authToken, errorMessage);
+                    return;
+                }
+                String message = String.format("%s resigned, please leave the game", username);
+                ServerMessage resignation = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                connectionManager.broadcast(gameID, authToken, resignation);
+                ServerMessage resigned = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, "You resigned");
+                connectionManager.sendToRoot(gameID, authToken, resigned);
+                game.gameOver();
+                GameData updatedGame = new GameData(gameID, gameData.gameName(), gameData.whiteUsername(), gameData.blackUsername(), game);
+                gameDAO.updateGame(gameID, updatedGame);
+            }
+        } catch (UnauthorizedException e) {
+            connectionManager.add(gameID, authToken, session);
+            ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: unauthorized");
+            connectionManager.sendConnectionFailure(authToken, session, errorMessage);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void connect(String authToken, UserGameCommand command) {
@@ -102,7 +142,6 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
     }
 
     private void makeMove(String authToken, UserGameCommand command) {
-
         int gameID = 0;
         try {
             String username;
@@ -137,6 +176,9 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
                 if (game.isInCheckmate(teamColor)) {
                     ServerMessage checkMateMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, "CHECKMATE");
                     connectionManager.sendToAll(gameID, checkMateMessage);
+                }
+                if (game.isOver()) {
+                    throw new InvalidMoveException("game has ended.");
                 }
                 gameDAO.updateGame(gameID, gameData);
             } else {
