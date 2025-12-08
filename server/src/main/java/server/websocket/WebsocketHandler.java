@@ -4,7 +4,6 @@ import chess.ChessGame;
 import chess.ChessMove;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;
 import dataaccess.sql.*;
 import io.javalin.websocket.*;
