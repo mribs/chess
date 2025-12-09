@@ -4,6 +4,7 @@ import model.AuthData;
 import model.GameData;
 import chess.*;
 import websocket.NotificationHandler;
+import websocket.WebSocketClient;
 import websocket.messages.ServerMessage;
 
 import java.util.*;
@@ -14,6 +15,7 @@ public class GameUI implements NotificationHandler {
     String playerColor;
     ChessGame chessGame;
     ChessBoard board;
+    WebSocketClient webSocketClient;
     private Scanner scanner;
 
     public GameUI(GameData gameData, AuthData authData, String playerColor) {
@@ -22,13 +24,21 @@ public class GameUI implements NotificationHandler {
         this.playerColor = playerColor;
         this.chessGame = gameData.game();
         this.board = gameData.game().getBoard();
+        try {
+            this.webSocketClient = new WebSocketClient(this);
+            webSocketClient.joinGame(authData.authToken(), gameData.gameID(), playerColor);
+        } catch (Exception e) {
+            System.out.println("Error Connecting");
+        }
+
+
     }
 
     public void run() {
         System.out.println("Welcome to " + gameData.gameName() + "!\n" +
                 "And may the odds be ever in your favor");
         String printColor = playerColor;
-        if (Objects.equals(playerColor, "observe")) {
+        if (playerColor.equals("observe")) {
             printColor = "WHITE";
         }
         System.out.println(getHelp());
@@ -87,7 +97,12 @@ public class GameUI implements NotificationHandler {
     }
 
     private String leave() {
-        return "not implemented";
+        try {
+            webSocketClient.leaveGame(authData.authToken(), gameData.gameID());
+            return "quit";
+        } catch (Exception e) {
+            return "Could not leave game. Guess you're stuck here buddy";
+        }
     }
 
     private String makeMove() {
@@ -95,9 +110,18 @@ public class GameUI implements NotificationHandler {
     }
 
     private String resign() {
-        return "not implemented";
+        try {
+            webSocketClient.resign(authData.authToken(), gameData.gameID());
+            chessGame.gameOver();
+            if (playerColor == null || playerColor.equals("observer")) {
+                return "";
+            }
+            return "quit";
+        } catch (Exception e) {
+            return "failed to resign";
+        }
     }
-    
+
     private String evalLine(String line) {
         try {
             var tokens = line.toLowerCase().split(" ");
