@@ -38,7 +38,7 @@ public class SQLAuthDAO implements AuthDAO {
                 return new AuthData(authToken, username);
             }
         } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException("SQL statement probably wrong (get auth)");
+            throw new RuntimeException("Could not find authToken");
         }
         return null;
     }

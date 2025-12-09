@@ -13,6 +13,7 @@ import java.util.Objects;
 public class ChessGame {
     public ChessBoard gameBoard;
     TeamColor teamTurn;
+    boolean isOver;
 
     public ChessGame() {
 //        Create and set board
@@ -20,6 +21,7 @@ public class ChessGame {
         gameBoard.resetBoard();
 //        White team has first move
         teamTurn = TeamColor.WHITE;
+        isOver = false;
     }
 
     /**
@@ -165,6 +167,7 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         if (isInCheck(teamColor) && hasNoValidMoves(teamColor)) {
+            isOver = true;
             return true;
         }
         return false;
@@ -182,6 +185,7 @@ public class ChessGame {
             return false;
         }
         if (hasNoValidMoves(teamColor)) {
+            isOver = true;
             return true;
         }
         return false;
@@ -224,6 +228,14 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return gameBoard;
+    }
+
+    public boolean isOver() {
+        return isOver;
+    }
+
+    public void gameOver() {
+        isOver = true;
     }
 
     @Override

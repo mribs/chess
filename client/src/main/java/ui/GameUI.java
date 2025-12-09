@@ -3,16 +3,20 @@ package ui;
 import model.AuthData;
 import model.GameData;
 import chess.*;
+import websocket.NotificationHandler;
+import websocket.WebSocketClient;
+import websocket.messages.ServerMessage;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
-public class GameUI {
+public class GameUI implements NotificationHandler {
     GameData gameData;
     AuthData authData;
     String playerColor;
     ChessGame chessGame;
     ChessBoard board;
+    WebSocketClient webSocketClient;
+    private Scanner scanner;
 
     public GameUI(GameData gameData, AuthData authData, String playerColor) {
         this.gameData = gameData;
@@ -20,20 +24,148 @@ public class GameUI {
         this.playerColor = playerColor;
         this.chessGame = gameData.game();
         this.board = gameData.game().getBoard();
+        try {
+            this.webSocketClient = new WebSocketClient(this);
+            webSocketClient.joinGame(authData.authToken(), gameData.gameID(), playerColor);
+        } catch (Exception e) {
+            System.out.println("Error Connecting");
+        }
+
+
     }
 
     public void run() {
         System.out.println("Welcome to " + gameData.gameName() + "!\n" +
                 "And may the odds be ever in your favor");
         String printColor = playerColor;
-        if (Objects.equals(playerColor, "observe")) {
+        if (playerColor.equals("observe")) {
             printColor = "WHITE";
         }
+        System.out.println(getHelp());
         fancyPrint(printColor, null, null);
-        System.out.println("Gameplay not currently implemented, exiting");
+
+        scanner = new Scanner(System.in);
+        var result = "";
+        while (!result.equals("quit")) {
+            System.out.println(EscapeSequences.SET_TEXT_COLOR_WHITE + "Enter Option >>");
+            String line = scanner.nextLine();
+
+            try {
+                result = evalLine(line);
+                String printResult = result;
+                if (result.equals("quit")) {
+                    printResult = "Leaving game...";
+                }
+                System.out.println((EscapeSequences.SET_TEXT_COLOR_BLUE + printResult));
+            } catch (Throwable e) {
+                var msg = e.toString();
+                System.out.println(msg);
+            }
+        }
+        System.out.println();
     }
 
-    //    Board print code copied from my earlier version of project, I don't want to redo it
+    private String redrawBoard() {
+        fancyPrint(playerColor, null, null);
+        return "Board redrawn";
+    }
+
+    private String highlightMoves() {
+        System.out.println("Enter location letter (a-h):");
+        String pieceX = scanner.nextLine().toLowerCase();
+        System.out.println("Enter location number (1-8):");
+        String pieceY = scanner.nextLine();
+
+        int col = pieceX.charAt(0) - 'a' + 1;
+        int row = Integer.parseInt(pieceY);
+        ChessPosition start = new ChessPosition(row, col);
+
+        if (board.getPiece(new ChessPosition(row, col)) == null) {
+            return "No piece at given position";
+        }
+        Collection<ChessMove> validMoves = chessGame.validMoves(new ChessPosition(row, col));
+        if (validMoves == null || validMoves.isEmpty()) {
+            return "No valid moves for that piece";
+        }
+
+        ArrayList<ChessPosition> highlightSquares = new ArrayList<>();
+        for (ChessMove move : validMoves) {
+            highlightSquares.add(move.getEndPosition());
+        }
+        fancyPrint(playerColor, highlightSquares, start);
+        return "Valid moves highlighted";
+    }
+
+    private String leave() {
+        try {
+            webSocketClient.leaveGame(authData.authToken(), gameData.gameID());
+            return "quit";
+        } catch (Exception e) {
+            return "Could not leave game. Guess you're stuck here buddy";
+        }
+    }
+
+    private String makeMove() {
+        return "not implemented";
+    }
+
+    private String resign() {
+        try {
+            webSocketClient.resign(authData.authToken(), gameData.gameID());
+            chessGame.gameOver();
+            if (playerColor == null || playerColor.equals("observer")) {
+                return "";
+            }
+            return "quit";
+        } catch (Exception e) {
+            return "failed to resign";
+        }
+    }
+
+    private String evalLine(String line) {
+        try {
+            var tokens = line.toLowerCase().split(" ");
+            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            return switch (cmd) {
+                case "quit" -> "quit";
+                case "help" -> getHelp();
+                case "redraw" -> redrawBoard();
+                case "highlight" -> highlightMoves();
+                case "leave" -> leave();
+                case "move" -> makeMove();
+                case "resign" -> resign();
+                default -> invalidResponse();
+            };
+        } catch (Throwable e) {
+            return e.getMessage();
+        }
+    }
+
+    public String invalidResponse() {
+        return "Invalid input\n" + getHelp();
+    }
+
+    private String getHelp() {
+        if (Objects.equals(playerColor, "observe")) {
+            return """
+                    Help Menu
+                    Redraw : Redraw the board
+                    Highlight : Highlight a piece's possible moves
+                    Leave : Leave the game
+                    """;
+        }
+        return """
+                Help Menu
+                Redraw : Redraw the board
+                Highlight : Highlight a piece's possible moves
+                Move : Make a move
+                Leave : Leave the game (gameplay can continue)
+                Resign : Rage quit
+                """;
+    }
+
+    //    Board print code copied from my earlier version of project, which I lowkey think was starter code at the time, I don't want to redo it
     public void fancyPrint(String color, ArrayList<ChessPosition> highlightSquares, ChessPosition highlightPiece) {
         boolean reverse = false;
         if (color != null) {
@@ -98,7 +230,6 @@ public class GameUI {
         System.out.print(EscapeSequences.RESET_BG_COLOR);
     }
 
-
     private String printWhitePiece(ChessPiece piece) {
         return switch (piece.getPieceType()) {
             case PAWN -> EscapeSequences.WHITE_PAWN;
@@ -121,4 +252,26 @@ public class GameUI {
         };
     }
 
+    @Override
+    public void notify(ServerMessage notification) {
+        switch (notification.getServerMessageType()) {
+            case NOTIFICATION -> System.out.println(notification.getMessage());
+            case LOAD_GAME -> updateGame(notification.getGame());
+            case ERROR -> printError(notification.getErrorMessage());
+        }
+    }
+
+    private void printError(String error) {
+        if (error == null) {
+            System.out.println("There was a problem with the server");
+            return;
+        }
+        System.out.println(error);
+    }
+
+    private void updateGame(ChessGame gameUpdate) {
+        this.chessGame = gameUpdate;
+        this.board = gameUpdate.getBoard();
+        fancyPrint(playerColor, null, null);
+    }
 }
