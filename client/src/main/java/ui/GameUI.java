@@ -6,10 +6,7 @@ import chess.*;
 import websocket.NotificationHandler;
 import websocket.messages.ServerMessage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 public class GameUI implements NotificationHandler {
     GameData gameData;
@@ -17,6 +14,7 @@ public class GameUI implements NotificationHandler {
     String playerColor;
     ChessGame chessGame;
     ChessBoard board;
+    private Scanner scanner;
 
     public GameUI(GameData gameData, AuthData authData, String playerColor) {
         this.gameData = gameData;
@@ -36,7 +34,7 @@ public class GameUI implements NotificationHandler {
         System.out.println(getHelp());
         fancyPrint(printColor, null, null);
 
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
             System.out.println(EscapeSequences.SET_TEXT_COLOR_WHITE + "Enter Option >>");
@@ -62,6 +60,44 @@ public class GameUI implements NotificationHandler {
         return "Board redrawn";
     }
 
+    private String highlightMoves() {
+        System.out.println("Enter location letter (a-h):");
+        String pieceX = scanner.nextLine().toLowerCase();
+        System.out.println("Enter location number (1-8):");
+        String pieceY = scanner.nextLine();
+
+        int col = pieceX.charAt(0) - 'a' + 1;
+        int row = Integer.parseInt(pieceY);
+        ChessPosition start = new ChessPosition(row, col);
+
+        if (board.getPiece(new ChessPosition(row, col)) == null) {
+            return "No piece at given position";
+        }
+        Collection<ChessMove> validMoves = chessGame.validMoves(new ChessPosition(row, col));
+        if (validMoves == null || validMoves.isEmpty()) {
+            return "No valid moves for that piece";
+        }
+
+        ArrayList<ChessPosition> highlightSquares = new ArrayList<>();
+        for (ChessMove move : validMoves) {
+            highlightSquares.add(move.getEndPosition());
+        }
+        fancyPrint(playerColor, highlightSquares, start);
+        return "Valid moves highlighted";
+    }
+
+    private String leave() {
+        return "not implemented";
+    }
+
+    private String makeMove() {
+        return "not implemented";
+    }
+
+    private String resign() {
+        return "not implemented";
+    }
+    
     private String evalLine(String line) {
         try {
             var tokens = line.toLowerCase().split(" ");
@@ -75,11 +111,15 @@ public class GameUI implements NotificationHandler {
                 case "leave" -> leave();
                 case "move" -> makeMove();
                 case "resign" -> resign();
-                default -> invalid();
+                default -> invalidResponse();
             };
         } catch (Throwable e) {
             return e.getMessage();
         }
+    }
+
+    public String invalidResponse() {
+        return "Invalid input\n" + getHelp();
     }
 
     private String getHelp() {
