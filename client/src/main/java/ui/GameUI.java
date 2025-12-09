@@ -3,11 +3,15 @@ package ui;
 import model.AuthData;
 import model.GameData;
 import chess.*;
+import websocket.NotificationHandler;
+import websocket.messages.ServerMessage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Scanner;
 
-public class GameUI {
+public class GameUI implements NotificationHandler {
     GameData gameData;
     AuthData authData;
     String playerColor;
@@ -29,11 +33,75 @@ public class GameUI {
         if (Objects.equals(playerColor, "observe")) {
             printColor = "WHITE";
         }
+        System.out.println(getHelp());
         fancyPrint(printColor, null, null);
-        System.out.println("Gameplay not currently implemented, exiting");
+
+        Scanner scanner = new Scanner(System.in);
+        var result = "";
+        while (!result.equals("quit")) {
+            System.out.println(EscapeSequences.SET_TEXT_COLOR_WHITE + "Enter Option >>");
+            String line = scanner.nextLine();
+
+            try {
+                result = evalLine(line);
+                String printResult = result;
+                if (result.equals("quit")) {
+                    printResult = "Leaving game...";
+                }
+                System.out.println((EscapeSequences.SET_TEXT_COLOR_BLUE + printResult));
+            } catch (Throwable e) {
+                var msg = e.toString();
+                System.out.println(msg);
+            }
+        }
+        System.out.println();
     }
 
-    //    Board print code copied from my earlier version of project, I don't want to redo it
+    private String redrawBoard() {
+        fancyPrint(playerColor, null, null);
+        return "Board redrawn";
+    }
+
+    private String evalLine(String line) {
+        try {
+            var tokens = line.toLowerCase().split(" ");
+            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            return switch (cmd) {
+                case "quit" -> "quit";
+                case "help" -> getHelp();
+                case "redraw" -> redrawBoard();
+                case "highlight" -> highlightMoves();
+                case "leave" -> leave();
+                case "move" -> makeMove();
+                case "resign" -> resign();
+                default -> invalid();
+            };
+        } catch (Throwable e) {
+            return e.getMessage();
+        }
+    }
+
+    private String getHelp() {
+        if (Objects.equals(playerColor, "observe")) {
+            return """
+                    Help Menu
+                    Redraw : Redraw the board
+                    Highlight : Highlight a piece's possible moves
+                    Leave : Leave the game
+                    """;
+        }
+        return """
+                Help Menu
+                Redraw : Redraw the board
+                Highlight : Highlight a piece's possible moves
+                Move : Make a move
+                Leave : Leave the game (gameplay can continue)
+                Resign : Rage quit
+                """;
+    }
+
+    //    Board print code copied from my earlier version of project, which I lowkey think was starter code at the time, I don't want to redo it
     public void fancyPrint(String color, ArrayList<ChessPosition> highlightSquares, ChessPosition highlightPiece) {
         boolean reverse = false;
         if (color != null) {
@@ -98,7 +166,6 @@ public class GameUI {
         System.out.print(EscapeSequences.RESET_BG_COLOR);
     }
 
-
     private String printWhitePiece(ChessPiece piece) {
         return switch (piece.getPieceType()) {
             case PAWN -> EscapeSequences.WHITE_PAWN;
@@ -121,4 +188,26 @@ public class GameUI {
         };
     }
 
+    @Override
+    public void notify(ServerMessage notification) {
+        switch (notification.getServerMessageType()) {
+            case NOTIFICATION -> System.out.println(notification.getMessage());
+            case LOAD_GAME -> updateGame(notification.getGame());
+            case ERROR -> printError(notification.getErrorMessage());
+        }
+    }
+
+    private void printError(String error) {
+        if (error == null) {
+            System.out.println("There was a problem with the server");
+            return;
+        }
+        System.out.println(error);
+    }
+
+    private void updateGame(ChessGame gameUpdate) {
+        this.chessGame = gameUpdate;
+        this.board = gameUpdate.getBoard();
+        fancyPrint(playerColor, null, null);
+    }
 }
