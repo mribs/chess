@@ -119,6 +119,9 @@ public class UserUI {
                 }
                 String gameString = index + ": " + game.gameName() + "\n    White username: " + whiteUsername
                         + " Black username: " + blackUsername + "\n";
+                if (game.game().isOver()) {
+                    gameString = index + ": " + game.gameName() + "\n    GAME OVER \n";
+                }
                 returnString.append(gameString);
                 index += 1;
             }

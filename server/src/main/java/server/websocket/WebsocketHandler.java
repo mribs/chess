@@ -58,15 +58,18 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
                 } else if (username.equals(gameData.blackUsername())) {
                     GameData updatedData = new GameData(gameData.gameID(), gameData.gameName(), gameData.whiteUsername(), null, game);
                     gameDAO.updateGame(gameID, updatedData);
+                } else {
+                    connectionManager.remove(gameID, authToken);
+                    return;
                 }
+                String message = String.format("%s has left the game", username);
+                ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                connectionManager.broadcast(gameID, authToken, notification);
+                connectionManager.remove(gameID, authToken);
             } else {
                 ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: game cannot be found");
                 connectionManager.sendToRoot(gameID, authToken, errorMessage);
             }
-            String message = String.format("%s has left the game", username);
-            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-            connectionManager.broadcast(gameID, authToken, notification);
-            connectionManager.remove(gameID, authToken);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -78,14 +81,9 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
             String username = new SQLAuthDAO().getAuth(authToken).username();
             SQLGameDAO gameDAO = new SQLGameDAO();
             GameData gameData = gameDAO.getGame(gameID);
-            ChessGame.TeamColor teamColor = null;
             if (gameData != null) {
                 ChessGame game = gameData.game();
-                if (username.equals(gameData.whiteUsername())) {
-                    teamColor = ChessGame.TeamColor.WHITE;
-                } else if (username.equals(gameData.blackUsername())) {
-                    teamColor = ChessGame.TeamColor.BLACK;
-                } else {
+                if (!username.equals(gameData.whiteUsername()) && !username.equals(gameData.blackUsername())) {
                     ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null,
                             "Error: Observers can't resign");
                     connectionManager.sendToRoot(gameID, authToken, errorMessage);
@@ -124,8 +122,11 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
             String username = authData.username();
             String color = command.getColor();
             String message = String.format("%s has joined the game as %s", username, color);
+//            observer gets a different message
+            if (color == null || color.equals("OBSERVE")) {
+                message = String.format("%s is watching the game", username);
+            }
             ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-
             SQLGameDAO gameDAO = new SQLGameDAO();
             GameData gameData = gameDAO.getGame(command.getGameID());
             if (gameData.game() != null) {
@@ -170,16 +171,25 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
                     throw new InvalidMoveException("It's not your turn");
                 }
                 game.makeMove(move);
-                if (game.isInCheck(teamColor)) {
-                    ServerMessage checkMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, "you are in check");
-                    connectionManager.sendToRoot(gameID, authToken, checkMessage);
+                ChessGame.TeamColor oppTeamColor;
+                String oppTeamUsername;
+                if (teamColor == ChessGame.TeamColor.WHITE) {
+                    oppTeamColor = ChessGame.TeamColor.BLACK;
+                    oppTeamUsername = gameData.blackUsername();
+                } else {
+                    oppTeamColor = ChessGame.TeamColor.WHITE;
+                    oppTeamUsername = gameData.whiteUsername();
                 }
-                if (game.isInCheckmate(teamColor)) {
-                    ServerMessage checkMateMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, "CHECKMATE");
+                if (game.isInCheckmate(oppTeamColor)) {
+//                    I would rather this just sent checkmate, because it's more dramatic, but alas
+                    ServerMessage checkMateMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, oppTeamUsername + " is in CheckMate");
                     connectionManager.sendToAll(gameID, checkMateMessage);
-                }
-                if (game.isOver()) {
-                    throw new InvalidMoveException("game has ended.");
+                } else if (game.isInStalemate(oppTeamColor)) {
+                    ServerMessage stalemateMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, ("Stalemate"));
+                    connectionManager.sendToAll(gameID, stalemateMessage);
+                } else if (game.isInCheck(oppTeamColor)) {
+                    ServerMessage checkMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, (oppTeamUsername + " is in check"));
+                    connectionManager.sendToAll(gameID, checkMessage);
                 }
                 gameDAO.updateGame(gameID, gameData);
             } else {

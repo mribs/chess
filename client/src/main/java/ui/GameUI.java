@@ -40,8 +40,7 @@ public class GameUI implements NotificationHandler {
             System.out.println("Error joining game");
             return;
         }
-        System.out.println("Welcome to " + gameData.gameName() + "!\n" +
-                "And may the odds be ever in your favor");
+        System.out.println("Welcome to " + gameData.gameName());
 
         fancyPrint(playerColor, null, null);
         System.out.println(getHelp());
@@ -106,14 +105,20 @@ public class GameUI implements NotificationHandler {
     }
 
     private String makeMove() {
+        if (playerColor.equals("OBSERVE")) {
+            return invalidResponse();
+        }
         if (chessGame.isOver()) {
             return (gameData.gameName() + " is over.");
         }
         ChessPosition start = getInputPosition("start");
         ChessPosition end = getInputPosition("end");
         ChessPiece.PieceType promotionPiece = null;
+        if (start == null || end == null) {
+            return "Invalid move";
+        }
         Collection<ChessMove> validMoves = chessGame.validMoves(start);
-        if (!validMoves.isEmpty()) {
+        if (validMoves != null && !validMoves.isEmpty()) {
             for (ChessMove move : validMoves) {
                 if (move.getPromotionPiece() != null) {
                     promotionPiece = getPromotionInput();
@@ -136,19 +141,27 @@ public class GameUI implements NotificationHandler {
     }
 
     private String resign() {
+        if (playerColor.equals("OBSERVE")) {
+            return invalidResponse();
+        }
         if (chessGame.isOver()) {
             return (gameData.gameName() + " is over.");
         }
         try {
-            webSocketClient.resign(authData.authToken(), gameData.gameID());
-            chessGame.gameOver();
-            if (playerColor == null || playerColor.equals("observer")) {
-                return "";
+            while (true) {
+                System.out.println("Are you sure? y/n");
+                String confirmation = scanner.nextLine().toLowerCase();
+                if (confirmation.equals("y") || confirmation.equals("yes")) {
+                    webSocketClient.resign(authData.authToken(), gameData.gameID());
+                    chessGame.gameOver();
+                    return "";
+                } else if (confirmation.equals("n") || confirmation.equals("no")) {
+                    return "resignation cancelled";
+                }
             }
         } catch (Exception e) {
             return "failed to resign";
         }
-        return "Please use leave command to exit";
     }
 
     private String evalLine(String line) {
@@ -176,7 +189,7 @@ public class GameUI implements NotificationHandler {
     }
 
     private String getHelp() {
-        if (Objects.equals(playerColor, "observe")) {
+        if (playerColor.equals("OBSERVE")) {
             return """
                     Help Menu
                     Redraw : Redraw the board
@@ -305,14 +318,18 @@ public class GameUI implements NotificationHandler {
     }
 
     private ChessPosition getInputPosition(String location) {
-        System.out.println("Enter " + location + " letter (a-h):");
-        String pieceX = scanner.nextLine().toLowerCase();
-        System.out.println("Enter " + location + " number (1-8):");
-        String pieceY = scanner.nextLine();
+        try {
+            System.out.println("Enter " + location + " letter (a-h):");
+            String pieceX = scanner.nextLine().toLowerCase();
+            System.out.println("Enter " + location + " number (1-8):");
+            String pieceY = scanner.nextLine();
 
-        int col = pieceX.charAt(0) - 'a' + 1;
-        int row = Integer.parseInt(pieceY);
-        return new ChessPosition(row, col);
+            int col = pieceX.charAt(0) - 'a' + 1;
+            int row = Integer.parseInt(pieceY);
+            return new ChessPosition(row, col);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private ChessPiece.PieceType getPromotionInput() {
