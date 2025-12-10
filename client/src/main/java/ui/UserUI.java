@@ -187,7 +187,6 @@ public class UserUI {
         }
         GameData gameData = postLogin.joinGame(gameID, "OBSERVE", authData);
         if (gameData != null) {
-//            temporay(phase 5) just print out the board from color perspective
             GameUI gameUI = new GameUI(gameData, authData, "OBSERVE");
             gameUI.run();
         } else {

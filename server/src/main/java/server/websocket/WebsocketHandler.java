@@ -59,6 +59,9 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
                     GameData updatedData = new GameData(gameData.gameID(), gameData.gameName(), gameData.whiteUsername(), null, game);
                     gameDAO.updateGame(gameID, updatedData);
                 } else {
+//                    "I don't wike it" -Chris Evans
+                    ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, (username + " is no longer watching"));
+                    connectionManager.broadcast(gameID, authToken, notification);
                     connectionManager.remove(gameID, authToken);
                     return;
                 }
