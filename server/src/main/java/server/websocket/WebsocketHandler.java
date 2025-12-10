@@ -2,6 +2,7 @@ package server.websocket;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPosition;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.UnauthorizedException;
@@ -146,6 +147,13 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
         }
     }
 
+    private String toLetterNumber(ChessPosition position) {
+        int col = position.getColumn();
+        char colLetter = (char) ('a' + col);
+        int row = position.getRow() + 1;
+        return String.valueOf(colLetter) + row;
+    }
+
     private void makeMove(String authToken, UserGameCommand command) {
         int gameID = 0;
         try {
@@ -201,7 +209,7 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
                 connectionManager.sendToRoot(gameID, authToken, errorMessage);
             }
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, gameData);
-            String message = String.format("%s made a move", username);
+            String message = username + " moved " + toLetterNumber(move.getStartPosition()) + " to " + toLetterNumber(move.getEndPosition());
             ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
             connectionManager.broadcast(gameID, authToken, notification);
             connectionManager.sendToAll(gameID, serverMessage);
