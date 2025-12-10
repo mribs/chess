@@ -61,7 +61,8 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
                     gameDAO.updateGame(gameID, updatedData);
                 } else {
 //                    "I don't wike it" -Chris Evans
-                    ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, (username + " is no longer watching"));
+                    ServerMessage notification = new ServerMessage(
+                            ServerMessage.ServerMessageType.NOTIFICATION, (username + " is no longer watching"));
                     connectionManager.broadcast(gameID, authToken, notification);
                     connectionManager.remove(gameID, authToken);
                     return;
@@ -105,7 +106,7 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
                 ServerMessage resigned = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, "You resigned");
                 connectionManager.sendToRoot(gameID, authToken, resigned);
                 game.gameOver();
-                
+
 //                The tests don't like it, but sending a load game message to everybody with the update made later steps more effective
 
                 gameDAO.updateGame(gameID, new GameData(gameID, gameData.gameName(), gameData.whiteUsername(), gameData.blackUsername(), game));
@@ -138,11 +139,13 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
                 connectionManager.sendToRoot(command.getGameID(), authToken, loadGameMessage);
                 connectionManager.broadcast(command.getGameID(), authToken, notification);
             } else {
-                ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: game cannot be found");
+                ServerMessage errorMessage = new ServerMessage(
+                        ServerMessage.ServerMessageType.ERROR, null, "Error: game cannot be found");
                 connectionManager.sendToRoot(command.getGameID(), authToken, errorMessage);
             }
         } catch (Exception e) {
-            ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: Cannot connect to game");
+            ServerMessage errorMessage = new ServerMessage(
+                    ServerMessage.ServerMessageType.ERROR, null, "Error: Cannot connect to game");
             connectionManager.sendToRoot(command.getGameID(), authToken, errorMessage);
         }
     }
@@ -199,7 +202,8 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
                 }
                 if (game.isInCheckmate(oppTeamColor)) {
 //                    I would rather this just sent checkmate, because it's more dramatic, but alas
-                    ServerMessage checkMateMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, oppTeamUsername + " is in CheckMate");
+                    ServerMessage checkMateMessage = new ServerMessage(
+                            ServerMessage.ServerMessageType.NOTIFICATION, oppTeamUsername + " is in CheckMate");
                     connectionManager.sendToAll(gameID, checkMateMessage);
                 } else if (game.isInStalemate(oppTeamColor)) {
                     ServerMessage stalemateMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, ("Stalemate"));
