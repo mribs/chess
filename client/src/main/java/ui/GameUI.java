@@ -13,6 +13,7 @@ public class GameUI implements NotificationHandler {
     GameData gameData;
     AuthData authData;
     String playerColor;
+    private String printColor;
     ChessGame chessGame;
     ChessBoard board;
     WebSocketClient webSocketClient;
@@ -26,7 +27,6 @@ public class GameUI implements NotificationHandler {
         this.board = gameData.game().getBoard();
         try {
             this.webSocketClient = new WebSocketClient(this);
-            webSocketClient.joinGame(authData.authToken(), gameData.gameID(), playerColor);
         } catch (Exception e) {
             System.out.println("Error Connecting");
         }
@@ -35,14 +35,21 @@ public class GameUI implements NotificationHandler {
     }
 
     public void run() {
+        try {
+            webSocketClient.joinGame(authData.authToken(), gameData.gameID(), playerColor);
+        } catch (Exception e) {
+            System.out.println("Error joining game");
+            return;
+        }
         System.out.println("Welcome to " + gameData.gameName() + "!\n" +
                 "And may the odds be ever in your favor");
-        String printColor = playerColor;
+        printColor = playerColor;
         if (playerColor.equals("observe")) {
             printColor = "WHITE";
         }
-        System.out.println(getHelp());
+
         fancyPrint(printColor, null, null);
+        System.out.println(getHelp());
 
         scanner = new Scanner(System.in);
         var result = "";
@@ -71,6 +78,9 @@ public class GameUI implements NotificationHandler {
     }
 
     private String highlightMoves() {
+        if (chessGame.isOver()) {
+            return (gameData.gameName() + " is over. No legal moves.");
+        }
         System.out.println("Enter location letter (a-h):");
         String pieceX = scanner.nextLine().toLowerCase();
         System.out.println("Enter location number (1-8):");
@@ -106,20 +116,26 @@ public class GameUI implements NotificationHandler {
     }
 
     private String makeMove() {
+        if (chessGame.isOver()) {
+            return (gameData.gameName() + " is over.");
+        }
         return "not implemented";
     }
 
     private String resign() {
+        if (chessGame.isOver()) {
+            return (gameData.gameName() + " is over.");
+        }
         try {
             webSocketClient.resign(authData.authToken(), gameData.gameID());
             chessGame.gameOver();
             if (playerColor == null || playerColor.equals("observer")) {
                 return "";
             }
-            return "quit";
         } catch (Exception e) {
             return "failed to resign";
         }
+        return "quit";
     }
 
     private String evalLine(String line) {

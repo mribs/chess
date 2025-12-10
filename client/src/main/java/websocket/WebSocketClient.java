@@ -14,7 +14,7 @@ public class WebSocketClient extends Endpoint {
     public NotificationHandler notificationHandler;
 
     public WebSocketClient(NotificationHandler notificationHandler) throws Exception {
-        URI uri = new URI("ws//localhost:8080/ws");
+        URI uri = new URI("ws://localhost:8080/ws");
         this.notificationHandler = notificationHandler;
 
         WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
