@@ -13,7 +13,6 @@ public class GameUI implements NotificationHandler {
     GameData gameData;
     AuthData authData;
     String playerColor;
-    private String printColor;
     ChessGame chessGame;
     ChessBoard board;
     WebSocketClient webSocketClient;
@@ -43,12 +42,8 @@ public class GameUI implements NotificationHandler {
         }
         System.out.println("Welcome to " + gameData.gameName() + "!\n" +
                 "And may the odds be ever in your favor");
-        printColor = playerColor;
-        if (playerColor.equals("observe")) {
-            printColor = "WHITE";
-        }
 
-        fancyPrint(printColor, null, null);
+        fancyPrint(playerColor, null, null);
         System.out.println(getHelp());
 
         scanner = new Scanner(System.in);
@@ -81,7 +76,7 @@ public class GameUI implements NotificationHandler {
         if (chessGame.isOver()) {
             return (gameData.gameName() + " is over. No legal moves.");
         }
-        ChessPosition start = getInputPosition();
+        ChessPosition start = getInputPosition("piece");
 
         if (board.getPiece(start) == null) {
             return "No piece at given position";
@@ -112,17 +107,24 @@ public class GameUI implements NotificationHandler {
         if (chessGame.isOver()) {
             return (gameData.gameName() + " is over.");
         }
-        ChessPosition start = getInputPosition();
-        ChessPosition end = getInputPosition();
+        ChessPosition start = getInputPosition("start");
+        ChessPosition end = getInputPosition("end");
         ChessPiece.PieceType promotionPiece = null;
         Collection<ChessMove> validMoves = chessGame.validMoves(start);
-        for (ChessMove move : validMoves) {
-            if (move.getPromotionPiece() != null) {
-                promotionPiece = getPromotionInput();
-                break;
+        if (!validMoves.isEmpty()) {
+            for (ChessMove move : validMoves) {
+                if (move.getPromotionPiece() != null) {
+                    promotionPiece = getPromotionInput();
+                    break;
+                }
             }
         }
-        ChessMove move = new ChessMove(start, end, promotionPiece);
+        ChessMove move;
+        if (promotionPiece != null) {
+            move = new ChessMove(start, end, promotionPiece);
+        } else {
+            move = new ChessMove(start, end);
+        }
         try {
             webSocketClient.makeMove(authData.authToken(), gameData.gameID(), move);
             return "";
@@ -144,7 +146,7 @@ public class GameUI implements NotificationHandler {
         } catch (Exception e) {
             return "failed to resign";
         }
-        return "quit";
+        return "You have resigned. The game is over. Please use leave command to exit";
     }
 
     private String evalLine(String line) {
@@ -300,10 +302,10 @@ public class GameUI implements NotificationHandler {
         fancyPrint(playerColor, null, null);
     }
 
-    private ChessPosition getInputPosition() {
-        System.out.println("Enter location letter (a-h):");
+    private ChessPosition getInputPosition(String location) {
+        System.out.println("Enter " + location + " letter (a-h):");
         String pieceX = scanner.nextLine().toLowerCase();
-        System.out.println("Enter location number (1-8):");
+        System.out.println("Enter " + location + " number (1-8):");
         String pieceY = scanner.nextLine();
 
         int col = pieceX.charAt(0) - 'a' + 1;
