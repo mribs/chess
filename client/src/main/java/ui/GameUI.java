@@ -26,7 +26,6 @@ public class GameUI implements NotificationHandler {
         this.board = gameData.game().getBoard();
         try {
             this.webSocketClient = new WebSocketClient(this);
-            webSocketClient.joinGame(authData.authToken(), gameData.gameID(), playerColor);
         } catch (Exception e) {
             System.out.println("Error Connecting");
         }
@@ -35,14 +34,16 @@ public class GameUI implements NotificationHandler {
     }
 
     public void run() {
-        System.out.println("Welcome to " + gameData.gameName() + "!\n" +
-                "And may the odds be ever in your favor");
-        String printColor = playerColor;
-        if (playerColor.equals("observe")) {
-            printColor = "WHITE";
+        try {
+            webSocketClient.joinGame(authData.authToken(), gameData.gameID(), playerColor);
+        } catch (Exception e) {
+            System.out.println("Error joining game");
+            return;
         }
+        System.out.println("Welcome to " + gameData.gameName());
+
+        fancyPrint(playerColor, null, null);
         System.out.println(getHelp());
-        fancyPrint(printColor, null, null);
 
         scanner = new Scanner(System.in);
         var result = "";
@@ -59,7 +60,9 @@ public class GameUI implements NotificationHandler {
                 System.out.println((EscapeSequences.SET_TEXT_COLOR_BLUE + printResult));
             } catch (Throwable e) {
                 var msg = e.toString();
-                System.out.println(msg);
+                if (msg != null) {
+                    System.out.println(msg);
+                }
             }
         }
         System.out.println();
@@ -71,19 +74,15 @@ public class GameUI implements NotificationHandler {
     }
 
     private String highlightMoves() {
-        System.out.println("Enter location letter (a-h):");
-        String pieceX = scanner.nextLine().toLowerCase();
-        System.out.println("Enter location number (1-8):");
-        String pieceY = scanner.nextLine();
+        if (chessGame.isOver()) {
+            return (gameData.gameName() + " is over. No legal moves.");
+        }
+        ChessPosition start = getInputPosition("piece");
 
-        int col = pieceX.charAt(0) - 'a' + 1;
-        int row = Integer.parseInt(pieceY);
-        ChessPosition start = new ChessPosition(row, col);
-
-        if (board.getPiece(new ChessPosition(row, col)) == null) {
+        if (board.getPiece(start) == null) {
             return "No piece at given position";
         }
-        Collection<ChessMove> validMoves = chessGame.validMoves(new ChessPosition(row, col));
+        Collection<ChessMove> validMoves = chessGame.validMoves(start);
         if (validMoves == null || validMoves.isEmpty()) {
             return "No valid moves for that piece";
         }
@@ -106,17 +105,60 @@ public class GameUI implements NotificationHandler {
     }
 
     private String makeMove() {
-        return "not implemented";
+        if (playerColor.equals("OBSERVE")) {
+            return invalidResponse();
+        }
+        if (chessGame.isOver()) {
+            return (gameData.gameName() + " is over.");
+        }
+        ChessPosition start = getInputPosition("start");
+        ChessPosition end = getInputPosition("end");
+        ChessPiece.PieceType promotionPiece = null;
+        if (start == null || end == null) {
+            return "Invalid move";
+        }
+        Collection<ChessMove> validMoves = chessGame.validMoves(start);
+        if (validMoves != null && !validMoves.isEmpty()) {
+            for (ChessMove move : validMoves) {
+                if (move.getPromotionPiece() != null) {
+                    promotionPiece = getPromotionInput();
+                    break;
+                }
+            }
+        }
+        ChessMove move;
+        if (promotionPiece != null) {
+            move = new ChessMove(start, end, promotionPiece);
+        } else {
+            move = new ChessMove(start, end);
+        }
+        try {
+            webSocketClient.makeMove(authData.authToken(), gameData.gameID(), move);
+            return "";
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid move");
+        }
     }
 
     private String resign() {
+        if (playerColor.equals("OBSERVE")) {
+            return invalidResponse();
+        }
+        if (chessGame.isOver()) {
+            return (gameData.gameName() + " is over.");
+        }
         try {
-            webSocketClient.resign(authData.authToken(), gameData.gameID());
-            chessGame.gameOver();
-            if (playerColor == null || playerColor.equals("observer")) {
-                return "";
+            while (true) {
+                System.out.println("Are you sure? y/n");
+                String confirmation = scanner.nextLine().toLowerCase();
+                if (confirmation.equals("y") || confirmation.equals("yes")) {
+                    webSocketClient.resign(authData.authToken(), gameData.gameID());
+                    chessGame.gameOver();
+                    return "";
+                } else if (confirmation.equals("n") || confirmation.equals("no")) {
+                    return "resignation cancelled";
+                }
             }
-            return "quit";
         } catch (Exception e) {
             return "failed to resign";
         }
@@ -147,7 +189,7 @@ public class GameUI implements NotificationHandler {
     }
 
     private String getHelp() {
-        if (Objects.equals(playerColor, "observe")) {
+        if (playerColor.equals("OBSERVE")) {
             return """
                     Help Menu
                     Redraw : Redraw the board
@@ -273,5 +315,45 @@ public class GameUI implements NotificationHandler {
         this.chessGame = gameUpdate;
         this.board = gameUpdate.getBoard();
         fancyPrint(playerColor, null, null);
+    }
+
+    private ChessPosition getInputPosition(String location) {
+        try {
+            System.out.println("Enter " + location + " letter (a-h):");
+            String pieceX = scanner.nextLine().toLowerCase();
+            System.out.println("Enter " + location + " number (1-8):");
+            String pieceY = scanner.nextLine();
+
+            int col = pieceX.charAt(0) - 'a' + 1;
+            int row = Integer.parseInt(pieceY);
+            return new ChessPosition(row, col);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private ChessPiece.PieceType getPromotionInput() {
+        while (true) {
+            System.out.println("Enter promotion piece:");
+            String promotionString = scanner.nextLine().toLowerCase();
+            switch (promotionString) {
+                case "rook" -> {
+                    return ChessPiece.PieceType.ROOK;
+                }
+                case "knight" -> {
+                    return ChessPiece.PieceType.KNIGHT;
+                }
+                case "bishop" -> {
+                    return ChessPiece.PieceType.BISHOP;
+                }
+                case "queen" -> {
+                    return ChessPiece.PieceType.QUEEN;
+                }
+                default -> {
+                    System.out.println("Invalid piece name. Please choose one of the following:");
+                    System.out.println("rook / knight / bishop / queen");
+                }
+            }
+        }
     }
 }

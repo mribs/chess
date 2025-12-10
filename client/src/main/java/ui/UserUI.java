@@ -119,6 +119,9 @@ public class UserUI {
                 }
                 String gameString = index + ": " + game.gameName() + "\n    White username: " + whiteUsername
                         + " Black username: " + blackUsername + "\n";
+                if (game.game().isOver()) {
+                    gameString = index + ": " + game.gameName() + "\n    GAME OVER \n";
+                }
                 returnString.append(gameString);
                 index += 1;
             }
@@ -184,7 +187,6 @@ public class UserUI {
         }
         GameData gameData = postLogin.joinGame(gameID, "OBSERVE", authData);
         if (gameData != null) {
-//            temporay(phase 5) just print out the board from color perspective
             GameUI gameUI = new GameUI(gameData, authData, "OBSERVE");
             gameUI.run();
         } else {

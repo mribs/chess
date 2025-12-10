@@ -14,7 +14,7 @@ public class WebSocketClient extends Endpoint {
     public NotificationHandler notificationHandler;
 
     public WebSocketClient(NotificationHandler notificationHandler) throws Exception {
-        URI uri = new URI("ws//localhost:8080/ws");
+        URI uri = new URI("ws://localhost:8080/ws");
         this.notificationHandler = notificationHandler;
 
         WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
@@ -33,7 +33,7 @@ public class WebSocketClient extends Endpoint {
     public void joinGame(String authToken, int gameID, String color) throws Exception {
         try {
             if (color == null) {
-                color = "observer";
+                color = "OBSERVE";
             }
             UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID, color);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));

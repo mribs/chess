@@ -235,7 +235,7 @@ public class ChessGame {
     }
 
     public void gameOver() {
-        isOver = true;
+        this.isOver = true;
     }
 
     @Override
