@@ -81,19 +81,12 @@ public class GameUI implements NotificationHandler {
         if (chessGame.isOver()) {
             return (gameData.gameName() + " is over. No legal moves.");
         }
-        System.out.println("Enter location letter (a-h):");
-        String pieceX = scanner.nextLine().toLowerCase();
-        System.out.println("Enter location number (1-8):");
-        String pieceY = scanner.nextLine();
+        ChessPosition start = getInputPosition();
 
-        int col = pieceX.charAt(0) - 'a' + 1;
-        int row = Integer.parseInt(pieceY);
-        ChessPosition start = new ChessPosition(row, col);
-
-        if (board.getPiece(new ChessPosition(row, col)) == null) {
+        if (board.getPiece(start) == null) {
             return "No piece at given position";
         }
-        Collection<ChessMove> validMoves = chessGame.validMoves(new ChessPosition(row, col));
+        Collection<ChessMove> validMoves = chessGame.validMoves(start);
         if (validMoves == null || validMoves.isEmpty()) {
             return "No valid moves for that piece";
         }
@@ -119,7 +112,23 @@ public class GameUI implements NotificationHandler {
         if (chessGame.isOver()) {
             return (gameData.gameName() + " is over.");
         }
-        return "not implemented";
+        ChessPosition start = getInputPosition();
+        ChessPosition end = getInputPosition();
+        ChessPiece.PieceType promotionPiece = null;
+        Collection<ChessMove> validMoves = chessGame.validMoves(start);
+        for (ChessMove move : validMoves) {
+            if (move.getPromotionPiece() != null) {
+                promotionPiece = getPromotionInput();
+                break;
+            }
+        }
+        ChessMove move = new ChessMove(start, end, promotionPiece);
+        try {
+            webSocketClient.makeMove(authData.authToken(), gameData.gameID(), move);
+            return "";
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid move");
+        }
     }
 
     private String resign() {
@@ -289,5 +298,41 @@ public class GameUI implements NotificationHandler {
         this.chessGame = gameUpdate;
         this.board = gameUpdate.getBoard();
         fancyPrint(playerColor, null, null);
+    }
+
+    private ChessPosition getInputPosition() {
+        System.out.println("Enter location letter (a-h):");
+        String pieceX = scanner.nextLine().toLowerCase();
+        System.out.println("Enter location number (1-8):");
+        String pieceY = scanner.nextLine();
+
+        int col = pieceX.charAt(0) - 'a' + 1;
+        int row = Integer.parseInt(pieceY);
+        return new ChessPosition(row, col);
+    }
+
+    private ChessPiece.PieceType getPromotionInput() {
+        while (true) {
+            System.out.println("Enter promotion piece:");
+            String promotionString = scanner.nextLine().toLowerCase();
+            switch (promotionString) {
+                case "rook" -> {
+                    return ChessPiece.PieceType.ROOK;
+                }
+                case "knight" -> {
+                    return ChessPiece.PieceType.KNIGHT;
+                }
+                case "bishop" -> {
+                    return ChessPiece.PieceType.BISHOP;
+                }
+                case "queen" -> {
+                    return ChessPiece.PieceType.QUEEN;
+                }
+                default -> {
+                    System.out.println("Invalid piece name. Please choose one of the following:");
+                    System.out.println("rook / knight / bishop / queen");
+                }
+            }
+        }
     }
 }
