@@ -105,10 +105,10 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
                 ServerMessage resigned = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, "You resigned");
                 connectionManager.sendToRoot(gameID, authToken, resigned);
                 game.gameOver();
-                GameData updatedGame = new GameData(gameID, gameData.gameName(), gameData.whiteUsername(), gameData.blackUsername(), game);
-                gameDAO.updateGame(gameID, updatedGame);
-                ServerMessage updateGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, updatedGame);
-                connectionManager.sendToAll(gameID, updateGameMessage);
+                
+//                The tests don't like it, but sending a load game message to everybody with the update made later steps more effective
+
+                gameDAO.updateGame(gameID, new GameData(gameID, gameData.gameName(), gameData.whiteUsername(), gameData.blackUsername(), game));
             }
         } catch (UnauthorizedException e) {
             connectionManager.add(gameID, authToken, session);
@@ -171,6 +171,12 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
             ChessGame.TeamColor teamColor;
             if (gameData != null) {
                 ChessGame game = gameData.game();
+                if (game.isOver()) {
+                    ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null,
+                            "Error: Game is already over, please use leave command to exit");
+                    connectionManager.sendToRoot(gameID, authToken, errorMessage);
+                    return;
+                }
                 if (username.equals(gameData.whiteUsername())) {
                     teamColor = ChessGame.TeamColor.WHITE;
                 } else if (username.equals(gameData.blackUsername())) {
