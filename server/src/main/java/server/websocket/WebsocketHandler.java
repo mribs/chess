@@ -105,6 +105,8 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
                 game.gameOver();
                 GameData updatedGame = new GameData(gameID, gameData.gameName(), gameData.whiteUsername(), gameData.blackUsername(), game);
                 gameDAO.updateGame(gameID, updatedGame);
+                ServerMessage updateGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, updatedGame);
+                connectionManager.sendToAll(gameID, updateGameMessage);
             }
         } catch (UnauthorizedException e) {
             connectionManager.add(gameID, authToken, session);
@@ -197,7 +199,7 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
             ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "Error: unauthorized");
             connectionManager.sendConnectionFailure(authToken, session, errorMessage);
         } catch (Exception e) {
-            String msg = String.format("Error: %s", e.getMessage());
+            String msg = ("Error: Invalid Move");
             ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, msg);
             connectionManager.sendToRoot(command.getGameID(), authToken, errorMessage);
         }

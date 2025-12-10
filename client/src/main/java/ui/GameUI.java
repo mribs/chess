@@ -61,7 +61,9 @@ public class GameUI implements NotificationHandler {
                 System.out.println((EscapeSequences.SET_TEXT_COLOR_BLUE + printResult));
             } catch (Throwable e) {
                 var msg = e.toString();
-                System.out.println(msg);
+                if (msg != null) {
+                    System.out.println(msg);
+                }
             }
         }
         System.out.println();
@@ -146,7 +148,7 @@ public class GameUI implements NotificationHandler {
         } catch (Exception e) {
             return "failed to resign";
         }
-        return "You have resigned. The game is over. Please use leave command to exit";
+        return "Please use leave command to exit";
     }
 
     private String evalLine(String line) {
