@@ -105,7 +105,9 @@ public class WebsocketHandler implements WsCloseHandler, WsConnectHandler, WsMes
                 ServerMessage resigned = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, "You resigned");
                 connectionManager.sendToRoot(gameID, authToken, resigned);
                 game.gameOver();
+                
 //                The tests don't like it, but sending a load game message to everybody with the update made later steps more effective
+
                 gameDAO.updateGame(gameID, new GameData(gameID, gameData.gameName(), gameData.whiteUsername(), gameData.blackUsername(), game));
             }
         } catch (UnauthorizedException e) {
